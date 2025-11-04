@@ -1,0 +1,166 @@
+local Players = game:GetService("Players")
+local Player = Players.LocalPlayer
+
+--// ScreenGui Setup
+local ScriptUI = Instance.new("ScreenGui")
+ScriptUI.Name = "ScriptUI"
+ScriptUI.ResetOnSpawn = false
+ScriptUI.ZIndexBehavior = Enum.ZIndexBehavior.Global
+ScriptUI.IgnoreGuiInset = true
+ScriptUI.Enabled = false
+ScriptUI.Parent = Player:WaitForChild("PlayerGui")
+
+--// Main Frame
+local mainFrame = Instance.new("Frame")
+mainFrame.Size = UDim2.new(0, 520, 0, 320)
+mainFrame.Position = UDim2.new(0.5, 0, 0.5, 0)
+mainFrame.AnchorPoint = Vector2.new(0.5, 0.5)
+mainFrame.BackgroundColor3 = Color3.fromRGB(0, 0, 0)
+mainFrame.BackgroundTransparency = 0.2
+mainFrame.BorderSizePixel = 0
+mainFrame.Parent = ScriptUI
+mainFrame.ClipsDescendants = true
+
+local mainCorner = Instance.new("UICorner")
+mainCorner.CornerRadius = UDim.new(0, 10)
+mainCorner.Parent = mainFrame
+
+--// Close Button
+local closeBtn = Instance.new("TextButton")
+closeBtn.Text = "X"
+closeBtn.Font = Enum.Font.GothamBold
+closeBtn.TextScaled = true
+closeBtn.TextColor3 = Color3.fromRGB(255, 255, 255)
+closeBtn.BackgroundTransparency = 1
+closeBtn.Size = UDim2.new(0, 30, 0, 30)
+closeBtn.Position = UDim2.new(1, -35, 0, 5)
+closeBtn.ZIndex = 5
+closeBtn.Parent = mainFrame
+
+closeBtn.MouseButton1Click:Connect(function()
+	ScriptUI.Enabled = false
+end)
+
+--// Search Box
+local searchBox = Instance.new("TextBox")
+searchBox.PlaceholderText = "Search..."
+searchBox.Text = ""
+searchBox.Size = UDim2.new(0, 240, 0, 32)
+searchBox.Position = UDim2.new(0.5, -120, 0, 15)
+searchBox.AnchorPoint = Vector2.new(0.5, 0)
+searchBox.Font = Enum.Font.Gotham
+searchBox.TextSize = 16
+searchBox.TextColor3 = Color3.fromRGB(255, 255, 255)
+searchBox.BackgroundColor3 = Color3.fromRGB(25, 25, 25)
+searchBox.BorderSizePixel = 0
+searchBox.Parent = mainFrame
+
+local searchCorner = Instance.new("UICorner")
+searchCorner.CornerRadius = UDim.new(0, 8)
+searchCorner.Parent = searchBox
+
+--// ScrollingFrame
+local listFrame = Instance.new("ScrollingFrame")
+listFrame.Size = UDim2.new(1, -20, 1, -70)
+listFrame.Position = UDim2.new(0, 10, 0, 60)
+listFrame.BackgroundTransparency = 1
+listFrame.CanvasSize = UDim2.new(0, 0, 0, 0)
+listFrame.ScrollBarThickness = 6
+listFrame.ScrollingDirection = Enum.ScrollingDirection.Y
+listFrame.AutomaticCanvasSize = Enum.AutomaticSize.Y
+listFrame.Parent = mainFrame
+
+local uiGrid = Instance.new("UIGridLayout")
+uiGrid.CellSize = UDim2.new(0, 155, 0, 140)
+uiGrid.CellPadding = UDim2.new(0, 10, 0, 10)
+uiGrid.FillDirectionMaxCells = 3
+uiGrid.SortOrder = Enum.SortOrder.LayoutOrder
+uiGrid.FillDirection = Enum.FillDirection.Horizontal
+uiGrid.HorizontalAlignment = Enum.HorizontalAlignment.Center
+uiGrid.Parent = listFrame
+
+local uiPadding = Instance.new("UIPadding")
+uiPadding.PaddingLeft = UDim.new(0, 5)
+uiPadding.PaddingTop = UDim.new(0, 5)
+uiPadding.Parent = listFrame
+
+--// Example Data
+local scripts = {
+	{title = "Gravity Hub – Blox Fruits Script (No Key)", image = "rbxassetid://6433062233", text = "loadstring(game:HttpGet('https://raw.githubusercontent.com/Dev-GravityHub/BloxFruit/refs/heads/main/Main.lua'))()"},
+	{title = "Fly Script", image = "rbxassetid://6031075931", text = "loadstring(game:HttpGet('https://flymode'))()"},
+	{title = "ESP Finder", image = "rbxassetid://6031091007", text = "loadstring(game:HttpGet('https://espfinder'))()"},
+	{title = "Auto Farm", image = "rbxassetid://6031071053", text = "loadstring(game:HttpGet('https://autofarm'))()"},
+	{title = "Teleport Tool", image = "rbxassetid://6031068421", text = "loadstring(game:HttpGet('https://teleport'))()"},
+	{title = "Animation Player", image = "rbxassetid://6031068433", text = "loadstring(game:HttpGet('https://animplayer'))()"},
+	{title = "Speed Booster", image = "rbxassetid://6031075938", text = "loadstring(game:HttpGet('https://speed'))()"},
+	{title = "Aimbot Visualizer", image = "rbxassetid://6031071068", text = "loadstring(game:HttpGet('https://aimbot'))()"},
+	{title = "Click TP", image = "rbxassetid://6031068420", text = "loadstring(game:HttpGet('https://clicktp'))()"},
+}
+
+--// Function to Create Card
+local function createScriptCard(data)
+	local card = Instance.new("Frame")
+	card.BackgroundColor3 = Color3.fromRGB(20, 20, 20)
+	card.BackgroundTransparency = 0.2
+	card.Size = UDim2.new(0, 155, 0, 140)
+	card.Parent = listFrame
+
+	local corner = Instance.new("UICorner")
+	corner.CornerRadius = UDim.new(0, 8)
+	corner.Parent = card
+
+	local img = Instance.new("ImageLabel")
+	img.Image = data.image
+	img.Size = UDim2.new(1, -10, 0, 70)
+	img.Position = UDim2.new(0, 5, 0, 5)
+	img.BackgroundTransparency = 1
+	img.Parent = card
+
+	local title = Instance.new("TextLabel")
+	title.Text = data.title
+	title.Font = Enum.Font.GothamBold
+	title.TextScaled = true
+	title.TextColor3 = Color3.fromRGB(255, 255, 255)
+	title.BackgroundTransparency = 1
+	title.Size = UDim2.new(1, -10, 0, 25)
+	title.Position = UDim2.new(0, 5, 0, 80)
+	title.Parent = card
+
+	local copyBtn = Instance.new("TextButton")
+	copyBtn.Text = "Copy Script"
+	copyBtn.Font = Enum.Font.Gotham
+	copyBtn.TextSize = 13
+	copyBtn.TextColor3 = Color3.fromRGB(255, 255, 255)
+	copyBtn.BackgroundColor3 = Color3.fromRGB(40, 40, 40)
+	copyBtn.Size = UDim2.new(0.9, 0, 0, 25)
+	copyBtn.Position = UDim2.new(0.05, 0, 1, -30)
+	copyBtn.Parent = card
+
+	local copyCorner = Instance.new("UICorner")
+	copyCorner.CornerRadius = UDim.new(0, 6)
+	copyCorner.Parent = copyBtn
+
+	copyBtn.MouseButton1Click:Connect(function()
+		setclipboard(data.text)
+	end)
+end
+
+--// Generate Cards
+for _, scriptData in ipairs(scripts) do
+	createScriptCard(scriptData)
+end
+
+--// Search Filter
+searchBox:GetPropertyChangedSignal("Text"):Connect(function()
+	local search = string.lower(searchBox.Text)
+	for _, card in ipairs(listFrame:GetChildren()) do
+		if card:IsA("Frame") then
+			local title = card:FindFirstChildOfClass("TextLabel")
+			if title and string.find(string.lower(title.Text), search) then
+				card.Visible = true
+			else
+				card.Visible = false
+			end
+		end
+	end
+end)
