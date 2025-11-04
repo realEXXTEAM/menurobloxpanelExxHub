@@ -1,0 +1,177 @@
+local Players = game:GetService("Players")
+local TweenService = game:GetService("TweenService")
+local StarterGui = game:GetService("StarterGui")
+local Player = Players.LocalPlayer
+
+--// Protect agar tidak kehapus
+local function protectUI(gui)
+	gui.AncestryChanged:Connect(function(_, parent)
+		if not parent then
+			gui.Parent = Player:WaitForChild("PlayerGui")
+		end
+	end)
+end
+
+--// Hapus Executor lama
+local old = Player:WaitForChild("PlayerGui"):FindFirstChild("ExecutorUI")
+if old then old:Destroy() end
+
+--// Buat ScreenGui
+local ExecutorUI = Instance.new("ScreenGui")
+ExecutorUI.Name = "ExecutorUI"
+ExecutorUI.ResetOnSpawn = false
+ExecutorUI.ZIndexBehavior = Enum.ZIndexBehavior.Global
+ExecutorUI.IgnoreGuiInset = true
+ExecutorUI.Enabled = false
+ExecutorUI.Parent = Player:WaitForChild("PlayerGui")
+
+--// Frame utama
+local bg = Instance.new("Frame")
+bg.Size = UDim2.new(0, 520, 0, 300)
+bg.AnchorPoint = Vector2.new(0.5, 0.5)
+bg.Position = UDim2.new(0.5, 0, 0.5, 0)
+bg.BackgroundColor3 = Color3.fromRGB(20, 20, 25)
+bg.BackgroundTransparency = 0.2
+bg.BorderSizePixel = 0
+bg.Parent = ExecutorUI
+
+local corner = Instance.new("UICorner")
+corner.CornerRadius = UDim.new(0, 14)
+corner.Parent = bg
+
+--// Title
+local title = Instance.new("TextLabel")
+title.Size = UDim2.new(1, -60, 0, 30)
+title.Position = UDim2.new(0, 20, 0, 10)
+title.BackgroundTransparency = 1
+title.Font = Enum.Font.GothamBold
+title.Text = "Executor"
+title.TextColor3 = Color3.fromRGB(255, 255, 255)
+title.TextSize = 18
+title.TextXAlignment = Enum.TextXAlignment.Left
+title.Parent = bg
+
+--// Tombol Close (X)
+local closeBtn = Instance.new("TextButton")
+closeBtn.Size = UDim2.new(0, 25, 0, 25)
+closeBtn.Position = UDim2.new(1, -35, 0, 8)
+closeBtn.BackgroundTransparency = 1
+closeBtn.Text = "X"
+closeBtn.Font = Enum.Font.GothamBold
+closeBtn.TextSize = 18
+closeBtn.TextColor3 = Color3.new(1, 1, 1)
+closeBtn.Parent = bg
+
+closeBtn.MouseButton1Click:Connect(function()
+	ExecutorUI.Enabled = false -- toggle disable GUI
+end)
+
+--// Scroll area
+local scroll = Instance.new("ScrollingFrame")
+scroll.Size = UDim2.new(1, -40, 1, -90)
+scroll.Position = UDim2.new(0, 20, 0, 45)
+scroll.BackgroundColor3 = Color3.fromRGB(15, 15, 20)
+scroll.BackgroundTransparency = 0.3
+scroll.ScrollBarThickness = 6
+scroll.ScrollingDirection = Enum.ScrollingDirection.XY
+scroll.AutomaticCanvasSize = Enum.AutomaticSize.XY
+scroll.CanvasSize = UDim2.new(0, 0, 0, 0)
+scroll.BorderSizePixel = 0
+scroll.Parent = bg
+
+local scrollCorner = Instance.new("UICorner")
+scrollCorner.CornerRadius = UDim.new(0, 10)
+scrollCorner.Parent = scroll
+
+--// TextBox untuk script
+local input = Instance.new("TextBox")
+input.Size = UDim2.new(1, -10, 1, -10)
+input.Position = UDim2.new(0, 5, 0, 5)
+input.BackgroundTransparency = 1
+input.ClearTextOnFocus = false
+input.MultiLine = true
+input.TextWrapped = false
+input.TextXAlignment = Enum.TextXAlignment.Left
+input.TextYAlignment = Enum.TextYAlignment.Top
+input.Font = Enum.Font.Code
+input.TextSize = 16
+input.TextColor3 = Color3.new(1, 1, 1)
+input.Text = "-- Paste your script here"
+input.Parent = scroll
+
+--// Tombol Run (Play)
+local runBtn = Instance.new("ImageButton")
+runBtn.Size = UDim2.new(0, 55, 0, 55)
+runBtn.AnchorPoint = Vector2.new(0.5, 1)
+runBtn.Position = UDim2.new(0.5, 0, 1, -15)
+runBtn.BackgroundColor3 = Color3.fromRGB(45, 45, 60)
+runBtn.BackgroundTransparency = 0.2
+runBtn.Image = "rbxassetid://127679279592127" -- ▶️
+runBtn.ImageColor3 = Color3.fromRGB(180, 180, 255)
+runBtn.Parent = bg
+
+local btnCorner = Instance.new("UICorner")
+btnCorner.CornerRadius = UDim.new(1, 0)
+btnCorner.Parent = runBtn
+
+-- Hover animasi
+runBtn.MouseEnter:Connect(function()
+	TweenService:Create(runBtn, TweenInfo.new(0.15), {
+		BackgroundTransparency = 0.1,
+		ImageColor3 = Color3.new(1, 1, 1)
+	}):Play()
+end)
+runBtn.MouseLeave:Connect(function()
+	TweenService:Create(runBtn, TweenInfo.new(0.15), {
+		BackgroundTransparency = 0.2,
+		ImageColor3 = Color3.fromRGB(180, 180, 255)
+	}):Play()
+end)
+
+--// Fungsi notifikasi
+local function notify(msg)
+	pcall(function()
+		StarterGui:SetCore("SendNotification", {
+			Title = "Executor";
+			Text = msg;
+			Duration = 3;
+		})
+	end)
+end
+
+--// Klik tombol Run
+runBtn.MouseButton1Click:Connect(function()
+	local tweenIn = TweenService:Create(runBtn, TweenInfo.new(0.1), {Size = UDim2.new(0, 65, 0, 65)})
+	local tweenOut = TweenService:Create(runBtn, TweenInfo.new(0.1), {Size = UDim2.new(0, 55, 0, 55)})
+	tweenIn:Play()
+	tweenIn.Completed:Wait()
+	tweenOut:Play()
+
+	local code = input.Text
+
+	if code == "" or code:match("^%s*$") or code == "-- Paste your script here" then
+		notify("⚠️ Masukkan script dulu bro!")
+		return
+	end
+
+	local func, err = loadstring(code)
+	if func then
+		notify("✅ Script berhasil dijalankan!")
+		task.spawn(func)
+	else
+		notify("⚠️ Error: " .. tostring(err))
+	end
+end)
+
+--// Anti delete
+protectUI(ExecutorUI)
+
+--// Respawn fix
+Player.CharacterAdded:Connect(function()
+	task.wait(1)
+	if not Player.PlayerGui:FindFirstChild("ExecutorUI") then
+		ExecutorUI.Parent = Player:WaitForChild("PlayerGui")
+	end
+end)
+
+print("[ExecutorUI] Added)")
