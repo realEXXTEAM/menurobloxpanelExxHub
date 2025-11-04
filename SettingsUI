@@ -1,0 +1,226 @@
+--// OFF: 6031068420, ON: 6031068421
+
+local Players = game:GetService("Players")
+local Lighting = game:GetService("Lighting")
+local TweenService = game:GetService("TweenService")
+local RunService = game:GetService("RunService")
+
+local Player = Players.LocalPlayer
+local PlayerGui = Player:WaitForChild("PlayerGui")
+
+--// ScreenGui Setup
+local SettingsUI = Instance.new("ScreenGui")
+SettingsUI.Name = "SettingsUI"
+SettingsUI.ResetOnSpawn = false
+SettingsUI.ZIndexBehavior = Enum.ZIndexBehavior.Global
+SettingsUI.IgnoreGuiInset = true
+SettingsUI.Enabled = true
+SettingsUI.Parent = PlayerGui
+
+--// Main Frame
+local MainFrame = Instance.new("Frame")
+MainFrame.Parent = SettingsUI
+MainFrame.Size = UDim2.new(0, 420, 0, 350)
+MainFrame.Position = UDim2.new(0.5, -210, 0.5, -175)
+MainFrame.BackgroundColor3 = Color3.fromRGB(0, 0, 0)
+MainFrame.BackgroundTransparency = 0.2
+MainFrame.BorderSizePixel = 0
+MainFrame.Active = true
+MainFrame.Draggable = true
+
+local UICorner = Instance.new("UICorner", MainFrame)
+UICorner.CornerRadius = UDim.new(0, 12)
+
+--// Title
+local Title = Instance.new("TextLabel")
+Title.Parent = MainFrame
+Title.Size = UDim2.new(1, -40, 0, 35)
+Title.Position = UDim2.new(0, 10, 0, 5)
+Title.BackgroundTransparency = 1
+Title.Text = "⚙️ Settings"
+Title.TextColor3 = Color3.fromRGB(255, 255, 255)
+Title.TextSize = 18
+Title.Font = Enum.Font.GothamBold
+Title.TextXAlignment = Enum.TextXAlignment.Left
+
+--// Close Button
+local CloseBtn = Instance.new("TextButton")
+CloseBtn.Parent = MainFrame
+CloseBtn.Size = UDim2.new(0, 30, 0, 30)
+CloseBtn.Position = UDim2.new(1, -35, 0, 5)
+CloseBtn.BackgroundTransparency = 1
+CloseBtn.Text = "X"
+CloseBtn.TextColor3 = Color3.fromRGB(255, 255, 255)
+CloseBtn.TextSize = 18
+CloseBtn.Font = Enum.Font.GothamBold
+CloseBtn.MouseButton1Click:Connect(function()
+	SettingsUI.Enabled = false
+end)
+
+--// Scroll
+local ScrollFrame = Instance.new("ScrollingFrame")
+ScrollFrame.Parent = MainFrame
+ScrollFrame.Size = UDim2.new(1, -20, 1, -45)
+ScrollFrame.Position = UDim2.new(0, 10, 0, 40)
+ScrollFrame.BackgroundTransparency = 1
+ScrollFrame.ScrollBarThickness = 5
+ScrollFrame.CanvasSize = UDim2.new(0, 0, 0, 0)
+
+local UIListLayout = Instance.new("UIListLayout", ScrollFrame)
+UIListLayout.Padding = UDim.new(0, 8)
+
+--// Toggle Template
+local OFF_IMAGE = "rbxassetid://6031068420"
+local ON_IMAGE  = "rbxassetid://6031068421"
+
+local function CreateToggle(name, callback)
+	local Item = Instance.new("Frame")
+	Item.Size = UDim2.new(1, 0, 0, 40)
+	Item.BackgroundColor3 = Color3.fromRGB(25, 25, 25)
+	Item.BackgroundTransparency = 0.3
+	Item.Parent = ScrollFrame
+
+	local corner = Instance.new("UICorner", Item)
+	corner.CornerRadius = UDim.new(0, 8)
+
+	local Label = Instance.new("TextLabel")
+	Label.Parent = Item
+	Label.Size = UDim2.new(1, -60, 1, 0)
+	Label.Position = UDim2.new(0, 15, 0, 0)
+	Label.BackgroundTransparency = 1
+	Label.Text = name
+	Label.TextColor3 = Color3.fromRGB(255, 255, 255)
+	Label.Font = Enum.Font.Gotham
+	Label.TextSize = 15
+	Label.TextXAlignment = Enum.TextXAlignment.Left
+
+	local Toggle = Instance.new("ImageButton")
+	Toggle.Parent = Item
+	Toggle.Size = UDim2.new(0, 28, 0, 28)
+	Toggle.Position = UDim2.new(1, -45, 0.5, -14)
+	Toggle.BackgroundTransparency = 1
+	Toggle.Image = OFF_IMAGE
+
+	local state = false
+	Toggle.MouseButton1Click:Connect(function()
+		state = not state
+		TweenService:Create(Toggle, TweenInfo.new(0.16), {ImageTransparency = 1}):Play()
+		task.wait(0.08)
+		Toggle.Image = state and ON_IMAGE or OFF_IMAGE
+		TweenService:Create(Toggle, TweenInfo.new(0.16), {ImageTransparency = 0}):Play()
+		if callback then pcall(function() callback(state) end) end
+	end)
+end
+
+--// Features
+
+-- Fast Mode
+CreateToggle("⚡ Fast Mode (FPS Boost)", function(state)
+	if state then
+		settings().Rendering.QualityLevel = Enum.QualityLevel.Level01
+		Lighting.GlobalShadows = false
+		Lighting.FogEnd = 999999
+	else
+		settings().Rendering.QualityLevel = Enum.QualityLevel.Automatic
+		Lighting.GlobalShadows = true
+		Lighting.FogEnd = 1000
+	end
+end)
+
+-- Night Mode
+CreateToggle("🌙 Night Mode", function(state)
+	if state then
+		Lighting.Brightness = 0.2
+		Lighting.ClockTime = 0
+		Lighting.Ambient = Color3.fromRGB(50, 50, 70)
+	else
+		Lighting.Brightness = 2
+		Lighting.ClockTime = 14
+		Lighting.Ambient = Color3.fromRGB(255, 255, 255)
+	end
+end)
+
+-- Smooth Camera
+CreateToggle("🎥 Only Frist Person", function(state)
+	pcall(function()
+		Player.CameraMode = state and Enum.CameraMode.LockFirstPerson or Enum.CameraMode.Classic
+	end)
+end)
+
+-- Particle Effects
+CreateToggle("✨ Particle Effects [COMING SOON]", function(state)
+	for _, d in ipairs(workspace:GetDescendants()) do
+		if d:IsA("ParticleEmitter") or d:IsA("Trail") then
+			d.Enabled = state
+		end
+	end
+end)
+
+-- Background Music
+local music = Instance.new("Sound", SoundService)
+music.SoundId = "rbxassetid://178353513"
+music.Looped = true
+music.Volume = 0.5
+
+CreateToggle("(NEW) 🎵 Music Background", function(state)
+	if state then music:Play() else music:Stop() end
+end)
+
+
+-- Auto Reconnect
+CreateToggle("🔁 Auto Reconnect", function(state)
+	getgenv().AutoReconnect = state
+	if state then
+		coroutine.wrap(function()
+			while getgenv().AutoReconnect do
+				task.wait(5)
+				if not game:IsLoaded() then
+					game:GetService("TeleportService"):Teleport(game.PlaceId, Player)
+				end
+			end
+		end)()
+	end
+end)
+
+-- Player Outline
+CreateToggle("🧍 Player Outline", function(state)
+	for _, plr in pairs(Players:GetPlayers()) do
+		if plr.Character then
+			local hl = plr.Character:FindFirstChildOfClass("Highlight")
+			if state then
+				if not hl then
+					local newHl = Instance.new("Highlight", plr.Character)
+					newHl.FillTransparency = 1
+					newHl.OutlineColor = Color3.fromRGB(0, 255, 255)
+				end
+			else
+				if hl then hl:Destroy() end
+			end
+		end
+	end
+end)
+
+
+-- Big Jump Button
+CreateToggle("🦘 Big Jump Button", function(state)
+	local jump = PlayerGui:FindFirstChild("TouchGui")
+	if jump and jump:FindFirstChild("TouchControlFrame") then
+		local jb = jump.TouchControlFrame:FindFirstChild("JumpButton")
+		if jb then
+			if state then
+				jb.Size = UDim2.new(0, 150, 0, 150)
+				jb.Position = UDim2.new(1, -180, 1, -180)
+			else
+				jb.Size = UDim2.new(0, 70, 0, 70)
+				jb.Position = UDim2.new(1, -100, 1, -100)
+			end
+		end
+	end
+end)
+
+-- Scroll Auto Adjust
+UIListLayout:GetPropertyChangedSignal("AbsoluteContentSize"):Connect(function()
+	ScrollFrame.CanvasSize = UDim2.new(0, 0, 0, UIListLayout.AbsoluteContentSize.Y + 10)
+end)
+
+print("[SettingsUI] Added)")
