@@ -14,7 +14,7 @@ SettingsUI.Name = "SettingsUI"
 SettingsUI.ResetOnSpawn = false
 SettingsUI.ZIndexBehavior = Enum.ZIndexBehavior.Global
 SettingsUI.IgnoreGuiInset = true
-SettingsUI.Enabled = true
+SettingsUI.Enabled = false
 SettingsUI.Parent = PlayerGui
 
 --// Main Frame
