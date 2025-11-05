@@ -13,7 +13,7 @@ screenGui.Name = "ToolsUI"
 screenGui.IgnoreGuiInset = true
 screenGui.ResetOnSpawn = false
 screenGui.Parent = playerGui
-screenGui.Enabled = true
+screenGui.Enabled = false
 
 -- Frame utama
 local frame = Instance.new("Frame")
