@@ -1,0 +1,245 @@
+local Players = game:GetService("Players")
+local player = Players.LocalPlayer
+local playerGui = player:WaitForChild("PlayerGui")
+local StarterGui = game:GetService("StarterGui")
+
+if playerGui:FindFirstChild("DonateUI") then
+	playerGui.DonateUI:Destroy()
+end
+
+local screenGui = Instance.new("ScreenGui")
+screenGui.Name = "DonateUI"
+screenGui.IgnoreGuiInset = true
+screenGui.ResetOnSpawn = false
+screenGui.Enabled = false
+screenGui.Parent = playerGui
+
+--// Data Gamepass
+local gamepasses = {
+	{price = 5, url = "https://www.roblox.com/game-pass/1572015844/5"},
+	{price = 50, url = "https://www.roblox.com/game-pass/1571733882/50"},
+	{price = 80, url = "https://www.roblox.com/game-pass/1568910061/80"},
+	{price = 100, url = "https://www.roblox.com/game-pass/1573180451/100"},
+	{price = 150, url = "https://www.roblox.com/game-pass/1569148476/150"},
+	{price = 180, url = "https://www.roblox.com/game-pass/1569302285/180"},
+	{price = 200, url = "https://www.roblox.com/game-pass/1571613893/200"},
+	{price = 250, url = "https://www.roblox.com/game-pass/1572604593/250"},
+	{price = 300, url = "https://www.roblox.com/game-pass/1571781801/300"},
+	{price = 400, url = "https://www.roblox.com/game-pass/1572518615/400"},
+	{price = 500, url = "https://www.roblox.com/game-pass/1569160411/500"},
+	{price = 1000, url = "https://www.roblox.com/game-pass/1573248467/1000"},
+}
+
+--// Dummy Top Donate (DisplayName + Username)
+local topDonate = {
+	{display = "xxx", user = "xxx", robux = 0},
+	{display = "xxx", user = "xxx", robux = 0},
+	{display = "xxx", user = "xxx", robux = 0},
+}
+
+local function notify(title, text)
+	pcall(function()
+		game:GetService("StarterGui"):SetCore("SendNotification", {
+			Title = title,
+			Text = text,
+			Duration = 3
+		})
+	end)
+end
+
+local function copy(txt)
+	if setclipboard then
+		setclipboard(txt)
+		notify("✅ Disalin", "Link donasi berhasil disalin!")
+	else
+		notify("⚠️ Clipboard", "Executor tidak support.")
+	end
+end
+
+--// Frame utama
+local frame = Instance.new("Frame")
+frame.Size = UDim2.new(0, 340, 0, 280)
+frame.Position = UDim2.new(0.5, -170, 0.5, -140)
+frame.BackgroundColor3 = Color3.fromRGB(0, 0, 0)
+frame.BackgroundTransparency = 0.25
+frame.BorderSizePixel = 0
+frame.Parent = screenGui
+Instance.new("UICorner", frame).CornerRadius = UDim.new(0, 10)
+
+--// Header
+local title = Instance.new("TextLabel", frame)
+title.Size = UDim2.new(1, -40, 0, 26)
+title.Position = UDim2.new(0, 12, 0, 6)
+title.BackgroundTransparency = 1
+title.Font = Enum.Font.GothamBold
+title.TextSize = 18
+title.TextColor3 = Color3.new(1, 1, 1)
+title.Text = "💰 Donate Menu"
+title.TextXAlignment = Enum.TextXAlignment.Left
+
+local close = Instance.new("TextButton", frame)
+close.Size = UDim2.new(0, 24, 0, 24)
+close.Position = UDim2.new(1, -32, 0, 6)
+close.BackgroundColor3 = Color3.fromRGB(0, 0, 0)
+close.BackgroundTransparency = 0.5
+close.Font = Enum.Font.GothamBold
+close.Text = "X"
+close.TextSize = 16
+close.TextColor3 = Color3.new(1, 1, 1)
+close.BorderSizePixel = 0
+Instance.new("UICorner", close).CornerRadius = UDim.new(0, 6)
+close.MouseButton1Click:Connect(function()
+	screenGui.Enabled = false
+end)
+
+--// Tabs
+local tabFrame = Instance.new("Frame", frame)
+tabFrame.Size = UDim2.new(1, -20, 0, 30)
+tabFrame.Position = UDim2.new(0, 10, 0, 36)
+tabFrame.BackgroundTransparency = 1
+
+local donateTab = Instance.new("TextButton", tabFrame)
+donateTab.Size = UDim2.new(0.5, -5, 1, 0)
+donateTab.Text = "💸 Donate"
+donateTab.Font = Enum.Font.GothamBold
+donateTab.TextSize = 15
+donateTab.BackgroundColor3 = Color3.fromRGB(0, 255, 120)
+donateTab.TextColor3 = Color3.new(0, 0, 0)
+donateTab.BorderSizePixel = 0
+Instance.new("UICorner", donateTab).CornerRadius = UDim.new(0, 8)
+
+local topTab = Instance.new("TextButton", tabFrame)
+topTab.Size = UDim2.new(0.5, -5, 1, 0)
+topTab.Position = UDim2.new(0.5, 5, 0, 0)
+topTab.Text = "👑 Top Donate"
+topTab.Font = Enum.Font.GothamBold
+topTab.TextSize = 15
+topTab.BackgroundColor3 = Color3.fromRGB(40, 40, 40)
+topTab.TextColor3 = Color3.new(1, 1, 1)
+topTab.BorderSizePixel = 0
+Instance.new("UICorner", topTab).CornerRadius = UDim.new(0, 8)
+
+--// Donate Page
+local donatePage = Instance.new("ScrollingFrame", frame)
+donatePage.Size = UDim2.new(1, -20, 1, -80)
+donatePage.Position = UDim2.new(0, 10, 0, 70)
+donatePage.BackgroundTransparency = 1
+donatePage.ScrollBarThickness = 6
+donatePage.CanvasSize = UDim2.new(0, 0, 0, #gamepasses * 42)
+local listLayout = Instance.new("UIListLayout", donatePage)
+listLayout.Padding = UDim.new(0, 4)
+listLayout.SortOrder = Enum.SortOrder.LayoutOrder
+
+for _, data in ipairs(gamepasses) do
+	local item = Instance.new("Frame", donatePage)
+	item.Size = UDim2.new(1, 0, 0, 36)
+	item.BackgroundColor3 = Color3.fromRGB(15, 15, 15)
+	item.BackgroundTransparency = 0.4
+	Instance.new("UICorner", item).CornerRadius = UDim.new(0, 6)
+
+	local label = Instance.new("TextLabel", item)
+	label.Size = UDim2.new(1, -120, 1, 0)
+	label.Position = UDim2.new(0, 8, 0, 0)
+	label.BackgroundTransparency = 1
+	label.Font = Enum.Font.Gotham
+	label.TextSize = 13
+	label.TextColor3 = Color3.new(1, 1, 1)
+	label.Text = "💸 " .. data.price .. " Robux"
+	label.TextXAlignment = Enum.TextXAlignment.Left
+
+	local btn = Instance.new("TextButton", item)
+	btn.Size = UDim2.new(0, 80, 0, 24)
+	btn.Position = UDim2.new(1, -90, 0.5, -12)
+	btn.BackgroundColor3 = Color3.fromRGB(0, 255, 100)
+	btn.BackgroundTransparency = 0.4
+	btn.Font = Enum.Font.GothamBold
+	btn.Text = "Donate"
+	btn.TextColor3 = Color3.new(0, 0, 0)
+	btn.TextSize = 13
+	btn.BorderSizePixel = 0
+	Instance.new("UICorner", btn).CornerRadius = UDim.new(0, 6)
+	btn.MouseButton1Click:Connect(function()
+		copy(data.url)
+	end)
+end
+
+--// Top Donate Page
+local topPage = Instance.new("ScrollingFrame", frame)
+topPage.Size = UDim2.new(1, -20, 1, -80)
+topPage.Position = UDim2.new(0, 10, 0, 70)
+topPage.BackgroundTransparency = 1
+topPage.ScrollBarThickness = 6
+topPage.Visible = false
+local topList = Instance.new("UIListLayout", topPage)
+topList.Padding = UDim.new(0, 6)
+topList.SortOrder = Enum.SortOrder.LayoutOrder
+
+for i, data in ipairs(topDonate) do
+	local item = Instance.new("Frame", topPage)
+	item.Size = UDim2.new(1, 0, 0, 80)
+	item.BackgroundColor3 = Color3.fromRGB(15, 15, 15)
+	item.BackgroundTransparency = 0.3
+	Instance.new("UICorner", item).CornerRadius = UDim.new(0, 8)
+
+	local rank = Instance.new("TextLabel", item)
+	rank.Size = UDim2.new(0, 40, 1, 0)
+	rank.BackgroundTransparency = 1
+	rank.Font = Enum.Font.GothamBold
+	rank.TextSize = 18
+	rank.TextColor3 = Color3.fromRGB(255, 215, 0)
+	rank.Text = "#" .. i
+
+	local avatar = Instance.new("ImageLabel", item)
+	avatar.Size = UDim2.new(0, 55, 0, 55)
+	avatar.Position = UDim2.new(0, 40, 0.5, -27)
+	avatar.BackgroundTransparency = 1
+	avatar.Image = "https://www.roblox.com/headshot-thumbnail/image?userName="..data.user.."&width=180&height=180&format=png"
+
+	local displayName = Instance.new("TextLabel", item)
+	displayName.Size = UDim2.new(1, -180, 0, 26)
+	displayName.Position = UDim2.new(0, 105, 0, 12)
+	displayName.BackgroundTransparency = 1
+	displayName.Font = Enum.Font.GothamBold
+	displayName.TextSize = 15
+	displayName.TextColor3 = Color3.new(1, 1, 1)
+	displayName.TextXAlignment = Enum.TextXAlignment.Left
+	displayName.Text = data.display
+
+	local username = Instance.new("TextLabel", item)
+	username.Size = UDim2.new(1, -180, 0, 18)
+	username.Position = UDim2.new(0, 105, 0, 36)
+	username.BackgroundTransparency = 1
+	username.Font = Enum.Font.Gotham
+	username.TextSize = 13
+	username.TextColor3 = Color3.fromRGB(150, 150, 150)
+	username.TextXAlignment = Enum.TextXAlignment.Left
+	username.Text = "@" .. data.user
+
+	local robux = Instance.new("TextLabel", item)
+	robux.Size = UDim2.new(0, 80, 1, 0)
+	robux.Position = UDim2.new(1, -85, 0, 0)
+	robux.BackgroundTransparency = 1
+	robux.Font = Enum.Font.GothamBold
+	robux.TextSize = 14
+	robux.TextColor3 = Color3.fromRGB(0, 255, 100)
+	robux.Text = " " .. data.robux
+end
+
+--// Tab Switch
+donateTab.MouseButton1Click:Connect(function()
+	donateTab.BackgroundColor3 = Color3.fromRGB(0,255,120)
+	donateTab.TextColor3 = Color3.new(0,0,0)
+	topTab.BackgroundColor3 = Color3.fromRGB(40,40,40)
+	topTab.TextColor3 = Color3.new(1,1,1)
+	donatePage.Visible = true
+	topPage.Visible = false
+end)
+
+topTab.MouseButton1Click:Connect(function()
+	topTab.BackgroundColor3 = Color3.fromRGB(0,255,120)
+	topTab.TextColor3 = Color3.new(0,0,0)
+	donateTab.BackgroundColor3 = Color3.fromRGB(40,40,40)
+	donateTab.TextColor3 = Color3.new(1,1,1)
+	donatePage.Visible = false
+	topPage.Visible = true
+end)
