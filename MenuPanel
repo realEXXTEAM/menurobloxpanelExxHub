@@ -73,7 +73,7 @@ mainCorner.Parent = mainFrame
 --// Scrolling Menu
 local scroll = Instance.new("ScrollingFrame")
 scroll.Size = UDim2.new(1,0,1,0)
-scroll.CanvasSize = UDim2.new(0,0,0,310)
+scroll.CanvasSize = UDim2.new(0,0,0,0) -- auto update nanti
 scroll.ScrollBarThickness = 4
 scroll.BackgroundTransparency = 1
 scroll.ZIndex = 9998
@@ -84,8 +84,10 @@ local menuItems = {
 	{Text="Executor", Icon="rbxassetid://6031075938"},
 	{Text="Script", Icon="rbxassetid://122385028196411"},
 	{Text="Music", Icon="rbxassetid://95034182657328"},
- {Text="Settings", Icon="rbxassetid://6034509993"},
-	{Text="Tools", Icon="rbxassetid://116981916797533"},	 {Text="Donate", Icon="rbxassetid://6031097227"}, {Text="TPplayers", Icon="rbxassetid://80278360213440"},
+	{Text="Settings", Icon="rbxassetid://6034509993"},
+	{Text="Tools", Icon="rbxassetid://116981916797533"},
+	{Text="Donate", Icon="rbxassetid://6031097227"},
+	{Text="TPplayers", Icon="rbxassetid://80278360213440"},
 }
 
 local opened = false
@@ -128,10 +130,18 @@ toggleButton.MouseButton1Click:Connect(function()
 	toggleMenu(not opened)
 end)
 
+-- daftar nama UI valid
+local validUI = {}
+for _, item in ipairs(menuItems) do
+	validUI[item.Text.."UI"] = true
+end
+
+-- bikin tombol dan auto-update scroll height
+local itemHeight, padding = 45, 5
 for i, item in ipairs(menuItems) do
 	local btn = Instance.new("TextButton")
 	btn.Size = UDim2.new(1,-10,0,40)
-	btn.Position = UDim2.new(0,5,0,(i-1)*45)
+	btn.Position = UDim2.new(0,5,0,(i-1)*itemHeight)
 	btn.BackgroundColor3 = Color3.fromRGB(35,35,35)
 	btn.BackgroundTransparency = 0.9
 	btn.Text = ""
@@ -173,9 +183,9 @@ for i, item in ipairs(menuItems) do
 		local playerGui = Player:WaitForChild("PlayerGui")
 		local ui = playerGui:FindFirstChild(item.Text.."UI")
 
-		-- auto close semua UI lain
+		-- cuma close UI dari menu list
 		for _, v in pairs(playerGui:GetChildren()) do
-			if v:IsA("ScreenGui") and v.Name:match("UI$") and v ~= ui then
+			if v:IsA("ScreenGui") and validUI[v.Name] and v ~= ui then
 				v.Enabled = false
 			end
 		end
@@ -187,7 +197,9 @@ for i, item in ipairs(menuItems) do
 			warn(item.Text.."UI not found!")
 		end
 
-		-- 🔥 auto close popup setelah klik menu
 		toggleMenu(false)
 	end)
 end
+
+-- 🧠 Auto update CanvasSize biar scroll sesuai jumlah menu
+scroll.CanvasSize = UDim2.new(0, 0, 0, (#menuItems * itemHeight) + padding)
