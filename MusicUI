@@ -8,7 +8,7 @@ MusicUI.Name = "MusicUI"
 MusicUI.ResetOnSpawn = false
 MusicUI.ZIndexBehavior = Enum.ZIndexBehavior.Global
 MusicUI.IgnoreGuiInset = true
-MusicUI.Enabled = false
+MusicUI.Enabled = true
 MusicUI.Parent = Player:WaitForChild("PlayerGui")
 
 --// Main Frame
@@ -115,10 +115,50 @@ local Next = newButton(Controls, "⏭", 0.66)
 local Songs = {
 	{Name = "Breakdutch Vip", SoundId = "rbxassetid://82162714102729"},
 	{Name = "DJ CINNAMON GIRL", SoundId = "rbxassetid://135018311294635"},
-	{Name = "Future Bass", SoundId = "rbxassetid://1843586978"},
-	{Name = "Peaceful Sky", SoundId = "rbxassetid://1839251115"},
-	{Name = "Adventure Tune", SoundId = "rbxassetid://1840865027"},
-	{Name = "Night Drive", SoundId = "rbxassetid://1840741427"},
+	{Name = "Kopi Lambada", SoundId = "rbxassetid://110949419969810"},
+	{Name = "Tabola bale", SoundId = "rbxassetid://104207837699519"},
+	{Name = "Dola Dola", SoundId = "rbxassetid://139590201617508"}, 
+   {Name = "Cikini", SoundId = "rbxassetid://122665842844850"},
+	{Name = "Remix Party Malam", SoundId = "rbxassetid://88691296316236"},
+	{Name = "Suatu Sempurna", SoundId = "rbxassetid://102375459192743"},
+	{Name = "Emang Gua Pikirin", SoundId = "rbxassetid://110651286181267"},
+	{Name = "Pacar Tetanggaku", SoundId = "rbxassetid://90593758589409"},
+	{Name = "Sayang Culik Aku Dong", SoundId = "rbxassetid://119254319180287"},
+	{Name = "Kangen Banget", SoundId = "rbxassetid://106291412410472"},
+	{Name = "Remix Kamnh", SoundId = "rbxassetid://130721206402716"},
+	{Name = "Aku Bete Sama Kamu", SoundId = "rbxassetid://83817418053316"},
+	{Name = "DJ CEMBURU", SoundId = "rbxassetid://134090638788064"},
+	{Name = "PHONK MUSIC #1", SoundId = "rbxassetid://131532804085254"},
+	{Name = "Aku Tetap Cinta", SoundId = "rbxassetid://138399521757966"},
+	{Name = "Rasa Yang Tertinggal", SoundId = "rbxassetid://91195881581393"},
+	{Name = "Hello - OMFG", SoundId = "rbxassetid://110788401793874"},
+	{Name = "SlideBack", SoundId = "rbxassetid://137173091934040"},
+	{Name = "Cats - The Living Tombstone", SoundId = "rbxassetid://72445893263216"},
+	{Name = "Undown - Stray.wav", SoundId = "rbxassetid://120102995443063"},
+	{Name = "Kamu Kangen Ga sih", SoundId = "rbxassetid://106291412410472"},
+	{Name = "Do you love me the darkness", SoundId = "rbxassetid://81917604745938"},
+	{Name = "Rage", SoundId = "rbxassetid://117409989419855"},
+	{Name = "Rage 2", SoundId = "rbxassetid://110103383500673"},
+	{Name = "Rage 3", SoundId = "rbxassetid://91829387390742"},
+	{Name = "Rage 4", SoundId = "rbxassetid://119905553060804"},
+	{Name = "Hanya UntukMu", SoundId = "rbxassetid://84679740216765"},
+	{Name = "Cinta Pertama", SoundId = "rbxassetid://105563365661048"},
+	{Name = "Selamanya", SoundId = "rbxassetid://83227341655780"},
+	{Name = "Bangkit", SoundId = "rbxassetid://135825408597541"},
+	{Name = "Cinta Abadi", SoundId = "rbxassetid://96159173961268"},
+	{Name = "DJ Ayy", SoundId = "rbxassetid://90145710334449"},	
+   {Name = "DJ Aww", SoundId = "rbxassetid://118390472006859"},	
+   {Name = "Galau yaa", SoundId = "rbxassetid://125435502614158"},	
+   {Name = "Wake Up", SoundId = "rbxassetid://116358628732093"},	
+   {Name = "Drop no lie", SoundId = "rbxassetid://97212310868241"},	
+   {Name = "Drop Cing Cing", SoundId = "rbxassetid://82680101995105"},	
+   {Name = "Pergi Aja", SoundId = "rbxassetid://133150020025150"},	
+   {Name = "Lu aja", SoundId = "rbxassetid://90579963604706"},
+	{Name = "DJ SHAKER", SoundId = "rbxassetid://118390472006859"},
+	{Name = "Better Of Alone", SoundId = "rbxassetid://70610714752993"},
+	{Name = "Coba-Coba Jalanin Dulu", SoundId = "rbxassetid://77533933904801"},
+	{Name = "Bad Apple", SoundId = "rbxassetid://123572020022002"},
+	{Name = "大張偉 Wowkie Zhang【陽光彩虹小白馬】", SoundId = "rbxassetid://135166437319252"},
 }
 
 local currentIndex = nil
@@ -223,5 +263,3 @@ Prev.MouseButton1Click:Connect(function()
 	if currentIndex < 1 then currentIndex = #Songs end
 	playSong(currentIndex)
 end)
-
-print("[MusicUI] Added)")
