@@ -89,6 +89,7 @@ local scripts = {
 	{title = "Gravity Hub – Blox Fruits Script (NO KEY)", image = "rbxassetid://74112110564196", text = "loadstring(game:HttpGet('https://raw.githubusercontent.com/Dev-GravityHub/BloxFruit/refs/heads/main/Main.lua'))()"},
 	{title = "Teddy Hub - Blox Fruit's Script (NO KEY)", image = "rbxassetid://74112110564196", text = "loadstring(game:HttpGet('https://pastefy.app/FnTSKXtt/raw'))()"},
 	{title = "Quantum Hub - Blox Fruit's Script (NO KEY)", image = "rbxassetid://74112110564196", text = "loadstring(game:HttpGet('https://raw.githubusercontent.com/flazhy/QuantumOnyx/refs/heads/main/QuantumOnyx.lua'))()"},
+	{title = "Ego Hub - Blox Fruit's Script (NO KEY)", image = "rbxassetid://74112110564196", text = "loadstring(game:HttpGet('https://pastefy.app/gU8wlEbc/raw'))()"},
 }
 
 --// Function to Create Card
