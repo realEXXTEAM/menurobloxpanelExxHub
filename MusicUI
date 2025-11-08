@@ -8,7 +8,7 @@ MusicUI.Name = "MusicUI"
 MusicUI.ResetOnSpawn = false
 MusicUI.ZIndexBehavior = Enum.ZIndexBehavior.Global
 MusicUI.IgnoreGuiInset = true
-MusicUI.Enabled = false
+MusicUI.Enabled = true
 MusicUI.Parent = Player:WaitForChild("PlayerGui")
 
 --// Main Frame
@@ -129,6 +129,7 @@ local Songs = {
 	{Name = "Aku Bete Sama Kamu", SoundId = "rbxassetid://83817418053316"},
 	{Name = "DJ CEMBURU", SoundId = "rbxassetid://134090638788064"},
 	{Name = "PHONK MUSIC #1", SoundId = "rbxassetid://131532804085254"},
+	{Name = "PHONK MUSIC (TOMA TOMA)#2", SoundId = "rbxassetid://129098116998483"},
 	{Name = "Aku Tetap Cinta", SoundId = "rbxassetid://138399521757966"},
 	{Name = "Rasa Yang Tertinggal", SoundId = "rbxassetid://91195881581393"},
 	{Name = "Hello - OMFG", SoundId = "rbxassetid://110788401793874"},
@@ -159,6 +160,15 @@ local Songs = {
 	{Name = "Coba-Coba Jalanin Dulu", SoundId = "rbxassetid://77533933904801"},
 	{Name = "Bad Apple", SoundId = "rbxassetid://123572020022002"},
 	{Name = "大張偉 Wowkie Zhang【陽光彩虹小白馬】", SoundId = "rbxassetid://135166437319252"},
+	{Name = "jamilah Bukan AnuNya Aisyah (DJ FUNKOT)", SoundId = "rbxassetid://116255319981650"},
+	{Name = "Pargoy Cenat Cenut (DJ FUNKOT)", SoundId = "rbxassetid://111530724718992"},
+	{Name = "DJ MEXICO KING (DJ FUNKOT)", SoundId = "rbxassetid://101608805472261"},
+	{Name = "NAME", SoundId = "rbxassetid://105935548669522"},
+	{Name = "NAME", SoundId = "rbxassetid://101419525809543"},
+	{Name = "NAME", SoundId = "rbxassetid://70860648654984"},
+	{Name = "NAME", SoundId = "rbxassetid://127548536837903"},
+	{Name = "NAME", SoundId = "rbxassetid://136842585273816"},
+	{Name = "NAME", SoundId = "rbxassetid://71524249419499"},
 }
 
 local currentIndex = nil
