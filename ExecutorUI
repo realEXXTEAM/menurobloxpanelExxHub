@@ -21,16 +21,16 @@ ExecutorUI.Name = "ExecutorUI"
 ExecutorUI.ResetOnSpawn = false
 ExecutorUI.ZIndexBehavior = Enum.ZIndexBehavior.Global
 ExecutorUI.IgnoreGuiInset = true
-ExecutorUI.Enabled = false
+ExecutorUI.Enabled = true
 ExecutorUI.Parent = Player:WaitForChild("PlayerGui")
 
---// Frame utama
+--// Frame Utama
 local bg = Instance.new("Frame")
 bg.Size = UDim2.new(0, 520, 0, 300)
 bg.AnchorPoint = Vector2.new(0.5, 0.5)
 bg.Position = UDim2.new(0.5, 0, 0.5, 0)
 bg.BackgroundColor3 = Color3.fromRGB(20, 20, 25)
-bg.BackgroundTransparency = 1 -- start invisible
+bg.BackgroundTransparency = 0.2
 bg.BorderSizePixel = 0
 bg.Parent = ExecutorUI
 
@@ -60,6 +60,10 @@ closeBtn.Font = Enum.Font.GothamBold
 closeBtn.TextSize = 18
 closeBtn.TextColor3 = Color3.new(1, 1, 1)
 closeBtn.Parent = bg
+
+closeBtn.MouseButton1Click:Connect(function()
+	ExecutorUI.Enabled = false
+end)
 
 --// Scrolling Frame (scroll kanan & bawah)
 local scroll = Instance.new("ScrollingFrame")
@@ -101,7 +105,7 @@ runBtn.AnchorPoint = Vector2.new(0.5, 1)
 runBtn.Position = UDim2.new(0.5, 0, 1, -15)
 runBtn.BackgroundColor3 = Color3.fromRGB(45, 45, 60)
 runBtn.BackgroundTransparency = 0.2
-runBtn.Image = "rbxassetid://6031097227" -- ▶️ icon
+runBtn.Image = "rbxassetid://12099513379" -- ▶️
 runBtn.ImageColor3 = Color3.fromRGB(180, 180, 255)
 runBtn.Parent = bg
 
@@ -136,6 +140,7 @@ end
 
 -- Tombol Run action
 runBtn.MouseButton1Click:Connect(function()
+	-- bubble anim
 	local tweenIn = TweenService:Create(runBtn, TweenInfo.new(0.1), {Size = UDim2.new(0, 65, 0, 65)})
 	local tweenOut = TweenService:Create(runBtn, TweenInfo.new(0.1), {Size = UDim2.new(0, 55, 0, 55)})
 	tweenIn:Play()
@@ -144,60 +149,16 @@ runBtn.MouseButton1Click:Connect(function()
 
 	local code = input.Text
 	if code == "" or code:match("^%s*$") or code == "-- Paste your script here" then
-		notify("⚠️ Paste You Script Bro")
+		notify("⚠️ Masukin script dulu bro!")
 		return
 	end
 
 	local func, err = loadstring(code)
 	if func then
-		notify("✅ Run Script Succes")
+		notify("✅ Script berhasil dijalankan!")
 		task.spawn(func)
 	else
 		notify("⚠️ Error: "..tostring(err))
-	end
-end)
-
---// Fade Animation (buka/tutup)
-local function fadeIn()
-	bg.BackgroundTransparency = 1
-	for _, v in pairs(bg:GetDescendants()) do
-		if v:IsA("TextLabel") or v:IsA("TextButton") or v:IsA("TextBox") or v:IsA("ImageButton") then
-			v.TextTransparency = 1
-			v.ImageTransparency = 1
-		end
-	end
-	ExecutorUI.Enabled = true
-	TweenService:Create(bg, TweenInfo.new(0.25), {BackgroundTransparency = 0.2}):Play()
-	for _, v in pairs(bg:GetDescendants()) do
-		if v:IsA("TextLabel") or v:IsA("TextButton") then
-			TweenService:Create(v, TweenInfo.new(0.25), {TextTransparency = 0}):Play()
-		elseif v:IsA("ImageButton") then
-			TweenService:Create(v, TweenInfo.new(0.25), {ImageTransparency = 0}):Play()
-		end
-	end
-end
-
-local function fadeOut()
-	local tween = TweenService:Create(bg, TweenInfo.new(0.25), {BackgroundTransparency = 1})
-	tween:Play()
-	for _, v in pairs(bg:GetDescendants()) do
-		if v:IsA("TextLabel") or v:IsA("TextButton") then
-			TweenService:Create(v, TweenInfo.new(0.25), {TextTransparency = 1}):Play()
-		elseif v:IsA("ImageButton") then
-			TweenService:Create(v, TweenInfo.new(0.25), {ImageTransparency = 1}):Play()
-		end
-	end
-	tween.Completed:Wait()
-	ExecutorUI.Enabled = false
-end
-
--- Tombol X buat fade-out
-closeBtn.MouseButton1Click:Connect(fadeOut)
-
---// Open Animation test event
-ExecutorUI:GetPropertyChangedSignal("Enabled"):Connect(function()
-	if ExecutorUI.Enabled then
-		fadeIn()
 	end
 end)
 
