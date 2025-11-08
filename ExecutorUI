@@ -150,13 +150,13 @@ runBtn.MouseButton1Click:Connect(function()
 	local code = input.Text
 
 	if code == "" or code:match("^%s*$") or code == "-- Paste your script here" then
-		notify("⚠️ Masukkan script dulu bro!")
+		notify("⚠️ Enter Your Script Bro!")
 		return
 	end
 
 	local func, err = loadstring(code)
 	if func then
-		notify("✅ Script berhasil dijalankan!")
+		notify("✅ Run Script Succes")
 		task.spawn(func)
 	else
 		notify("⚠️ Error: " .. tostring(err))
@@ -173,5 +173,3 @@ Player.CharacterAdded:Connect(function()
 		ExecutorUI.Parent = Player:WaitForChild("PlayerGui")
 	end
 end)
-
-print("[ExecutorUI] Added)")
