@@ -46,7 +46,7 @@ local searchBox = Instance.new("TextBox")
 searchBox.PlaceholderText = "Search..."
 searchBox.Text = ""
 searchBox.Size = UDim2.new(0, 240, 0, 32)
-searchBox.Position = UDim2.new(0.5, -120, 0, 15)
+searchBox.Position = UDim2.new(0.5, 5, 0, 15)
 searchBox.AnchorPoint = Vector2.new(0.5, 0)
 searchBox.Font = Enum.Font.Gotham
 searchBox.TextSize = 16
@@ -87,7 +87,8 @@ uiPadding.Parent = listFrame
 --// Example Data
 local scripts = {
 	{title = "Gravity Hub – Blox Fruits Script (NO KEY)", image = "rbxassetid://74112110564196", text = "loadstring(game:HttpGet('https://raw.githubusercontent.com/Dev-GravityHub/BloxFruit/refs/heads/main/Main.lua'))()"},
-	{title = "Teddy Hub - Blox Fruit's (NO KEY)", image = "rbxassetid://74112110564196", text = "loadstring(game:HttpGet('https://pastefy.app/FnTSKXtt/raw'))()"},
+	{title = "Teddy Hub - Blox Fruit's Script (NO KEY)", image = "rbxassetid://74112110564196", text = "loadstring(game:HttpGet('https://pastefy.app/FnTSKXtt/raw'))()"},
+	{title = "Quantum Hub - Blox Fruit's Script (NO KEY)", image = "rbxassetid://74112110564196", text = "loadstring(game:HttpGet('https://raw.githubusercontent.com/flazhy/QuantumOnyx/refs/heads/main/QuantumOnyx.lua'))()"},
 }
 
 --// Function to Create Card
