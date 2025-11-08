@@ -32,7 +32,7 @@ local gamepasses = {
 
 --// Dummy Top Donate (DisplayName + Username)
 local topDonate = {
-	{display = "xxx", user = "xxx", robux = 0},
+	{display = "TheNameWen", user = "YuwenLai", robux = 5},
 	{display = "xxx", user = "xxx", robux = 0},
 	{display = "xxx", user = "xxx", robux = 0},
 }
