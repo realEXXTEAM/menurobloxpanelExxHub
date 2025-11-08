@@ -8,7 +8,7 @@ MusicUI.Name = "MusicUI"
 MusicUI.ResetOnSpawn = false
 MusicUI.ZIndexBehavior = Enum.ZIndexBehavior.Global
 MusicUI.IgnoreGuiInset = true
-MusicUI.Enabled = true
+MusicUI.Enabled = false
 MusicUI.Parent = Player:WaitForChild("PlayerGui")
 
 --// Main Frame
