@@ -115,6 +115,7 @@ local Next = newButton(Controls, "⏭", 0.66)
 local Songs = {
 	{Name = "Breakdutch Vip", SoundId = "rbxassetid://82162714102729"},
 	{Name = "DJ CINNAMON GIRL", SoundId = "rbxassetid://135018311294635"},
+	{Name = "Trauma (DJ SEAN)", SoundId = "rbxassetid://73339410351095"},
 	{Name = "Kopi Lambada", SoundId = "rbxassetid://110949419969810"},
 	{Name = "Tabola bale", SoundId = "rbxassetid://104207837699519"},
 	{Name = "Dola Dola", SoundId = "rbxassetid://139590201617508"}, 
@@ -163,12 +164,13 @@ local Songs = {
 	{Name = "jamilah Bukan AnuNya Aisyah (DJ FUNKOT)", SoundId = "rbxassetid://116255319981650"},
 	{Name = "Pargoy Cenat Cenut (DJ FUNKOT)", SoundId = "rbxassetid://111530724718992"},
 	{Name = "DJ MEXICO KING (DJ FUNKOT)", SoundId = "rbxassetid://101608805472261"},
-	{Name = "NAME", SoundId = "rbxassetid://105935548669522"},
-	{Name = "NAME", SoundId = "rbxassetid://101419525809543"},
-	{Name = "NAME", SoundId = "rbxassetid://70860648654984"},
-	{Name = "NAME", SoundId = "rbxassetid://127548536837903"},
-	{Name = "NAME", SoundId = "rbxassetid://136842585273816"},
-	{Name = "NAME", SoundId = "rbxassetid://71524249419499"},
+	{Name = "Fungkot Stesu Stesu (DJ FUNKOT)", SoundId = "rbxassetid://105935548669522"},
+	{Name = "DJ Ee Ee Kenceng Banget (DJ FUNKOT)", SoundId = "rbxassetid://101419525809543"},
+	{Name = "Funkot TUNG TUNG SAHUR (DJ FUNLOT)", SoundId = "rbxassetid://70860648654984"},
+	{Name = "Funkot Velocitiy (DJ FUNKOT)", SoundId = "rbxassetid://127548536837903"},
+	{Name = "Nanana Maninssu (DJ FUNKOT)", SoundId = "rbxassetid://136842585273816"},
+	{Name = "Baile Funk 1.0 (DJ FUNKOT)", SoundId = "rbxassetid://71524249419499"},
+	{Name = "strangers - Vnxious", SoundId = "rbxassetid://111068710944068"},
 }
 
 local currentIndex = nil
