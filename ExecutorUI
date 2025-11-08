@@ -1,175 +1,159 @@
 local Players = game:GetService("Players")
-local TweenService = game:GetService("TweenService")
-local StarterGui = game:GetService("StarterGui")
 local Player = Players.LocalPlayer
 
---// Protect agar tidak kehapus
-local function protectUI(gui)
-	gui.AncestryChanged:Connect(function(_, parent)
-		if not parent then
-			gui.Parent = Player:WaitForChild("PlayerGui")
-		end
-	end)
-end
+--// ScreenGui Setup
+local ScriptUI = Instance.new("ScreenGui")
+ScriptUI.Name = "ScriptUI"
+ScriptUI.ResetOnSpawn = false
+ScriptUI.ZIndexBehavior = Enum.ZIndexBehavior.Global
+ScriptUI.IgnoreGuiInset = true
+ScriptUI.Enabled = false
+ScriptUI.Parent = Player:WaitForChild("PlayerGui")
 
---// Hapus Executor lama
-local old = Player:WaitForChild("PlayerGui"):FindFirstChild("ExecutorUI")
-if old then old:Destroy() end
+--// Main Frame
+local mainFrame = Instance.new("Frame")
+mainFrame.Size = UDim2.new(0, 520, 0, 320)
+mainFrame.Position = UDim2.new(0.5, 0, 0.5, 0)
+mainFrame.AnchorPoint = Vector2.new(0.5, 0.5)
+mainFrame.BackgroundColor3 = Color3.fromRGB(0, 0, 0)
+mainFrame.BackgroundTransparency = 0.2
+mainFrame.BorderSizePixel = 0
+mainFrame.Parent = ScriptUI
+mainFrame.ClipsDescendants = true
 
---// Buat ScreenGui
-local ExecutorUI = Instance.new("ScreenGui")
-ExecutorUI.Name = "ExecutorUI"
-ExecutorUI.ResetOnSpawn = false
-ExecutorUI.ZIndexBehavior = Enum.ZIndexBehavior.Global
-ExecutorUI.IgnoreGuiInset = true
-ExecutorUI.Enabled = false
-ExecutorUI.Parent = Player:WaitForChild("PlayerGui")
+local mainCorner = Instance.new("UICorner")
+mainCorner.CornerRadius = UDim.new(0, 10)
+mainCorner.Parent = mainFrame
 
---// Frame utama
-local bg = Instance.new("Frame")
-bg.Size = UDim2.new(0, 520, 0, 300)
-bg.AnchorPoint = Vector2.new(0.5, 0.5)
-bg.Position = UDim2.new(0.5, 0, 0.5, 0)
-bg.BackgroundColor3 = Color3.fromRGB(20, 20, 25)
-bg.BackgroundTransparency = 0.2
-bg.BorderSizePixel = 0
-bg.Parent = ExecutorUI
-
-local corner = Instance.new("UICorner")
-corner.CornerRadius = UDim.new(0, 14)
-corner.Parent = bg
-
---// Title
-local title = Instance.new("TextLabel")
-title.Size = UDim2.new(1, -60, 0, 30)
-title.Position = UDim2.new(0, 20, 0, 10)
-title.BackgroundTransparency = 1
-title.Font = Enum.Font.GothamBold
-title.Text = "Executor"
-title.TextColor3 = Color3.fromRGB(255, 255, 255)
-title.TextSize = 18
-title.TextXAlignment = Enum.TextXAlignment.Left
-title.Parent = bg
-
---// Tombol Close (X)
+--// Close Button
 local closeBtn = Instance.new("TextButton")
-closeBtn.Size = UDim2.new(0, 25, 0, 25)
-closeBtn.Position = UDim2.new(1, -35, 0, 8)
-closeBtn.BackgroundTransparency = 1
 closeBtn.Text = "X"
 closeBtn.Font = Enum.Font.GothamBold
-closeBtn.TextSize = 18
-closeBtn.TextColor3 = Color3.new(1, 1, 1)
-closeBtn.Parent = bg
+closeBtn.TextScaled = true
+closeBtn.TextColor3 = Color3.fromRGB(255, 255, 255)
+closeBtn.BackgroundTransparency = 1
+closeBtn.Size = UDim2.new(0, 30, 0, 30)
+closeBtn.Position = UDim2.new(1, -35, 0, 5)
+closeBtn.ZIndex = 5
+closeBtn.Parent = mainFrame
 
 closeBtn.MouseButton1Click:Connect(function()
-	ExecutorUI.Enabled = false -- toggle disable GUI
+	ScriptUI.Enabled = false
 end)
 
---// Scroll area
-local scroll = Instance.new("ScrollingFrame")
-scroll.Size = UDim2.new(1, -40, 1, -90)
-scroll.Position = UDim2.new(0, 20, 0, 45)
-scroll.BackgroundColor3 = Color3.fromRGB(15, 15, 20)
-scroll.BackgroundTransparency = 0.3
-scroll.ScrollBarThickness = 6
-scroll.ScrollingDirection = Enum.ScrollingDirection.XY
-scroll.AutomaticCanvasSize = Enum.AutomaticSize.XY
-scroll.CanvasSize = UDim2.new(0, 0, 0, 0)
-scroll.BorderSizePixel = 0
-scroll.Parent = bg
+--// Search Box
+local searchBox = Instance.new("TextBox")
+searchBox.PlaceholderText = "Search..."
+searchBox.Text = ""
+searchBox.Size = UDim2.new(0, 240, 0, 32)
+searchBox.Position = UDim2.new(0.5, -120, 0, 15)
+searchBox.AnchorPoint = Vector2.new(0.5, 0)
+searchBox.Font = Enum.Font.Gotham
+searchBox.TextSize = 16
+searchBox.TextColor3 = Color3.fromRGB(255, 255, 255)
+searchBox.BackgroundColor3 = Color3.fromRGB(25, 25, 25)
+searchBox.BorderSizePixel = 0
+searchBox.Parent = mainFrame
 
-local scrollCorner = Instance.new("UICorner")
-scrollCorner.CornerRadius = UDim.new(0, 10)
-scrollCorner.Parent = scroll
+local searchCorner = Instance.new("UICorner")
+searchCorner.CornerRadius = UDim.new(0, 8)
+searchCorner.Parent = searchBox
 
---// TextBox untuk script
-local input = Instance.new("TextBox")
-input.Size = UDim2.new(1, -10, 1, -10)
-input.Position = UDim2.new(0, 5, 0, 5)
-input.BackgroundTransparency = 1
-input.ClearTextOnFocus = false
-input.MultiLine = true
-input.TextWrapped = false
-input.TextXAlignment = Enum.TextXAlignment.Left
-input.TextYAlignment = Enum.TextYAlignment.Top
-input.Font = Enum.Font.Code
-input.TextSize = 16
-input.TextColor3 = Color3.new(1, 1, 1)
-input.Text = "-- Paste your script here"
-input.Parent = scroll
+--// ScrollingFrame
+local listFrame = Instance.new("ScrollingFrame")
+listFrame.Size = UDim2.new(1, -20, 1, -70)
+listFrame.Position = UDim2.new(0, 10, 0, 60)
+listFrame.BackgroundTransparency = 1
+listFrame.CanvasSize = UDim2.new(0, 0, 0, 0)
+listFrame.ScrollBarThickness = 6
+listFrame.ScrollingDirection = Enum.ScrollingDirection.Y
+listFrame.AutomaticCanvasSize = Enum.AutomaticSize.Y
+listFrame.Parent = mainFrame
 
---// Tombol Run (Play)
-local runBtn = Instance.new("ImageButton")
-runBtn.Size = UDim2.new(0, 55, 0, 55)
-runBtn.AnchorPoint = Vector2.new(0.5, 1)
-runBtn.Position = UDim2.new(0.5, 0, 1, -15)
-runBtn.BackgroundColor3 = Color3.fromRGB(45, 45, 60)
-runBtn.BackgroundTransparency = 0.2
-runBtn.Image = "rbxassetid://127679279592127" -- ▶️
-runBtn.ImageColor3 = Color3.fromRGB(180, 180, 255)
-runBtn.Parent = bg
+local uiGrid = Instance.new("UIGridLayout")
+uiGrid.CellSize = UDim2.new(0, 155, 0, 140)
+uiGrid.CellPadding = UDim2.new(0, 10, 0, 10)
+uiGrid.FillDirectionMaxCells = 3
+uiGrid.SortOrder = Enum.SortOrder.LayoutOrder
+uiGrid.FillDirection = Enum.FillDirection.Horizontal
+uiGrid.HorizontalAlignment = Enum.HorizontalAlignment.Center
+uiGrid.Parent = listFrame
 
-local btnCorner = Instance.new("UICorner")
-btnCorner.CornerRadius = UDim.new(1, 0)
-btnCorner.Parent = runBtn
+local uiPadding = Instance.new("UIPadding")
+uiPadding.PaddingLeft = UDim.new(0, 5)
+uiPadding.PaddingTop = UDim.new(0, 5)
+uiPadding.Parent = listFrame
 
--- Hover animasi
-runBtn.MouseEnter:Connect(function()
-	TweenService:Create(runBtn, TweenInfo.new(0.15), {
-		BackgroundTransparency = 0.1,
-		ImageColor3 = Color3.new(1, 1, 1)
-	}):Play()
-end)
-runBtn.MouseLeave:Connect(function()
-	TweenService:Create(runBtn, TweenInfo.new(0.15), {
-		BackgroundTransparency = 0.2,
-		ImageColor3 = Color3.fromRGB(180, 180, 255)
-	}):Play()
-end)
+--// Example Data
+local scripts = {
+	{title = "Gravity Hub – Blox Fruits Script (NO KEY)", image = "rbxassetid://74112110564196", text = "loadstring(game:HttpGet('https://raw.githubusercontent.com/Dev-GravityHub/BloxFruit/refs/heads/main/Main.lua'))()"},
+	{title = "Teddy Hub - Blox Fruit's (NO KEY)", image = "rbxassetid://74112110564196", text = "loadstring(game:HttpGet('https://pastefy.app/FnTSKXtt/raw'))()"},
+}
 
---// Fungsi notifikasi
-local function notify(msg)
-	pcall(function()
-		StarterGui:SetCore("SendNotification", {
-			Title = "Executor";
-			Text = msg;
-			Duration = 3;
-		})
+--// Function to Create Card
+local function createScriptCard(data)
+	local card = Instance.new("Frame")
+	card.BackgroundColor3 = Color3.fromRGB(20, 20, 20)
+	card.BackgroundTransparency = 0.2
+	card.Size = UDim2.new(0, 155, 0, 140)
+	card.Parent = listFrame
+
+	local corner = Instance.new("UICorner")
+	corner.CornerRadius = UDim.new(0, 8)
+	corner.Parent = card
+
+	local img = Instance.new("ImageLabel")
+	img.Image = data.image
+	img.Size = UDim2.new(1, -10, 0, 70)
+	img.Position = UDim2.new(0, 5, 0, 5)
+	img.BackgroundTransparency = 1
+	img.Parent = card
+
+	local title = Instance.new("TextLabel")
+	title.Text = data.title
+	title.Font = Enum.Font.GothamBold
+	title.TextScaled = true
+	title.TextColor3 = Color3.fromRGB(255, 255, 255)
+	title.BackgroundTransparency = 1
+	title.Size = UDim2.new(1, -10, 0, 25)
+	title.Position = UDim2.new(0, 5, 0, 80)
+	title.Parent = card
+
+	local copyBtn = Instance.new("TextButton")
+	copyBtn.Text = "Copy Script"
+	copyBtn.Font = Enum.Font.Gotham
+	copyBtn.TextSize = 13
+	copyBtn.TextColor3 = Color3.fromRGB(255, 255, 255)
+	copyBtn.BackgroundColor3 = Color3.fromRGB(40, 40, 40)
+	copyBtn.Size = UDim2.new(0.9, 0, 0, 25)
+	copyBtn.Position = UDim2.new(0.05, 0, 1, -30)
+	copyBtn.Parent = card
+
+	local copyCorner = Instance.new("UICorner")
+	copyCorner.CornerRadius = UDim.new(0, 6)
+	copyCorner.Parent = copyBtn
+
+	copyBtn.MouseButton1Click:Connect(function()
+		setclipboard(data.text)
 	end)
 end
 
---// Klik tombol Run
-runBtn.MouseButton1Click:Connect(function()
-	local tweenIn = TweenService:Create(runBtn, TweenInfo.new(0.1), {Size = UDim2.new(0, 65, 0, 65)})
-	local tweenOut = TweenService:Create(runBtn, TweenInfo.new(0.1), {Size = UDim2.new(0, 55, 0, 55)})
-	tweenIn:Play()
-	tweenIn.Completed:Wait()
-	tweenOut:Play()
+--// Generate Cards
+for _, scriptData in ipairs(scripts) do
+	createScriptCard(scriptData)
+end
 
-	local code = input.Text
-
-	if code == "" or code:match("^%s*$") or code == "-- Paste your script here" then
-		notify("⚠️ Enter Your Script Bro!")
-		return
-	end
-
-	local func, err = loadstring(code)
-	if func then
-		notify("✅ Run Script Succes")
-		task.spawn(func)
-	else
-		notify("⚠️ Error: " .. tostring(err))
-	end
-end)
-
---// Anti delete
-protectUI(ExecutorUI)
-
---// Respawn fix
-Player.CharacterAdded:Connect(function()
-	task.wait(1)
-	if not Player.PlayerGui:FindFirstChild("ExecutorUI") then
-		ExecutorUI.Parent = Player:WaitForChild("PlayerGui")
+--// Search Filter
+searchBox:GetPropertyChangedSignal("Text"):Connect(function()
+	local search = string.lower(searchBox.Text)
+	for _, card in ipairs(listFrame:GetChildren()) do
+		if card:IsA("Frame") then
+			local title = card:FindFirstChildOfClass("TextLabel")
+			if title and string.find(string.lower(title.Text), search) then
+				card.Visible = true
+			else
+				card.Visible = false
+			end
+		end
 	end
 end)
