@@ -121,37 +121,31 @@ local function createPlayerCard(plr)
 	nameLabel.Parent = card
 
 	--// TP Button
-local tpBtn = Instance.new("TextButton")
-tpBtn.Size = UDim2.new(0, 45, 0, 22)
-tpBtn.Position = UDim2.new(1, -100, 0.5, -11) -- ❗️agak ke kiri dikit biar gak nempel
-tpBtn.Text = "TP"
-tpBtn.TextColor3 = Color3.new(1, 1, 1)
-tpBtn.BackgroundColor3 = Color3.fromRGB(50, 50, 50)
-tpBtn.Font = Enum.Font.GothamBold
-tpBtn.TextSize = 14
-tpBtn.Parent = card
+	local tpBtn = Instance.new("TextButton")
+	tpBtn.Size = UDim2.new(0, 45, 0, 22)
+	tpBtn.Position = UDim2.new(1, -90, 0.5, -11)
+	tpBtn.Text = "TP"
+	tpBtn.TextColor3 = Color3.new(1, 1, 1)
+	tpBtn.BackgroundColor3 = Color3.fromRGB(50, 50, 50)
+	tpBtn.Font = Enum.Font.GothamBold
+	tpBtn.TextSize = 14
+	tpBtn.Parent = card
 
-local corner1 = Instance.new("UICorner")
-corner1.CornerRadius = UDim.new(0, 5)
-corner1.Parent = tpBtn
+	local corner1 = Instance.new("UICorner")
+	corner1.CornerRadius = UDim.new(0, 5)
+	corner1.Parent = tpBtn
 
-tpBtn.MouseButton1Click:Connect(function()
-	if plr.Character and plr.Character:FindFirstChild("HumanoidRootPart") then
-		Player.Character:MoveTo(plr.Character.HumanoidRootPart.Position + Vector3.new(2, 0, 2))
-		
-		-- 🔁 Balik kamera ke karakter sendiri
-		local myChar = Player.Character or Player.CharacterAdded:Wait()
-		local myHum = myChar:WaitForChild("Humanoid")
-		cam.CameraSubject = myHum
-		
-		TPplayersUI.Enabled = false -- auto close UI
-	end
-end)
+	tpBtn.MouseButton1Click:Connect(function()
+		if plr.Character and plr.Character:FindFirstChild("HumanoidRootPart") then
+			Player.Character:MoveTo(plr.Character.HumanoidRootPart.Position + Vector3.new(2, 0, 2))
+			TPplayersUI.Enabled = false -- auto close
+		end
+	end)
 
---// Watch Button
+	--// Watch Button
 local watchBtn = Instance.new("TextButton")
 watchBtn.Size = UDim2.new(0, 45, 0, 22)
-watchBtn.Position = UDim2.new(1, -50, 0.5, -11) -- ❗️jadi agak ke kanan
+watchBtn.Position = UDim2.new(1, -45, 0.5, -11)
 watchBtn.Text = "👀"
 watchBtn.TextColor3 = Color3.new(1, 1, 1)
 watchBtn.BackgroundColor3 = Color3.fromRGB(50, 50, 50)
@@ -159,43 +153,54 @@ watchBtn.Font = Enum.Font.GothamBold
 watchBtn.TextSize = 14
 watchBtn.Parent = card
 
+local corner2 = Instance.new("UICorner")
+corner2.CornerRadius = UDim.new(0, 5)
+corner2.Parent = watchBtn
 
+local watching = false
+local currentTarget = nil
+local diedConnection
 
+local function resetWatch()
+	-- Putar kamera balik ke karakter sendiri
+	local myChar = Player.Character or Player.CharacterAdded:Wait()
+	local myHum = myChar:WaitForChild("Humanoid")
+	cam.CameraSubject = myHum
 
-	--// Watch Button
-	local watchBtn = Instance.new("TextButton")
-	watchBtn.Size = UDim2.new(0, 45, 0, 22)
-	watchBtn.Position = UDim2.new(1, -45, 0.5, -11)
-	watchBtn.Text = "👀"
-	watchBtn.TextColor3 = Color3.new(1, 1, 1)
-	watchBtn.BackgroundColor3 = Color3.fromRGB(50, 50, 50)
-	watchBtn.Font = Enum.Font.GothamBold
-	watchBtn.TextSize = 14
-	watchBtn.Parent = card
-
-	local corner2 = Instance.new("UICorner")
-	corner2.CornerRadius = UDim.new(0, 5)
-	corner2.Parent = watchBtn
-
-	local watching = false
-	local function resetWatch()
-		cam.CameraSubject = defaultSubject
-		watching = false
-		watchBtn.Text = "👀"
+	-- Reset semua status
+	watching = false
+	currentTarget = nil
+	if diedConnection then
+		diedConnection:Disconnect()
+		diedConnection = nil
 	end
+	watchBtn.Text = "👀"
+end
 
-	watchBtn.MouseButton1Click:Connect(function()
-		if not watching then
-			if plr.Character and plr.Character:FindFirstChild("Humanoid") then
-				cam.CameraSubject = plr.Character:FindFirstChild("Humanoid")
-				watchBtn.Text = "⛔"
-				watching = true
-				plr.Character:WaitForChild("Humanoid").Died:Connect(resetWatch)
-			end
-		else
-			resetWatch()
+watchBtn.MouseButton1Click:Connect(function()
+	if not watching then
+		if plr.Character and plr.Character:FindFirstChild("Humanoid") then
+			cam.CameraSubject = plr.Character:FindFirstChild("Humanoid")
+			watchBtn.Text = "⛔"
+			watching = true
+			currentTarget = plr
+
+			-- Kalau player target mati, kamera auto balik
+			diedConnection = plr.Character:FindFirstChild("Humanoid").Died:Connect(function()
+				resetWatch()
+			end)
 		end
-	end)
+	else
+		resetWatch()
+	end
+end)
+
+-- Tambahan: kalau karakter kita mati, auto reset juga
+Player.CharacterAdded:Connect(function()
+	if watching then
+		resetWatch()
+	end
+end)
 
 	playerCards[plr] = card
 end
