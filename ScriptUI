@@ -86,7 +86,9 @@ uiPadding.Parent = listFrame
 
 --// Example Data
 local scripts = {
-	{title = "Gravity Hub – Blox Fruits Script (NO KEY)", image = "rbxassetid://74112110564196", text = "loadstring(game:HttpGet('https://raw.githubusercontent.com/Dev-GravityHub/BloxFruit/refs/heads/main/Main.lua'))()"},
+	{title = "Stree Hub - Fish It (Instant Fish, Bloodmoon)(NO KEY)", image = "rbxassetid://0", text = "loadstring(game:HttpGet('https://pandadevelopment.net/virtual/file/ecd9069dab3d2aa3'))()"},
+    {title = "OK HUB – Blox Fruits Script (NO KEY)", image = "rbxassetid://74112110564196", text = "loadstring(game:HttpGet('https://raw.githubusercontent.com/fakekuri/Okhubhere/refs/heads/main/MainBloxFruit.lua'))()"},
+    {title = "Gravity Hub – Blox Fruits Script (NO KEY)", image = "rbxassetid://74112110564196", text = "loadstring(game:HttpGet('https://raw.githubusercontent.com/Dev-GravityHub/BloxFruit/refs/heads/main/Main.lua'))()"},
 	{title = "Teddy Hub - Blox Fruit's Script (NO KEY)", image = "rbxassetid://74112110564196", text = "loadstring(game:HttpGet('https://pastefy.app/FnTSKXtt/raw'))()"},
 	{title = "Quantum Hub - Blox Fruit's Script (NO KEY)", image = "rbxassetid://74112110564196", text = "loadstring(game:HttpGet('https://raw.githubusercontent.com/flazhy/QuantumOnyx/refs/heads/main/QuantumOnyx.lua'))()"},
 	{title = "Ego Hub - Blox Fruit's Script (NO KEY)", image = "rbxassetid://74112110564196", text = "loadstring(game:HttpGet('https://pastefy.app/gU8wlEbc/raw'))()"},
