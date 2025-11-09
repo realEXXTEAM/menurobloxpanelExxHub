@@ -90,8 +90,8 @@ local scripts = {
 	{title = "Teddy Hub - Blox Fruit's Script (NO KEY)", image = "rbxassetid://74112110564196", text = "loadstring(game:HttpGet('https://pastefy.app/FnTSKXtt/raw'))()"},
 	{title = "Quantum Hub - Blox Fruit's Script (NO KEY)", image = "rbxassetid://74112110564196", text = "loadstring(game:HttpGet('https://raw.githubusercontent.com/flazhy/QuantumOnyx/refs/heads/main/QuantumOnyx.lua'))()"},
 	{title = "Ego Hub - Blox Fruit's Script (NO KEY)", image = "rbxassetid://74112110564196", text = "loadstring(game:HttpGet('https://pastefy.app/gU8wlEbc/raw'))()"},
-  {title = "Mirage Hub - Hunty Zombies (KEY 9tccBECyzJ)", image = " rbxassetid://0", text = "loadstring(game:HttpGet('https://pastefy.app/ULaWpxKm/raw'))()"},
-  {title = "Copy Avatar FE", image = " rbxassetid://0", text = "loadstring(game:HttpGet('https://raw.githubusercontent.com/GhostPlayer352/Test4/refs/heads/main/Copy%20Avatar'))()"},
+    {title = "Mirage Hub - Hunty Zombies (KEY 9tccBECyzJ)", image = " rbxassetid://76094756361741", text = "loadstring(game:HttpGet('https://pastefy.app/ULaWpxKm/raw'))()"},
+    {title = "Copy Avatar FE", image = " rbxassetid://102002093572733", text = "loadstring(game:HttpGet('https://raw.githubusercontent.com/GhostPlayer352/Test4/refs/heads/main/Copy%20Avatar'))()"},
 }
 
 --// Function to Create Card
