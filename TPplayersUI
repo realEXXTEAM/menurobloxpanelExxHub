@@ -135,12 +135,20 @@ local function createPlayerCard(plr)
 	corner1.CornerRadius = UDim.new(0, 5)
 	corner1.Parent = tpBtn
 
-	tpBtn.MouseButton1Click:Connect(function()
-		if plr.Character and plr.Character:FindFirstChild("HumanoidRootPart") then
-			Player.Character:MoveTo(plr.Character.HumanoidRootPart.Position + Vector3.new(2, 0, 2))
-			TPplayersUI.Enabled = false -- auto close
-		end
-	end)
+    tpBtn.MouseButton1Click:Connect(function()
+	if plr.Character and plr.Character:FindFirstChild("HumanoidRootPart") then
+		Player.Character:MoveTo(plr.Character.HumanoidRootPart.Position + Vector3.new(2, 0, 2))
+
+		-- Balikin kamera ke karakter kita sendiri
+		local myChar = Player.Character or Player.CharacterAdded:Wait()
+		local myHum = myChar:WaitForChild("Humanoid")
+		cam.CameraSubject = myHum
+
+		TPplayersUI.Enabled = false -- auto close
+	end
+end)
+
+
 
 	--// Watch Button
 	local watchBtn = Instance.new("TextButton")
