@@ -21,7 +21,7 @@ ExecutorUI.Name = "ExecutorUI"
 ExecutorUI.ResetOnSpawn = false
 ExecutorUI.ZIndexBehavior = Enum.ZIndexBehavior.Global
 ExecutorUI.IgnoreGuiInset = true
-ExecutorUI.Enabled = true
+ExecutorUI.Enabled = false
 ExecutorUI.Parent = Player:WaitForChild("PlayerGui")
 
 --// Frame Utama
