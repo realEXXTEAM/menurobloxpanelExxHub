@@ -86,8 +86,9 @@ uiPadding.Parent = listFrame
 
 --// Example Data
 local scripts = {
-    {title = "Stree Hub - Fish It (Instant Fish, Bloodmoon)(NO KEY)", image = "rbxassetid://0", text = "loadstring(game:HttpGet('https://pandadevelopment.net/virtual/file/ecd9069dab3d2aa3'))()"},
-    {title = "Vora Hub - Fish It (Instant Fish, Bloodmoon)(NO KEY)", image = "rbxassetid://0", text = "loadstring(game:HttpGet('https://pandadevelopment.net/virtual/file/b5652e722eb30b13'))()"},
+    {title = "The Sus Script 🤓", image = "rbxassetid://102002093572733", text = "loadstring(game:HttpGet('https://pastefy.app/aVWy3E4k/raw'))()"},
+    {title = "Stree Hub - Fish It (Instant Fish, Bloodmoon)(NO KEY)", image = "rbxassetid://125872787106802", text = "loadstring(game:HttpGet('https://pandadevelopment.net/virtual/file/ecd9069dab3d2aa3'))()"},
+    {title = "Vora Hub - Fish It (Instant Fish, Bloodmoon)(NO KEY)", image = "rbxassetid://125872787106802", text = "loadstring(game:HttpGet('https://pandadevelopment.net/virtual/file/b5652e722eb30b13'))()"},
     {title = "Mirage Hub - Hunty Zombies (KEY 9tccBECyzJ)", image = "rbxassetid://76094756361741", text = "loadstring(game:HttpGet('https://pastefy.app/ULaWpxKm/raw'))()"},
     {title = "Copy Avatar FE", image = "rbxassetid://102002093572733", text = "loadstring(game:HttpGet('https://raw.githubusercontent.com/GhostPlayer352/Test4/refs/heads/main/Copy%20Avatar'))()"},
     {title = "OK HUB – Blox Fruits Script (NO KEY)", image = "rbxassetid://124015766651987", text = "loadstring(game:HttpGet('https://raw.githubusercontent.com/fakekuri/Okhubhere/refs/heads/main/MainBloxFruit.lua'))()"},
