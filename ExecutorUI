@@ -95,8 +95,8 @@ input.TextYAlignment = Enum.TextYAlignment.Top
 input.Font = Enum.Font.Code
 input.TextSize = 16
 input.TextColor3 = Color3.new(1, 1, 1)
-input.Text = "-- Paste your script here"
-input.Text = "--- Join My Discord Server discord.gg/AjBbVb6sbf"
+input.Text = "-- Paste your script here
+--- Join My Discord Server discord.gg/AjBbVb6sbf"
 input.Parent = scroll
 
 --// Tombol RUN
