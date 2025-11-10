@@ -96,6 +96,7 @@ input.Font = Enum.Font.Code
 input.TextSize = 16
 input.TextColor3 = Color3.new(1, 1, 1)
 input.Text = "-- Paste your script here"
+input.Text = "--- Join My Discord Server discord.gg/AjBbVb6sbf"
 input.Parent = scroll
 
 --// Tombol RUN
@@ -149,13 +150,13 @@ runBtn.MouseButton1Click:Connect(function()
 
 	local code = input.Text
 	if code == "" or code:match("^%s*$") or code == "-- Paste your script here" then
-		notify("⚠️ Masukin script dulu bro!")
+		notify("⚠️ Enter the script first!")
 		return
 	end
 
 	local func, err = loadstring(code)
 	if func then
-		notify("✅ Script berhasil dijalankan!")
+		notify("✅ script executed successfully!")
 		task.spawn(func)
 	else
 		notify("⚠️ Error: "..tostring(err))
