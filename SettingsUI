@@ -122,6 +122,7 @@ local musicEnabled = false
 
 --// Toggles
 
+-- ⚡ Fast Mode
 CreateToggle("⚡ Fast Mode (FPS Boost)", function(state)
 	if state then
 		settings().Rendering.QualityLevel = Enum.QualityLevel.Level01
@@ -134,21 +135,28 @@ CreateToggle("⚡ Fast Mode (FPS Boost)", function(state)
 	end
 end)
 
+-- 🌙 Night Mode
 CreateToggle("🌙 Night Mode", function(state)
 	if state then
 		Lighting.ClockTime = 0
 		Lighting.Brightness = 0.2
 		Lighting.Ambient = Color3.fromRGB(50, 50, 70)
 		Lighting.OutdoorAmbient = Color3.fromRGB(50, 50, 70)
+		Lighting.ColorShift_Bottom = Color3.fromRGB(0, 0, 0)
+		Lighting.ColorShift_Top = Color3.fromRGB(0, 0, 0)
+		Lighting.GlobalShadows = true
 		if musicEnabled then
 			music.SoundId = "rbxassetid://179507208"
 			music:Play()
 		end
 	else
 		Lighting.ClockTime = 14
-		Lighting.Brightness = 2
+		Lighting.Brightness = 1.981
 		Lighting.Ambient = Color3.fromRGB(128, 128, 128)
 		Lighting.OutdoorAmbient = Color3.fromRGB(128, 128, 128)
+		Lighting.ColorShift_Bottom = Color3.fromRGB(0, 0, 0)
+		Lighting.ColorShift_Top = Color3.fromRGB(0, 0, 0)
+		Lighting.GlobalShadows = true
 		if musicEnabled then
 			music.SoundId = "rbxassetid://178353513"
 			music:Play()
@@ -156,6 +164,7 @@ CreateToggle("🌙 Night Mode", function(state)
 	end
 end)
 
+-- ☀ Shaders SH
 CreateToggle("☀ Shaders SH", function(state)
 	if state then
 		Lighting.EnvironmentDiffuseScale = 0.3
@@ -168,12 +177,14 @@ CreateToggle("☀ Shaders SH", function(state)
 	end
 end)
 
+-- 🎥 First Person
 CreateToggle("🎥 Only First Person", function(state)
 	pcall(function()
 		Player.CameraMode = state and Enum.CameraMode.LockFirstPerson or Enum.CameraMode.Classic
 	end)
 end)
 
+-- 🧍 Player Outline
 CreateToggle("🧍 Player Outline", function(state)
 	for _, plr in pairs(Players:GetPlayers()) do
 		if plr.Character then
@@ -191,6 +202,7 @@ CreateToggle("🧍 Player Outline", function(state)
 	end
 end)
 
+-- 🦘 Big Jump Button
 CreateToggle("🦘 Big Jump Button", function(state)
 	local jump = PlayerGui:FindFirstChild("TouchGui")
 	if jump and jump:FindFirstChild("TouchControlFrame") then
@@ -207,11 +219,13 @@ CreateToggle("🦘 Big Jump Button", function(state)
 	end
 end)
 
+-- 🎵 Background Music
 CreateToggle("🎵 Music Background", function(state)
 	musicEnabled = state
 	if state then music:Play() else music:Stop() end
 end)
 
+-- 🔁 Auto Reconnect
 CreateToggle("🔁 Auto Reconnect", function(state)
 	getgenv().AutoReconnect = state
 	if state then
@@ -223,14 +237,6 @@ CreateToggle("🔁 Auto Reconnect", function(state)
 				end
 			end
 		end)()
-	end
-end)
-
--- 🏃 SprintUI Toggle
-CreateToggle("🏃 SprintUI Toggle", function(state)
-	local sprintUI = PlayerGui:FindFirstChild("SprintUI")
-	if sprintUI then
-		sprintUI.Enabled = state
 	end
 end)
 
