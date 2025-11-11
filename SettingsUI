@@ -486,13 +486,13 @@ CreateToggle("🔁 Auto Reconnect", function(state)
 	end
 end)
 
--- 🏃 SprintUI
-CreateToggle("🏃 SprintUI", function(state)
-	local sprintUI = PlayerGui:FindFirstChild("SprintUI")
-	if sprintUI then
-		sprintUI.Enabled = state
+CreateToggle("🏃 Sprint UI", function(state)
+	local gui = game:GetService("Players").LocalPlayer:WaitForChild("PlayerGui"):FindFirstChild("SprintUI")
+	if gui then
+		gui.Enabled = state
 	end
 end)
+
 
 
 --// Scroll Auto Adjust
