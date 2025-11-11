@@ -121,6 +121,7 @@ music.SoundId = "rbxassetid://178353513"
 local musicEnabled = false
 
 --// Toggles
+
 CreateToggle("⚡ Fast Mode (FPS Boost)", function(state)
 	if state then
 		settings().Rendering.QualityLevel = Enum.QualityLevel.Level01
@@ -139,21 +140,15 @@ CreateToggle("🌙 Night Mode", function(state)
 		Lighting.Brightness = 0.2
 		Lighting.Ambient = Color3.fromRGB(50, 50, 70)
 		Lighting.OutdoorAmbient = Color3.fromRGB(50, 50, 70)
-		Lighting.ColorShift_Bottom = Color3.fromRGB(0, 0, 0)
-		Lighting.ColorShift_Top = Color3.fromRGB(0, 0, 0)
-		Lighting.GlobalShadows = true
 		if musicEnabled then
 			music.SoundId = "rbxassetid://179507208"
 			music:Play()
 		end
 	else
 		Lighting.ClockTime = 14
-		Lighting.Brightness = 1.981
+		Lighting.Brightness = 2
 		Lighting.Ambient = Color3.fromRGB(128, 128, 128)
 		Lighting.OutdoorAmbient = Color3.fromRGB(128, 128, 128)
-		Lighting.ColorShift_Bottom = Color3.fromRGB(0, 0, 0)
-		Lighting.ColorShift_Top = Color3.fromRGB(0, 0, 0)
-		Lighting.GlobalShadows = true
 		if musicEnabled then
 			music.SoundId = "rbxassetid://178353513"
 			music:Play()
@@ -231,13 +226,11 @@ CreateToggle("🔁 Auto Reconnect", function(state)
 	end
 end)
 
--- 🏃 SprintUI
-CreateToggle("🏃 SprintUI", function(state)
-	local sprintGui = PlayerGui:FindFirstChild("SprintUI")
-	if sprintGui then
-		sprintGui.Enabled = state
-	else
-		warn("SprintUI tidak ditemukan di PlayerGui.")
+-- 🏃 SprintUI Toggle
+CreateToggle("🏃 SprintUI Toggle", function(state)
+	local sprintUI = PlayerGui:FindFirstChild("SprintUI")
+	if sprintUI then
+		sprintUI.Enabled = state
 	end
 end)
 
