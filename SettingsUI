@@ -486,6 +486,15 @@ CreateToggle("🔁 Auto Reconnect", function(state)
 	end
 end)
 
+-- 🏃 SprintUI
+CreateToggle("🏃 SprintUI", function(state)
+	local sprintUI = PlayerGui:FindFirstChild("SprintUI")
+	if sprintUI then
+		sprintUI.Enabled = state
+	end
+end)
+
+
 --// Scroll Auto Adjust
 UIListLayout:GetPropertyChangedSignal("AbsoluteContentSize"):Connect(function()
 	ScrollFrame.CanvasSize = UDim2.new(0, 0, 0, UIListLayout.AbsoluteContentSize.Y + 10)
