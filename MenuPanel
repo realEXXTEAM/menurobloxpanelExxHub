@@ -1,5 +1,6 @@
 local TweenService = game:GetService("TweenService")
 local Player = game.Players.LocalPlayer
+local UserInputService = game:GetService("UserInputService")
 
 --// GUI Setup
 local screenGui = Instance.new("ScreenGui")
@@ -73,7 +74,7 @@ mainCorner.Parent = mainFrame
 --// Scrolling Menu
 local scroll = Instance.new("ScrollingFrame")
 scroll.Size = UDim2.new(1,0,1,0)
-scroll.CanvasSize = UDim2.new(0,0,0,0) -- auto update nanti
+scroll.CanvasSize = UDim2.new(0,0,0,0)
 scroll.ScrollBarThickness = 4
 scroll.BackgroundTransparency = 1
 scroll.ZIndex = 9998
@@ -183,7 +184,6 @@ for i, item in ipairs(menuItems) do
 		local playerGui = Player:WaitForChild("PlayerGui")
 		local ui = playerGui:FindFirstChild(item.Text.."UI")
 
-		-- cuma close UI dari menu list
 		for _, v in pairs(playerGui:GetChildren()) do
 			if v:IsA("ScreenGui") and validUI[v.Name] and v ~= ui then
 				v.Enabled = false
@@ -201,5 +201,28 @@ for i, item in ipairs(menuItems) do
 	end)
 end
 
--- 🧠 Auto update CanvasSize biar scroll sesuai jumlah menu
+-- 🧠 Auto update CanvasSize
 scroll.CanvasSize = UDim2.new(0, 0, 0, (#menuItems * itemHeight) + padding)
+
+-- 📌 Auto Close When Clicking Outside
+UserInputService.InputBegan:Connect(function(input)
+	if input.UserInputType == Enum.UserInputType.MouseButton1 and opened and not animating then
+		local mousePos = input.Position
+		local absPos, absSize = mainFrame.AbsolutePosition, mainFrame.AbsoluteSize
+		local absToggle, toggleSize = toggleButton.AbsolutePosition, toggleButton.AbsoluteSize
+
+		-- cek klik di luar popup dan tombol
+		local outsidePopup = not (
+			mousePos.X >= absPos.X and mousePos.X <= absPos.X + absSize.X and
+			mousePos.Y >= absPos.Y and mousePos.Y <= absPos.Y + absSize.Y
+		)
+		local outsideButton = not (
+			mousePos.X >= absToggle.X and mousePos.X <= absToggle.X + toggleSize.X and
+			mousePos.Y >= absToggle.Y and mousePos.Y <= absToggle.Y + toggleSize.Y
+		)
+
+		if outsidePopup and outsideButton then
+			toggleMenu(false)
+		end
+	end
+end)
