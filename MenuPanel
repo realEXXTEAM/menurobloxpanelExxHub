@@ -1,6 +1,6 @@
 local TweenService = game:GetService("TweenService")
-local Player = game.Players.LocalPlayer
 local UserInputService = game:GetService("UserInputService")
+local Player = game.Players.LocalPlayer
 
 --// GUI Setup
 local screenGui = Instance.new("ScreenGui")
@@ -61,7 +61,7 @@ local mainFrame = Instance.new("Frame")
 mainFrame.Size = UDim2.new(0, 180, 0, 0)
 mainFrame.Position = UDim2.new(1, -190, 0, 60)
 mainFrame.BackgroundColor3 = Color3.fromRGB(15, 15, 15)
-mainFrame.BackgroundTransparency = 0.1
+mainFrame.BackgroundTransparency = 0.2
 mainFrame.Visible = false
 mainFrame.ClipsDescendants = true
 mainFrame.ZIndex = 9998
@@ -113,10 +113,12 @@ local function toggleMenu(state)
 	end
 
 	mainFrame.Visible = true
-	local targetSize = opened and UDim2.new(0, 180, 0, 190) or UDim2.new(0, 180, 0, 0)
+	local targetSize = opened and UDim2.new(0, 180, 0, math.min(#menuItems * 45 + 10, 250)) or UDim2.new(0, 180, 0, 0)
 	TweenService:Create(mainFrame, TweenInfo.new(0.18, Enum.EasingStyle.Quad, Enum.EasingDirection.Out), {Size = targetSize}):Play()
 
-	if not opened then
+	if opened then
+		scroll.CanvasSize = UDim2.new(0, 0, 0, #menuItems * 45)
+	else
 		task.delay(0.18, function()
 			mainFrame.Visible = false
 		end)
@@ -131,32 +133,25 @@ toggleButton.MouseButton1Click:Connect(function()
 	toggleMenu(not opened)
 end)
 
--- daftar nama UI valid
-local validUI = {}
-for _, item in ipairs(menuItems) do
-	validUI[item.Text.."UI"] = true
-end
-
--- bikin tombol dan auto-update scroll height
-local itemHeight, padding = 45, 5
+--// Generate Menu Buttons
 for i, item in ipairs(menuItems) do
 	local btn = Instance.new("TextButton")
-	btn.Size = UDim2.new(1,-10,0,40)
-	btn.Position = UDim2.new(0,5,0,(i-1)*itemHeight)
-	btn.BackgroundColor3 = Color3.fromRGB(35,35,35)
+	btn.Size = UDim2.new(1, -10, 0, 40)
+	btn.Position = UDim2.new(0, 5, 0, (i - 1) * 45)
+	btn.BackgroundColor3 = Color3.fromRGB(35, 35, 35)
 	btn.BackgroundTransparency = 0.9
 	btn.Text = ""
 	btn.ZIndex = 9998
 	btn.Parent = scroll
 
 	local corner = Instance.new("UICorner")
-	corner.CornerRadius = UDim.new(0,8)
+	corner.CornerRadius = UDim.new(0, 8)
 	corner.Parent = btn
 
 	local icon = Instance.new("ImageLabel")
 	icon.Image = item.Icon
-	icon.Size = UDim2.new(0,24,0,24)
-	icon.Position = UDim2.new(0,10,0.5,-12)
+	icon.Size = UDim2.new(0, 24, 0, 24)
+	icon.Position = UDim2.new(0, 10, 0.5, -12)
 	icon.BackgroundTransparency = 1
 	icon.ZIndex = 9999
 	icon.Parent = btn
@@ -165,63 +160,66 @@ for i, item in ipairs(menuItems) do
 	label.Text = item.Text
 	label.Font = Enum.Font.GothamMedium
 	label.TextSize = 16
-	label.TextColor3 = Color3.new(1,1,1)
+	label.TextColor3 = Color3.new(1, 1, 1)
 	label.BackgroundTransparency = 1
-	label.Position = UDim2.new(0,45,0,0)
-	label.Size = UDim2.new(1,-45,1,0)
+	label.Position = UDim2.new(0, 45, 0, 0)
+	label.Size = UDim2.new(1, -45, 1, 0)
 	label.TextXAlignment = Enum.TextXAlignment.Left
 	label.ZIndex = 9999
 	label.Parent = btn
 
 	btn.MouseEnter:Connect(function()
-		TweenService:Create(btn, TweenInfo.new(0.15), {BackgroundColor3 = Color3.fromRGB(55,55,55)}):Play()
+		TweenService:Create(btn, TweenInfo.new(0.15), {BackgroundColor3 = Color3.fromRGB(55, 55, 55)}):Play()
 	end)
 	btn.MouseLeave:Connect(function()
-		TweenService:Create(btn, TweenInfo.new(0.15), {BackgroundColor3 = Color3.fromRGB(35,35,35)}):Play()
+		TweenService:Create(btn, TweenInfo.new(0.15), {BackgroundColor3 = Color3.fromRGB(35, 35, 35)}):Play()
 	end)
 
 	btn.MouseButton1Click:Connect(function()
 		local playerGui = Player:WaitForChild("PlayerGui")
-		local ui = playerGui:FindFirstChild(item.Text.."UI")
+		local ui = playerGui:FindFirstChild(item.Text .. "UI")
 
 		for _, v in pairs(playerGui:GetChildren()) do
-			if v:IsA("ScreenGui") and validUI[v.Name] and v ~= ui then
-				v.Enabled = false
+			if v:IsA("ScreenGui") and v.Name:match("UI$") then
+				for _, menu in ipairs(menuItems) do
+					if v.Name == menu.Text .. "UI" and v ~= ui then
+						v.Enabled = false
+					end
+				end
 			end
 		end
 
 		if ui then
 			ui.Enabled = not ui.Enabled
-			print(item.Text.." UI ->", ui.Enabled and "Opened" or "Closed")
+			print(item.Text .. " UI ->", ui.Enabled and "Opened" or "Closed")
 		else
-			warn(item.Text.."UI not found!")
+			warn(item.Text .. "UI not found!")
 		end
 
 		toggleMenu(false)
 	end)
 end
 
--- 🧠 Auto update CanvasSize
-scroll.CanvasSize = UDim2.new(0, 0, 0, (#menuItems * itemHeight) + padding)
+--// Auto Close Popup When Click Outside (PC + Mobile)
+local function isInsideFrame(frame, inputPosition)
+	local absPos = frame.AbsolutePosition
+	local absSize = frame.AbsoluteSize
+	return inputPosition.X >= absPos.X and inputPosition.X <= absPos.X + absSize.X
+		and inputPosition.Y >= absPos.Y and inputPosition.Y <= absPos.Y + absSize.Y
+end
 
--- 📌 Auto Close When Clicking Outside
-UserInputService.InputBegan:Connect(function(input)
-	if input.UserInputType == Enum.UserInputType.MouseButton1 and opened and not animating then
-		local mousePos = input.Position
-		local absPos, absSize = mainFrame.AbsolutePosition, mainFrame.AbsoluteSize
-		local absToggle, toggleSize = toggleButton.AbsolutePosition, toggleButton.AbsoluteSize
+UserInputService.InputBegan:Connect(function(input, processed)
+	if processed then return end
+	if opened and input.UserInputType == Enum.UserInputType.MouseButton1 then
+		if not isInsideFrame(mainFrame, input.Position) and not isInsideFrame(toggleButton, input.Position) then
+			toggleMenu(false)
+		end
+	end
+end)
 
-		-- cek klik di luar popup dan tombol
-		local outsidePopup = not (
-			mousePos.X >= absPos.X and mousePos.X <= absPos.X + absSize.X and
-			mousePos.Y >= absPos.Y and mousePos.Y <= absPos.Y + absSize.Y
-		)
-		local outsideButton = not (
-			mousePos.X >= absToggle.X and mousePos.X <= absToggle.X + toggleSize.X and
-			mousePos.Y >= absToggle.Y and mousePos.Y <= absToggle.Y + toggleSize.Y
-		)
-
-		if outsidePopup and outsideButton then
+UserInputService.TouchTapInWorld:Connect(function(_, position)
+	if opened then
+		if not isInsideFrame(mainFrame, position) and not isInsideFrame(toggleButton, position) then
 			toggleMenu(false)
 		end
 	end
