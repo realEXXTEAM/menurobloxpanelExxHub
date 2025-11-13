@@ -1,0 +1,208 @@
+local TweenService = game:GetService("TweenService")
+local Players = game:GetService("Players")
+local TeleportService = game:GetService("TeleportService")
+local HttpService = game:GetService("HttpService")
+local UIS = game:GetService("UserInputService")
+local Player = Players.LocalPlayer
+
+--// GUI Setup
+local gui = Instance.new("ScreenGui")
+gui.Name = "ServerToolsUI"
+gui.IgnoreGuiInset = true
+gui.ResetOnSpawn = false
+gui.DisplayOrder = 9999
+gui.ZIndexBehavior = Enum.ZIndexBehavior.Global
+gui.Parent = Player:WaitForChild("PlayerGui")
+
+--// Toggle Button
+local toggleButton = Instance.new("ImageButton")
+toggleButton.Name = "ToggleButton"
+toggleButton.Size = UDim2.new(0, 50, 0, 50)
+toggleButton.Position = UDim2.new(1, -112, 0, 10)
+toggleButton.BackgroundColor3 = Color3.fromRGB(0, 0, 0)
+toggleButton.BackgroundTransparency = 0.2
+toggleButton.AutoButtonColor = false
+toggleButton.Image = "rbxassetid://76680514431298" -- 🔹 Image OFF
+toggleButton.ZIndex = 9999
+toggleButton.Parent = gui
+
+local corner = Instance.new("UICorner")
+corner.CornerRadius = UDim.new(1, 0)
+corner.Parent = toggleButton
+
+--// Popup Panel
+local panel = Instance.new("Frame")
+panel.Name = "Frame"
+panel.Size = UDim2.new(0, 160, 0, 0)
+panel.Position = UDim2.new(1, -275, 0, 12)
+panel.BackgroundColor3 = Color3.fromRGB(15, 15, 15)
+panel.BackgroundTransparency = 0.1
+panel.ClipsDescendants = true
+panel.Visible = false
+panel.ZIndex = 9998
+panel.Parent = gui
+
+local pcorner = Instance.new("UICorner")
+pcorner.CornerRadius = UDim.new(0, 10)
+pcorner.Parent = panel
+
+--// Scrolling Container
+local scroll = Instance.new("ScrollingFrame")
+scroll.Size = UDim2.new(1, 0, 1, 0)
+scroll.CanvasSize = UDim2.new(0, 0, 0, 0)
+scroll.ScrollBarThickness = 3
+scroll.BackgroundTransparency = 1
+scroll.ZIndex = 9998
+scroll.Parent = panel
+
+local list = {}
+
+--// Panel Animation Logic
+local open = false
+local anim = false
+local imageOn = "rbxassetid://71355758902377"  -- 🔹 Image ON
+local imageOff = "rbxassetid://76680514431298" -- 🔹 Image OFF
+
+local function togglePanel(state)
+	if anim then return end
+	anim = true
+	open = state
+
+	if open then
+		toggleButton.Image = imageOn
+		panel.Visible = true
+
+		local totalHeight = 0
+		for _, v in ipairs(list) do
+			totalHeight += v.AbsoluteSize.Y + 5
+		end
+
+		totalHeight = math.min(totalHeight + 10, 150)
+		TweenService:Create(panel, TweenInfo.new(0.25, Enum.EasingStyle.Sine, Enum.EasingDirection.Out), {
+			Size = UDim2.new(0, 160, 0, totalHeight)
+		}):Play()
+	else
+		toggleButton.Image = imageOff
+		TweenService:Create(panel, TweenInfo.new(0.25, Enum.EasingStyle.Sine, Enum.EasingDirection.In), {
+			Size = UDim2.new(0, 160, 0, 0)
+		}):Play()
+		task.delay(0.25, function() panel.Visible = false end)
+	end
+
+	task.delay(0.25, function() anim = false end)
+end
+
+--// Add Button Function
+local function addButton(text, callback, closeAfter)
+	local b = Instance.new("TextButton")
+	b.Size = UDim2.new(1, -10, 0, 32)
+	b.Position = UDim2.new(0, 5, 0, scroll.CanvasSize.Y.Offset)
+	b.BackgroundColor3 = Color3.fromRGB(35, 35, 35)
+	b.BackgroundTransparency = 0.8
+	b.Text = text
+	b.Font = Enum.Font.GothamMedium
+	b.TextColor3 = Color3.new(1, 1, 1)
+	b.TextSize = 14
+	b.ZIndex = 9999
+	b.Parent = scroll
+
+	local c = Instance.new("UICorner")
+	c.CornerRadius = UDim.new(0, 6)
+	c.Parent = b
+
+	b.MouseEnter:Connect(function()
+		TweenService:Create(b, TweenInfo.new(0.1), {BackgroundColor3 = Color3.fromRGB(55, 55, 55)}):Play()
+	end)
+	b.MouseLeave:Connect(function()
+		TweenService:Create(b, TweenInfo.new(0.1), {BackgroundColor3 = Color3.fromRGB(35, 35, 35)}):Play()
+	end)
+	b.MouseButton1Click:Connect(function()
+		if closeAfter then
+			togglePanel(false)
+			task.wait(0.25)
+		end
+		callback()
+	end)
+
+	table.insert(list, b)
+	scroll.CanvasSize = UDim2.new(0, 0, 0, scroll.CanvasSize.Y.Offset + 37)
+end
+
+--// Add TextBox Function
+local function addBox()
+	local box = Instance.new("TextBox")
+	box.Size = UDim2.new(1, -10, 0, 32)
+	box.Position = UDim2.new(0, 5, 0, scroll.CanvasSize.Y.Offset)
+	box.BackgroundColor3 = Color3.fromRGB(35, 35, 35)
+	box.BackgroundTransparency = 0.8
+	box.PlaceholderText = "Enter Job ID..."
+	box.Font = Enum.Font.GothamMedium
+	box.TextColor3 = Color3.new(1, 1, 1)
+	box.TextSize = 14
+	box.Text = ""
+	box.ClearTextOnFocus = false
+	box.ZIndex = 9999
+	box.Parent = scroll
+
+	local c = Instance.new("UICorner")
+	c.CornerRadius = UDim.new(0, 6)
+	c.Parent = box
+
+	box.FocusLost:Connect(function(enter)
+		if enter and box.Text ~= "" then
+			TeleportService:TeleportToPlaceInstance(game.PlaceId, box.Text, Player)
+		end
+	end)
+
+	table.insert(list, box)
+	scroll.CanvasSize = UDim2.new(0, 0, 0, scroll.CanvasSize.Y.Offset + 37)
+end
+
+--// Buttons
+addButton("HOP SERVER", function()
+	local data = HttpService:JSONDecode(game:HttpGet(
+		"https://games.roblox.com/v1/games/"..game.PlaceId.."/servers/Public?sortOrder=Desc&limit=100"
+	))
+	for _, s in ipairs(data.data) do
+		if s.playing < s.maxPlayers then
+			TeleportService:TeleportToPlaceInstance(game.PlaceId, s.id, Player)
+			break
+		end
+	end
+end, true)
+
+addButton("HOP LOW SERVER", function()
+	local data = HttpService:JSONDecode(game:HttpGet(
+		"https://games.roblox.com/v1/games/"..game.PlaceId.."/servers/Public?sortOrder=Asc&limit=100"
+	))
+	for _, s in ipairs(data.data) do
+		if s.playing < s.maxPlayers then
+			TeleportService:TeleportToPlaceInstance(game.PlaceId, s.id, Player)
+			break
+		end
+	end
+end, true)
+
+addButton("COPY JOB ID", function()
+	setclipboard(game.JobId)
+end, false)
+
+--// Add the Job ID TextBox
+addBox()
+
+--// Toggle Click Action
+toggleButton.MouseButton1Click:Connect(function()
+	togglePanel(not open)
+end)
+
+--// Auto Close on Outside Click
+UIS.InputBegan:Connect(function(input, processed)
+	if processed then return end
+	if open and input.UserInputType == Enum.UserInputType.MouseButton1 then
+		local pos = UIS:GetMouseLocation()
+		local pPos, pSize = panel.AbsolutePosition, panel.AbsoluteSize
+		if not (pos.X > pPos.X and pos.X < pPos.X + pSize.X and pos.Y > pPos.Y and pos.Y < pPos.Y + pSize.Y) then
+			togglePanel(false)
+		end
+	end
+end)
