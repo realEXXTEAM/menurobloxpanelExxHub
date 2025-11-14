@@ -7,7 +7,7 @@ local ScriptUI = Instance.new("ScreenGui")
 ScriptUI.Name = "ScriptUI"
 ScriptUI.ResetOnSpawn = false
 ScriptUI.ZIndexBehavior = Enum.ZIndexBehavior.Global
-ScriptUI.IgnoreGuiInset = false
+ScriptUI.IgnoreGuiInset = true
 ScriptUI.Enabled = false
 ScriptUI.Parent = Player:WaitForChild("PlayerGui")
 
@@ -203,7 +203,7 @@ Instance.new("UIPadding", listFrame).PaddingLeft = UDim.new(0, 5)
 
 --// Example Data (kept as-is)
 local scripts = {
-    {title = "", image = "rbxassetid://0", text = ""},
+    {title = "Deep Hub - Blox Fruit's Script (No Key)", image = "rbxassetid://124015766651987", text = "loadstring(game:HttpGet('https://raw.githubusercontent.com/GoblinKun009/Script/refs/heads/main/Deep', true))()"},
     {title = "Ls Zee Hub - Hunty Zombie (Keyless)", image = "rbxassetid://76094756361741", text = "loadstring(game:HttpGet('https://zuwz.me/Ls-Zee-Hub-HZ'))()"},
     {title = "Prison Berry Escape (Free Tools All, Kill All)", image = "rbxassetid://0", text = "loadstring(game:HttpGet('https://raw.githubusercontent.com/VylikGylik/Script/refs/heads/main/Barry%20Prison%20Escape'))()"},
     {title = "Auto Bounty KiddoHiru - Blox Fruit's Script (Setting Open Your Browser)(NO KEY)", image = "rbxassetid://124015766651987", text = "loadstring(game:HttpGet('https://pastebin.com/raw/keGmE2QK))()"},
