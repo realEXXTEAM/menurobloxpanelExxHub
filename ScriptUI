@@ -88,7 +88,7 @@ uiPadding.Parent = listFrame
 local scripts = {
     {title = "Prison Berry Escape (Free Tools All, Kill All)", image = "rbxassetid://0", text = "loadstring(game:HttpGet('https://raw.githubusercontent.com/VylikGylik/Script/refs/heads/main/Barry%20Prison%20Escape'))()"},
     {title = "Auto Bounty KiddoHiru - Blox Fruit's Script (Setting Open Your Browser)(NO KEY)", image = "rbxassetid://124015766651987", text = "loadstring(game:HttpGet('https://pastebin.com/raw/keGmE2QK))()"},
-    {title = "Sol Hub - Blox Fruit's Script (NO KEY)", image = "rbxassetid://124015766651987", text = "loadstring(game:HttpGet('https://raw.githubusercontent.com/GoblinKun009/Script/refs/heads/main/SolHub', true))()"},
+    {title = "Sol Hub - Blox Fruit's Script (No Keyles)", image = "rbxassetid://124015766651987", text = "loadstring(game:HttpGet('https://raw.githubusercontent.com/GoblinKun009/Script/refs/heads/main/SolHub', true))()"},
     {title = "Vinz Hub - Fish It (Fast Auto Fish, Jungle Explosion Update, Teleport Anywhere) (NO KEY)", image = "rbxassetid://125872787106802", text = "loadstring(game:HttpGet('https://raw.githubusercontent.com/Vinzyy13/VinzHub/refs/heads/main/Fish-It'))()"},
     {title = "The Sus Script 🤓", image = "rbxassetid://102002093572733", text = "loadstring(game:HttpGet('https://pastefy.app/aVWy3E4k/raw'))()"},
     {title = "Stree Hub - Fish It (Instant Fish, Bloodmoon)(NO KEY)", image = "rbxassetid://125872787106802", text = "loadstring(game:HttpGet('https://pandadevelopment.net/virtual/file/ecd9069dab3d2aa3'))()"},
