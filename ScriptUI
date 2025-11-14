@@ -7,8 +7,8 @@ local ScriptUI = Instance.new("ScreenGui")
 ScriptUI.Name = "ScriptUI"
 ScriptUI.ResetOnSpawn = false
 ScriptUI.ZIndexBehavior = Enum.ZIndexBehavior.Global
-ScriptUI.IgnoreGuiInset = true
-ScriptUI.Enabled = true
+ScriptUI.IgnoreGuiInset = false
+ScriptUI.Enabled = false
 ScriptUI.Parent = Player:WaitForChild("PlayerGui")
 
 --// Main Frame
