@@ -1,6 +1,5 @@
 local Players = game:GetService("Players")
 local Player = Players.LocalPlayer
-local TweenService = game:GetService("TweenService")
 
 --// ScreenGui Setup
 local ScriptUI = Instance.new("ScreenGui")
@@ -21,7 +20,10 @@ mainFrame.BackgroundTransparency = 0.2
 mainFrame.BorderSizePixel = 0
 mainFrame.Parent = ScriptUI
 mainFrame.ClipsDescendants = true
-Instance.new("UICorner", mainFrame).CornerRadius = UDim.new(0, 10)
+
+local mainCorner = Instance.new("UICorner")
+mainCorner.CornerRadius = UDim.new(0, 10)
+mainCorner.Parent = mainFrame
 
 --// Close Button
 local closeBtn = Instance.new("TextButton")
@@ -58,128 +60,25 @@ refreshBtn.MouseButton1Click:Connect(function()
     loadstring(game:HttpGet("https://raw.githubusercontent.com/realEXXTEAM/menurobloxpanelExxHub/refs/heads/main/ScriptUI"))()
 end)
 
-
---// Search Button (Small, initial)
-local searchButton = Instance.new("TextButton")
-searchButton.Text = "Search"
-searchButton.Font = Enum.Font.GothamBold
-searchButton.TextSize = 16
-searchButton.TextColor3 = Color3.fromRGB(255, 255, 255)
-searchButton.Size = UDim2.new(0, 90, 0, 32)
-searchButton.Position = UDim2.new(0.5, 0, 0, 15)
-searchButton.AnchorPoint = Vector2.new(0.5, 0)
-searchButton.BackgroundColor3 = Color3.fromRGB(30, 30, 30)
-searchButton.BorderSizePixel = 0
-searchButton.Parent = mainFrame
-Instance.new("UICorner", searchButton).CornerRadius = UDim.new(0, 8)
-
---// Search Box (Hidden initially)
+--// Search Box
 local searchBox = Instance.new("TextBox")
-searchBox.PlaceholderText = "Cari Script..."
+searchBox.PlaceholderText = "Search..."
 searchBox.Text = ""
+searchBox.Size = UDim2.new(0, 240, 0, 32)
+searchBox.Position = UDim2.new(0.5, 5, 0, 15)
+searchBox.AnchorPoint = Vector2.new(0.5, 0)
 searchBox.Font = Enum.Font.Gotham
 searchBox.TextSize = 16
 searchBox.TextColor3 = Color3.fromRGB(255, 255, 255)
 searchBox.BackgroundColor3 = Color3.fromRGB(25, 25, 25)
 searchBox.BorderSizePixel = 0
-searchBox.Visible = false
-searchBox.Size = UDim2.new(0, 220, 0, 32)
-searchBox.Position = searchButton.Position
-searchBox.AnchorPoint = Vector2.new(0.5, 0)
 searchBox.Parent = mainFrame
-Instance.new("UICorner", searchBox).CornerRadius = UDim.new(0, 8)
 
---// Clear (X) inside searchBox
-local clearX = Instance.new("TextButton")
-clearX.Text = "X"
-clearX.Font = Enum.Font.GothamBold
-clearX.TextSize = 14
-clearX.TextColor3 = Color3.fromRGB(255,255,255)
-clearX.BackgroundTransparency = 1
-clearX.Size = UDim2.new(0, 20, 0, 20)
-clearX.Position = UDim2.new(1, -24, 0, 6)
-clearX.Visible = false
-clearX.Parent = searchBox
+local searchCorner = Instance.new("UICorner")
+searchCorner.CornerRadius = UDim.new(0, 8)
+searchCorner.Parent = searchBox
 
---// Search Open Animation
-local function openSearch()
-	searchButton.Visible = false
-	searchBox.Visible = true
-
-	TweenService:Create(
-		searchBox,
-		TweenInfo.new(0.25, Enum.EasingStyle.Sine, Enum.EasingDirection.Out),
-		{Size = UDim2.new(0, 250, 0, 32), Position = UDim2.new(0.5, 0, 0, 15)}
-	):Play()
-
-	searchBox:CaptureFocus()
-end
-
---// Search Close Animation (collapse to button)
-local function closeSearch()
-	searchBox:ReleaseFocus()
-
-	TweenService:Create(
-		searchBox,
-		TweenInfo.new(0.25, Enum.EasingStyle.Sine, Enum.EasingDirection.Out),
-		{Size = UDim2.new(0, 90, 0, 32), Position = UDim2.new(0.5, 0, 0, 15)}
-	):Play()
-
-	task.wait(0.25)
-	searchBox.Visible = false
-	searchBox.Text = ""
-	clearX.Visible = false
-	searchButton.Visible = true
-end
-
-searchButton.MouseButton1Click:Connect(openSearch)
-
--- whenever focus lost and not enter pressed -> collapse
-searchBox.FocusLost:Connect(function(enterPressed)
-	if not enterPressed then
-		-- if text empty -> collapse; else keep box shown
-		if searchBox.Text == "" then
-			closeSearch()
-		end
-	end
-end)
-
--- clear button behavior
-clearX.MouseButton1Click:Connect(function()
-	searchBox.Text = ""
-	clearX.Visible = false
-	-- collapse back to button since text cleared
-	closeSearch()
-end)
-
--- show/hide clearX and collapse when text cleared by typing
-searchBox:GetPropertyChangedSignal("Text"):Connect(function()
-	if searchBox.Text ~= "" then
-		clearX.Visible = true
-	else
-		clearX.Visible = false
-		-- if user deleted all text and the box is focused, collapse back
-		-- (we wait a frame to avoid immediate flicker on focus events)
-		task.defer(function()
-			if searchBox.Text == "" and searchBox.Visible then
-				closeSearch()
-			end
-		end)
-	end
-
-	-- filter list in realtime
-	local query = string.lower(searchBox.Text)
-	for _, child in ipairs(listFrame:GetChildren()) do
-		if child:IsA("Frame") then
-			local lbl = child:FindFirstChildOfClass("TitleLabel")
-			if lbl then
-				child.Visible = (query == "" or string.find(string.lower(lbl.Text), query) ~= nil)
-			end
-		end
-	end
-end)
-
---// Scrolling List
+--// ScrollingFrame
 local listFrame = Instance.new("ScrollingFrame")
 listFrame.Size = UDim2.new(1, -20, 1, -70)
 listFrame.Position = UDim2.new(0, 10, 0, 60)
@@ -194,15 +93,19 @@ local uiGrid = Instance.new("UIGridLayout")
 uiGrid.CellSize = UDim2.new(0, 155, 0, 140)
 uiGrid.CellPadding = UDim2.new(0, 10, 0, 10)
 uiGrid.FillDirectionMaxCells = 3
-uiGrid.FillDirection = Enum.FillDirection.Horizontal
 uiGrid.SortOrder = Enum.SortOrder.LayoutOrder
+uiGrid.FillDirection = Enum.FillDirection.Horizontal
 uiGrid.HorizontalAlignment = Enum.HorizontalAlignment.Center
 uiGrid.Parent = listFrame
 
-Instance.new("UIPadding", listFrame).PaddingLeft = UDim.new(0, 5)
+local uiPadding = Instance.new("UIPadding")
+uiPadding.PaddingLeft = UDim.new(0, 5)
+uiPadding.PaddingTop = UDim.new(0, 5)
+uiPadding.Parent = listFrame
 
---// Example Data (kept as-is)
+--// Example Data
 local scripts = {
+    {title = "Ls Zee Hub - Hunty Zombie (Keyless)", image = "rbxassetid://76094756361741", text = "loadstring(game:HttpGet('https://zuwz.me/Ls-Zee-Hub-HZ'))()"},
     {title = "Deep Hub - Blox Fruit's Script (No Key)", image = "rbxassetid://124015766651987", text = "loadstring(game:HttpGet('https://raw.githubusercontent.com/GoblinKun009/Script/refs/heads/main/Deep', true))()"},
     {title = "Ls Zee Hub - Hunty Zombie (Keyless)", image = "rbxassetid://76094756361741", text = "loadstring(game:HttpGet('https://zuwz.me/Ls-Zee-Hub-HZ'))()"},
     {title = "Prison Berry Escape (Free Tools All, Kill All)", image = "rbxassetid://0", text = "loadstring(game:HttpGet('https://raw.githubusercontent.com/VylikGylik/Script/refs/heads/main/Barry%20Prison%20Escape'))()"},
@@ -222,7 +125,7 @@ local scripts = {
 }
 
 
---// Card Creator (kept list intact)
+--// Function to Create Card
 local function createScriptCard(data)
 	local card = Instance.new("Frame")
 	card.BackgroundColor3 = Color3.fromRGB(20, 20, 20)
@@ -270,28 +173,21 @@ local function createScriptCard(data)
 	end)
 end
 
---// Spawn Cards
+--// Generate Cards
 for _, scriptData in ipairs(scripts) do
 	createScriptCard(scriptData)
 end
 
---// Initial search filter (empty = show all)
-searchBox.Text = ""
-searchBox.Visible = false
-searchButton.Visible = true
-
---// Ensure clicking click outside collapse works (mouse)
-local UserInputService = game:GetService("UserInputService")
-UserInputService.InputBegan:Connect(function(input, gpe)
-	if input.UserInputType == Enum.UserInputType.MouseButton1 then
-		-- if searchBox visible and click outside searchBox, and search text empty -> collapse
-		if searchBox.Visible then
-			local mx, my = UserInputService:GetMouseLocation().X, UserInputService:GetMouseLocation().Y
-			local absPos = searchBox.AbsolutePosition
-			local absSize = searchBox.AbsoluteSize
-			local inside = mx > absPos.X and mx < absPos.X + absSize.X and my > absPos.Y and my < absPos.Y + absSize.Y
-			if not inside and searchBox.Text == "" then
-				closeSearch()
+--// Search Filter
+searchBox:GetPropertyChangedSignal("Text"):Connect(function()
+	local search = string.lower(searchBox.Text)
+	for _, card in ipairs(listFrame:GetChildren()) do
+		if card:IsA("Frame") then
+			local title = card:FindFirstChildOfClass("TextLabel")
+			if title and string.find(string.lower(title.Text), search) then
+				card.Visible = true
+			else
+				card.Visible = false
 			end
 		end
 	end
