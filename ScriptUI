@@ -57,7 +57,7 @@ refreshBtn.MouseButton1Click:Connect(function()
     if Player.PlayerGui:FindFirstChild("ScriptUI") then
         Player.PlayerGui.ScriptUI:Destroy()
     end
-    loadstring(game:HttpGet("https://raw.githubusercontent.com/realEXXTEAM/menurobloxpanelExxHub/refs/heads/main/ScriptUI"))()
+    loadstring(game:HttpGet("https://raw.githubusercontent.com/realEXXTEAM/panelmenuuniversal/refs/heads/main/ServerRefreshSCRIPTUInewUploadScript"))()
 end)
 
 --// Search Box
