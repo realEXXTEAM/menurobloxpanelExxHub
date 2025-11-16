@@ -105,7 +105,7 @@ uiPadding.Parent = listFrame
 
 --// Example Data
 local scripts = {
-    {title = "Scropt 99 Night In The Forest (NO KEY)", image = "rbxassetid://0", text = "loadstring(game:HttpGet('https://raw.githubusercontent.com/Devvzn/DevWare/refs/heads/main/DevMain'))()"},
+    {title = "Script 99 Night In The Forest (NO KEY)", image = "rbxassetid://0", text = "loadstring(game:HttpGet('https://raw.githubusercontent.com/Devvzn/DevWare/refs/heads/main/DevMain'))()"},
     {title = "Mscuaz | Universal Animation", image = "rbxassetid://102002093572733", text = "loadstring(game:HttpGet('https://raw.githubusercontent.com/gwnrdt/gwnrdt/refs/heads/main/Animation.lua'))()"},
     {title = "Script FE Brookhaven RP SkyBox", image = "rbxassetid://0", text = "loadstring(game:HttpGet('https://rawscripts.net/raw/Brookhaven-RP-Skybox-Brookhaven-61921'))()"},
     {title = "nazuro.xyz - 99 Night In The Forest (NO KEY)", image = "rbxassetid://0", text = "loadstring(game:HttpGet('https://nazuro.xyz/99nights'))()"},
