@@ -105,6 +105,7 @@ uiPadding.Parent = listFrame
 
 --// Example Data
 local scripts = {
+    {title = "Script FE Brookhaven RP SkyBox", image = "rbxassetid://0", text = "loadstring(game:HttpGet('https://rawscripts.net/raw/Brookhaven-RP-Skybox-Brookhaven-61921'))()"},
     {title = "nazuro.xyz - 99 Night In The Forest (NO KEY)", image = "rbxassetid://0", text = "loadstring(game:HttpGet('https://nazuro.xyz/99nights'))()"},
     {title = "Deep Hub - Blox Fruit's Script (No Key)", image = "rbxassetid://124015766651987", text = "loadstring(game:HttpGet('https://raw.githubusercontent.com/GoblinKun009/Script/refs/heads/main/Deep', true))()"},
     {title = "Ls Zee Hub - Hunty Zombie (Keyless)", image = "rbxassetid://76094756361741", text = "loadstring(game:HttpGet('https://zuwz.me/Ls-Zee-Hub-HZ'))()"},
