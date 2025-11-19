@@ -105,6 +105,7 @@ uiPadding.Parent = listFrame
 
 --// Example Data
 local scripts = {
+    {title = "BLOX FRUITS Script No Key AUTO FARM 0 – MAX FULLY AUTOMATIC, KAITUN FARM, GHM, CDK, SG (FREE)", image = "rbxassetid://85953977761529", text = "loadstring(game:HttpGet('https://pastebin.com/raw/zfeGSTdE'))()"},
     {title = "Script 99 Night In The Forest (NO KEY/KEYLESS)", image = "rbxassetid://114848323624473", text = "loadstring(game:HttpGet('https://raw.githubusercontent.com/Devvzn/DevWare/refs/heads/main/DevMain'))()"},
     {title = "Mscuaz | Universal Animation", image = "rbxassetid://102002093572733", text = "loadstring(game:HttpGet('https://raw.githubusercontent.com/gwnrdt/gwnrdt/refs/heads/main/Animation.lua'))()"},
     {title = "Script FE Brookhaven RP SkyBox", image = "rbxassetid://119474295606519", text = "loadstring(game:HttpGet('https://rawscripts.net/raw/Brookhaven-RP-Skybox-Brookhaven-61921'))()"},
