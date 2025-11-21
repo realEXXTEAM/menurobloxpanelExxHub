@@ -1,0 +1,203 @@
+local TweenService = game:GetService("TweenService")
+local Player = game.Players.LocalPlayer
+
+--// GUI Setup
+local screenGui = Instance.new("ScreenGui")
+screenGui.Name = "RobloxMenuExxHub"
+screenGui.ResetOnSpawn = false
+screenGui.ZIndexBehavior = Enum.ZIndexBehavior.Global
+screenGui.DisplayOrder = 9999
+screenGui.IgnoreGuiInset = true
+screenGui.Parent = Player:WaitForChild("PlayerGui")
+
+--// Toggle Button
+local toggleButton = Instance.new("TextButton")
+toggleButton.Size = UDim2.new(0, 50, 0, 50)
+toggleButton.Position = UDim2.new(1, -55, 0, 8)
+toggleButton.BackgroundColor3 = Color3.fromRGB(0, 0, 0)
+toggleButton.BackgroundTransparency = 0.2
+toggleButton.AutoButtonColor = false
+toggleButton.Text = ""
+toggleButton.ZIndex = 9999
+toggleButton.Parent = screenGui
+
+local toggleCorner = Instance.new("UICorner")
+toggleCorner.CornerRadius = UDim.new(1, 0)
+toggleCorner.Parent = toggleButton
+
+--// Rotation Frame
+local rotFrame = Instance.new("Frame")
+rotFrame.Size = UDim2.new(1,0,1,0)
+rotFrame.BackgroundTransparency = 1
+rotFrame.ZIndex = 9999
+rotFrame.Parent = toggleButton
+
+-- Label ≡
+local menuLabel = Instance.new("TextLabel")
+menuLabel.Size = UDim2.new(1,0,1,0)
+menuLabel.BackgroundTransparency = 1
+menuLabel.Text = "≡"
+menuLabel.Font = Enum.Font.GothamBold
+menuLabel.TextSize = 34
+menuLabel.TextColor3 = Color3.new(1,1,1)
+menuLabel.ZIndex = 9999
+menuLabel.Parent = rotFrame
+
+-- Label X
+local closeLabel = Instance.new("TextLabel")
+closeLabel.Size = UDim2.new(1,0,1,0)
+closeLabel.BackgroundTransparency = 1
+closeLabel.Text = "X"
+closeLabel.Font = Enum.Font.GothamBold
+closeLabel.TextSize = 34
+closeLabel.TextColor3 = Color3.new(1,1,1)
+closeLabel.TextTransparency = 1
+closeLabel.ZIndex = 9999
+closeLabel.Parent = rotFrame
+
+--// Popup Frame
+local mainFrame = Instance.new("Frame")
+mainFrame.Size = UDim2.new(0, 180, 0, 0)
+mainFrame.Position = UDim2.new(1, -190, 0, 60)
+mainFrame.BackgroundColor3 = Color3.fromRGB(15, 15, 15)
+mainFrame.BackgroundTransparency = 0.1
+mainFrame.Visible = false
+mainFrame.ClipsDescendants = true
+mainFrame.ZIndex = 9998
+mainFrame.Parent = screenGui
+
+local mainCorner = Instance.new("UICorner")
+mainCorner.CornerRadius = UDim.new(0, 10)
+mainCorner.Parent = mainFrame
+
+--// Scrolling Menu
+local scroll = Instance.new("ScrollingFrame")
+scroll.Size = UDim2.new(1,0,1,0)
+scroll.CanvasSize = UDim2.new(0,0,0,0) -- auto update nanti
+scroll.ScrollBarThickness = 4
+scroll.BackgroundTransparency = 1
+scroll.ZIndex = 9998
+scroll.Parent = mainFrame
+
+--// Menu Items
+local menuItems = {
+	{Text="Executor", Icon="rbxassetid://6031075938"},
+	{Text="Script", Icon="rbxassetid://122385028196411"},
+	{Text="Settings", Icon="rbxassetid://6034509993"},
+	{Text="Donate", Icon="rbxassetid://6031097227"},
+	{Text="TPplayers", Icon="rbxassetid://80278360213440"},
+}
+
+local opened = false
+local animating = false
+
+local function toggleMenu(state)
+	if animating then return end
+	animating = true
+	opened = state
+
+	local rotTween = TweenService:Create(rotFrame, TweenInfo.new(0.25, Enum.EasingStyle.Quad, Enum.EasingDirection.Out), {Rotation = opened and 180 or 0})
+	rotTween:Play()
+
+	if opened then
+		TweenService:Create(menuLabel, TweenInfo.new(0.1), {TextTransparency = 1}):Play()
+		task.wait(0.1)
+		TweenService:Create(closeLabel, TweenInfo.new(0.15), {TextTransparency = 0}):Play()
+	else
+		TweenService:Create(closeLabel, TweenInfo.new(0.1), {TextTransparency = 1}):Play()
+		task.wait(0.1)
+		TweenService:Create(menuLabel, TweenInfo.new(0.15), {TextTransparency = 0}):Play()
+	end
+
+	mainFrame.Visible = true
+	local targetSize = opened and UDim2.new(0, 180, 0, 190) or UDim2.new(0, 180, 0, 0)
+	TweenService:Create(mainFrame, TweenInfo.new(0.18, Enum.EasingStyle.Quad, Enum.EasingDirection.Out), {Size = targetSize}):Play()
+
+	if not opened then
+		task.delay(0.18, function()
+			mainFrame.Visible = false
+		end)
+	end
+
+	task.delay(0.3, function()
+		animating = false
+	end)
+end
+
+toggleButton.MouseButton1Click:Connect(function()
+	toggleMenu(not opened)
+end)
+
+-- daftar nama UI valid
+local validUI = {}
+for _, item in ipairs(menuItems) do
+	validUI[item.Text.."UI"] = true
+end
+
+-- bikin tombol dan auto-update scroll height
+local itemHeight, padding = 45, 5
+for i, item in ipairs(menuItems) do
+	local btn = Instance.new("TextButton")
+	btn.Size = UDim2.new(1,-10,0,40)
+	btn.Position = UDim2.new(0,5,0,(i-1)*itemHeight)
+	btn.BackgroundColor3 = Color3.fromRGB(35,35,35)
+	btn.BackgroundTransparency = 0.9
+	btn.Text = ""
+	btn.ZIndex = 9998
+	btn.Parent = scroll
+
+	local corner = Instance.new("UICorner")
+	corner.CornerRadius = UDim.new(0,8)
+	corner.Parent = btn
+
+	local icon = Instance.new("ImageLabel")
+	icon.Image = item.Icon
+	icon.Size = UDim2.new(0,24,0,24)
+	icon.Position = UDim2.new(0,10,0.5,-12)
+	icon.BackgroundTransparency = 1
+	icon.ZIndex = 9999
+	icon.Parent = btn
+
+	local label = Instance.new("TextLabel")
+	label.Text = item.Text
+	label.Font = Enum.Font.GothamMedium
+	label.TextSize = 16
+	label.TextColor3 = Color3.new(1,1,1)
+	label.BackgroundTransparency = 1
+	label.Position = UDim2.new(0,45,0,0)
+	label.Size = UDim2.new(1,-45,1,0)
+	label.TextXAlignment = Enum.TextXAlignment.Left
+	label.ZIndex = 9999
+	label.Parent = btn
+
+	btn.MouseEnter:Connect(function()
+		TweenService:Create(btn, TweenInfo.new(0.15), {BackgroundColor3 = Color3.fromRGB(55,55,55)}):Play()
+	end)
+	btn.MouseLeave:Connect(function()
+		TweenService:Create(btn, TweenInfo.new(0.15), {BackgroundColor3 = Color3.fromRGB(35,35,35)}):Play()
+	end)
+
+	btn.MouseButton1Click:Connect(function()
+		local playerGui = Player:WaitForChild("PlayerGui")
+		local ui = playerGui:FindFirstChild(item.Text.."UI")
+
+		-- cuma close UI dari menu list
+		for _, v in pairs(playerGui:GetChildren()) do
+			if v:IsA("ScreenGui") and validUI[v.Name] and v ~= ui then
+				v.Enabled = false
+			end
+		end
+
+		if ui then
+			ui.Enabled = not ui.Enabled
+			print(item.Text.." UI ->", ui.Enabled and "Opened" or "Closed")
+		else
+			warn(item.Text.."UI not found!")
+		end
+
+		toggleMenu(false)
+	end)
+end
+
+-- 🧠 Auto update CanvasSize biar scroll sesuai jumlah menu
+scroll.CanvasSize = UDim2.new(0, 0, 0, (#menuItems * itemHeight) + padding)
