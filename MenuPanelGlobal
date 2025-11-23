@@ -86,6 +86,7 @@ local menuItems = {
 	{Text="Settings", Icon="rbxassetid://6034509993"},
 	{Text="Donate", Icon="rbxassetid://6031097227"},
 	{Text="TPplayers", Icon="rbxassetid://80278360213440"},
+    {Text="CLOSE", Icon="rbxassetid://0"},
 }
 
 local opened = false
