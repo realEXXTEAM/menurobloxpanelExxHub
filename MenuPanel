@@ -85,7 +85,7 @@ local menuItems = {
 	{Text="Script", Icon="rbxassetid://122385028196411"},
 	{Text="Music", Icon="rbxassetid://95034182657328"},
 	{Text="Settings", Icon="rbxassetid://6034509993"},
-	{Text="Tools", Icon="rbxassetid://116981916797533"},
+	{Text="Status Server", Icon="rbxassetid://18633720097"},
 	{Text="Donate", Icon="rbxassetid://6031097227"},
 	{Text="TPplayers", Icon="rbxassetid://80278360213440"},
 }
