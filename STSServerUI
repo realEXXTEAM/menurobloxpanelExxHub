@@ -27,7 +27,7 @@ STSServerUI.Name = "STSServerUI"
 STSServerUI.ResetOnSpawn = false
 STSServerUI.ZIndexBehavior = Enum.ZIndexBehavior.Global
 STSServerUI.IgnoreGuiInset = true
-STSServerUI.Enabled = true -- Gw set True biar pas execute langsung muncul
+STSServerUI.Enabled = false -- Gw set True biar pas execute langsung muncul
 STSServerUI.Parent = Player:WaitForChild("PlayerGui")
 
 -- == 3. MAIN FRAME CONSTRUCTION ==
