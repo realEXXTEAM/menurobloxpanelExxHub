@@ -1,11 +1,3 @@
---[[
-    STSServerUI FINAL CUSTOM (USER TEMPLATE)
-    - Setup: User's ScreenGui Template
-    - Close Button: Hides GUI (Enabled = false)
-    - Toggle Key: Right Control
-    - Features: Game Card, Interactive Profile, Server Tools
-]]
-
 local Players = game:GetService("Players")
 local RunService = game:GetService("RunService")
 local UserInputService = game:GetService("UserInputService")
