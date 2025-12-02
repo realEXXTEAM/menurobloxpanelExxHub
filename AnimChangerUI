@@ -1,0 +1,368 @@
+local Players = game:GetService("Players")
+local RunService = game:GetService("RunService")
+local TweenService = game:GetService("TweenService")
+
+local Player = Players.LocalPlayer
+if not Player.Character or not Player.Character.Parent then
+	Player.CharacterAdded:Wait()
+end
+task.wait(1)
+local Character = Player.Character
+local Humanoid = Character:WaitForChild("Humanoid")
+
+-- =================================================================
+-- ANIMATION LIST
+-- =================================================================
+local AnimPackList = {
+	["Zombie"] = { 
+		Idle = "rbxassetid://616158929", Walk = "rbxassetid://616168032", Run = "rbxassetid://616163682", 
+		Jump = "rbxassetid://616161997", Fall = "rbxassetid://616157476", Swim = "rbxassetid://616165109", Climb = "rbxassetid://616159516"
+	},
+	["Werewolf"] = { 
+		Idle = "rbxassetid://1083195517", Walk = "rbxassetid://1083214724", Run = "rbxassetid://1083216690", 
+		Jump = "rbxassetid://1083218792", Fall = "rbxassetid://1083189019", Swim = "rbxassetid://1083200227", Climb = "rbxassetid://1083182000"
+	}
+}
+
+-- =================================================================
+-- GUI SETUP
+-- =================================================================
+local ScreenGui = Instance.new("ScreenGui")
+ScreenGui.Name = "AnimChangerUI"
+ScreenGui.ResetOnSpawn = false
+ScreenGui.ZIndexBehavior = Enum.ZIndexBehavior.Sibling
+ScreenGui.Parent = Player:WaitForChild("PlayerGui")
+
+local MainFrame = Instance.new("Frame")
+MainFrame.Name = "MainFrame"
+MainFrame.Size = UDim2.new(0, 450, 0, 310)
+MainFrame.Position = UDim2.new(0.5, -225, 0.5, -155) -- Locked Center
+MainFrame.BackgroundColor3 = Color3.fromRGB(20, 20, 25) 
+MainFrame.BorderSizePixel = 0
+MainFrame.ClipsDescendants = true
+MainFrame.Parent = ScreenGui
+
+local UICorner = Instance.new("UICorner")
+UICorner.CornerRadius = UDim.new(0, 10)
+UICorner.Parent = MainFrame
+
+-- TITLE
+local Title = Instance.new("TextLabel")
+Title.Text = "ANIMATION CHANGER"
+Title.Size = UDim2.new(1, -40, 0, 35)
+Title.Position = UDim2.new(0, 10, 0, 0)
+Title.BackgroundTransparency = 1
+Title.TextColor3 = Color3.fromRGB(255, 255, 255)
+Title.Font = Enum.Font.GothamBlack
+Title.TextXAlignment = Enum.TextXAlignment.Left
+Title.TextSize = 16
+Title.Parent = MainFrame
+
+-- CLOSE BUTTON (X) - TRANSPARAN
+local CloseBtn = Instance.new("TextButton")
+CloseBtn.Name = "CloseButton"
+CloseBtn.Text = "X"
+CloseBtn.Size = UDim2.new(0, 30, 0, 30)
+CloseBtn.Position = UDim2.new(1, -35, 0, 5)
+CloseBtn.BackgroundTransparency = 1 
+CloseBtn.TextColor3 = Color3.fromRGB(255, 255, 255)
+CloseBtn.Font = Enum.Font.GothamBlack 
+CloseBtn.TextSize = 18
+CloseBtn.Parent = MainFrame
+
+CloseBtn.MouseButton1Click:Connect(function() ScreenGui:Destroy() end)
+
+-- Left Side: Pack List
+local ListContainer = Instance.new("Frame")
+ListContainer.Size = UDim2.new(0, 160, 0, 255)
+ListContainer.Position = UDim2.new(0, 10, 0, 45)
+ListContainer.BackgroundColor3 = Color3.fromRGB(30, 30, 35)
+ListContainer.Parent = MainFrame
+local ListCorner = Instance.new("UICorner"); ListCorner.Parent = ListContainer
+
+local ScrollList = Instance.new("ScrollingFrame")
+ScrollList.Size = UDim2.new(1, -6, 1, -10)
+ScrollList.Position = UDim2.new(0, 3, 0, 5)
+ScrollList.BackgroundTransparency = 1
+ScrollList.ScrollBarThickness = 3
+ScrollList.AutomaticCanvasSize = Enum.AutomaticSize.Y
+ScrollList.CanvasSize = UDim2.new(0, 0, 0, 0)
+ScrollList.Parent = ListContainer
+
+local UIListLayout = Instance.new("UIListLayout")
+UIListLayout.Padding = UDim.new(0, 6)
+UIListLayout.SortOrder = Enum.SortOrder.Name
+UIListLayout.Parent = ScrollList
+UIListLayout.HorizontalAlignment = Enum.HorizontalAlignment.Center
+
+-- Right Side: Preview Area
+local RightContainer = Instance.new("Frame")
+RightContainer.Size = UDim2.new(0, 260, 0, 255)
+RightContainer.Position = UDim2.new(0, 180, 0, 45)
+RightContainer.BackgroundTransparency = 1
+RightContainer.Parent = MainFrame
+
+local PreviewFrame = Instance.new("ViewportFrame")
+PreviewFrame.Size = UDim2.new(1, 0, 0, 160)
+PreviewFrame.Position = UDim2.new(0, 0, 0, 0)
+PreviewFrame.BackgroundColor3 = Color3.fromRGB(15, 15, 20)
+PreviewFrame.BorderSizePixel = 0
+PreviewFrame.Parent = RightContainer
+local PreviewCorner = Instance.new("UICorner"); PreviewCorner.Parent = PreviewFrame
+local WorldModel = Instance.new("WorldModel"); WorldModel.Parent = PreviewFrame
+
+-- [[ NEW: INSTRUCTION LABEL ]]
+local SelectPromptLabel = Instance.new("TextLabel")
+SelectPromptLabel.Name = "SelectPromptLabel"
+SelectPromptLabel.Text = "Silakan pilih Animation Pack dari daftar di sebelah kiri untuk memulai."
+SelectPromptLabel.Size = UDim2.new(1, -20, 0, 50)
+SelectPromptLabel.Position = UDim2.new(0, 10, 0, 175) -- Posisi di area kosong bawah preview
+SelectPromptLabel.BackgroundTransparency = 1
+SelectPromptLabel.TextColor3 = Color3.fromRGB(150, 150, 160) -- Abu-abu halus
+SelectPromptLabel.Font = Enum.Font.GothamSemibold
+SelectPromptLabel.TextSize = 13
+SelectPromptLabel.TextWrapped = true
+SelectPromptLabel.Visible = true -- [[ DEFAULT VISIBLE ]]
+SelectPromptLabel.Parent = RightContainer
+
+-- CONTAINER TOMBOL AKSI (Idle, Walk, dll)
+local PreviewActionContainer = Instance.new("Frame")
+PreviewActionContainer.Name = "ActionButtons"
+PreviewActionContainer.Size = UDim2.new(1, 0, 0, 40)
+PreviewActionContainer.Position = UDim2.new(0, 0, 0, 165)
+PreviewActionContainer.BackgroundTransparency = 1
+PreviewActionContainer.Visible = false -- [[ HIDDEN DEFAULT ]]
+PreviewActionContainer.Parent = RightContainer
+
+local UIGridLayout = Instance.new("UIGridLayout")
+UIGridLayout.CellSize = UDim2.new(0, 60, 0, 18)
+UIGridLayout.CellPadding = UDim2.new(0, 5, 0, 5)
+UIGridLayout.HorizontalAlignment = Enum.HorizontalAlignment.Center
+UIGridLayout.Parent = PreviewActionContainer
+
+-- EQUIP BUTTON (APPLY)
+local EquipBtn = Instance.new("TextButton")
+EquipBtn.Text = "APPLY PACK"
+EquipBtn.Size = UDim2.new(1, 0, 0, 35)
+EquipBtn.Position = UDim2.new(0, 0, 1, -35)
+EquipBtn.BackgroundColor3 = Color3.fromRGB(0, 50, 120) -- Dark Blue
+EquipBtn.TextColor3 = Color3.fromRGB(255, 255, 255)
+EquipBtn.Font = Enum.Font.GothamBold
+EquipBtn.TextSize = 14
+EquipBtn.Visible = false -- [[ HIDDEN DEFAULT ]]
+EquipBtn.Parent = RightContainer
+local EquipCorner = Instance.new("UICorner"); EquipCorner.Parent = EquipBtn
+
+-- Variables
+local currentSelectedPack = nil
+local currentPreviewAnimator = nil
+local currentPreviewTrack = nil
+local currentActiveBtn = nil
+
+-- =================================================================
+-- LOGIC
+-- =================================================================
+
+local function SetupPreviewCamera(targetPart)
+	local Camera = Instance.new("Camera")
+	Camera.CFrame = CFrame.new(targetPart.Position + (targetPart.CFrame.LookVector * 6) + Vector3.new(0, 0.5, 0), targetPart.Position)
+	PreviewFrame.CurrentCamera = Camera
+	PreviewFrame.CurrentCamera.Parent = PreviewFrame
+end
+
+local function InitialPreviewSetup()
+	for _, child in pairs(WorldModel:GetChildren()) do child:Destroy() end
+	currentPreviewAnimator = nil
+	currentPreviewTrack = nil
+
+	if Player.Character then
+		Player.Character.Archivable = true
+		local CloneChar = Player.Character:Clone()
+		CloneChar.Parent = WorldModel
+		CloneChar:SetPrimaryPartCFrame(CFrame.new(0,0,0))
+
+		local RootPart = CloneChar:FindFirstChild("HumanoidRootPart")
+		if RootPart then SetupPreviewCamera(RootPart) end
+
+		local PreviewHum = CloneChar:FindFirstChild("Humanoid")
+		if PreviewHum then
+			PreviewHum:ChangeState(Enum.HumanoidStateType.Physics)
+			PreviewHum.DisplayDistanceType = Enum.HumanoidDisplayDistanceType.None
+		end
+		Player.Character.Archivable = false
+	end
+end
+
+local function PlayPreviewAction(actionName)
+	if not currentSelectedPack or not currentPreviewAnimator then return end
+	local packData = AnimPackList[currentSelectedPack]
+	if not packData or not packData[actionName] then return end
+	
+	if currentPreviewTrack then
+		currentPreviewTrack:Stop()
+		currentPreviewTrack = nil
+	end
+	
+	local Animation = Instance.new("Animation")
+	Animation.AnimationId = packData[actionName]
+	currentPreviewTrack = currentPreviewAnimator:LoadAnimation(Animation)
+	currentPreviewTrack.Priority = Enum.AnimationPriority.Action
+	
+	if actionName == "Idle" or actionName == "Walk" or actionName == "Run" or actionName == "Climb" or actionName == "Swim" then
+		currentPreviewTrack.Looped = true
+	else
+		currentPreviewTrack.Looped = false
+	end
+	currentPreviewTrack:Play()
+end
+
+local function UpdatePreviewCharacter(packName)
+	currentSelectedPack = packName
+	currentPreviewAnimator = nil
+	currentPreviewTrack = nil
+
+	for _, child in pairs(WorldModel:GetChildren()) do child:Destroy() end
+	
+	if Player.Character then
+		Player.Character.Archivable = true
+		local CloneChar = Player.Character:Clone()
+		CloneChar.Parent = WorldModel
+		CloneChar:SetPrimaryPartCFrame(CFrame.new(0,0,0))
+		
+		local RootPart = CloneChar:FindFirstChild("HumanoidRootPart")
+		if RootPart then SetupPreviewCamera(RootPart) end
+		
+		local PreviewHum = CloneChar:FindFirstChild("Humanoid")
+		if PreviewHum then
+			PreviewHum:ChangeState(Enum.HumanoidStateType.Physics)
+			PreviewHum.DisplayDistanceType = Enum.HumanoidDisplayDistanceType.None
+			currentPreviewAnimator = PreviewHum:FindFirstChild("Animator") or Instance.new("Animator", PreviewHum)
+			PlayPreviewAction("Idle")
+		end
+		Player.Character.Archivable = false
+	end
+end
+
+-- =================================================================
+-- BUTTON GENERATORS
+-- =================================================================
+
+-- Action Buttons (Idle, Walk, etc.)
+local actions = {"Idle", "Walk", "Run", "Jump", "Fall", "Climb", "Swim"}
+for _, actionName in ipairs(actions) do
+	local ActionBtn = Instance.new("TextButton")
+	ActionBtn.Name = actionName
+	ActionBtn.Text = actionName
+	ActionBtn.BackgroundColor3 = Color3.fromRGB(50, 50, 55)
+	ActionBtn.TextColor3 = Color3.fromRGB(200, 200, 200)
+	ActionBtn.Font = Enum.Font.GothamSemibold
+	ActionBtn.TextSize = 10
+	ActionBtn.Parent = PreviewActionContainer
+	local AC = Instance.new("UICorner"); AC.CornerRadius = UDim.new(0,5); AC.Parent = ActionBtn
+	
+	ActionBtn.MouseButton1Click:Connect(function()
+		if not currentSelectedPack then return end 
+		
+		PlayPreviewAction(actionName)
+		TweenService:Create(ActionBtn, TweenInfo.new(0.2), {BackgroundColor3 = Color3.fromRGB(0, 100, 255), TextColor3 = Color3.fromRGB(255,255,255)}):Play()
+		delay(0.2, function()
+			TweenService:Create(ActionBtn, TweenInfo.new(0.2), {BackgroundColor3 = Color3.fromRGB(50, 50, 55), TextColor3 = Color3.fromRGB(200, 200, 200)}):Play()
+		end)
+	end)
+end
+
+-- Apply Button Logic
+EquipBtn.MouseButton1Click:Connect(function()
+	if not currentSelectedPack then return end
+	local Char = Player.Character
+	if not Char then return end
+	local CharHum = Char:FindFirstChild("Humanoid")
+	local Animator = CharHum and CharHum:FindFirstChild("Animator")
+	local AnimateScript = Char:FindFirstChild("Animate")
+	local packData = AnimPackList[currentSelectedPack]
+
+	if AnimateScript and Animator and packData then
+		EquipBtn.Text = "..."
+		
+		if Animator then
+			for _, track in pairs(Animator:GetPlayingAnimationTracks()) do track:Stop() end
+		end
+		
+		local function replaceId(name, id)
+			local animObject = AnimateScript:FindFirstChild(name)
+			if animObject then
+				for _, v in pairs(animObject:GetChildren()) do
+					if v:IsA("Animation") then v.AnimationId = id end
+				end
+				local possibleValue = AnimateScript:FindFirstChild(name.."Anim")
+				if possibleValue and possibleValue:IsA("StringValue") then possibleValue.Value = id end
+			end
+		end
+
+		replaceId("idle", packData.Idle)
+		replaceId("walk", packData.Walk)
+		replaceId("run", packData.Run)
+		replaceId("jump", packData.Jump)
+		replaceId("fall", packData.Fall)
+		replaceId("swim", packData.Swim)
+		replaceId("climb", packData.Climb)
+		
+		AnimateScript.Disabled = true
+		task.wait(0.1)
+		AnimateScript.Disabled = false
+		
+		EquipBtn.Text = "APPLIED!"
+		EquipBtn.BackgroundColor3 = Color3.fromRGB(0, 150, 255) 
+		wait(1)
+		EquipBtn.Text = "APPLY PACK"
+		EquipBtn.BackgroundColor3 = Color3.fromRGB(0, 50, 120) 
+	end
+end)
+
+-- Pack List Buttons
+local packNames = {}
+for name, _ in pairs(AnimPackList) do table.insert(packNames, name) end
+table.sort(packNames)
+
+for _, packName in ipairs(packNames) do
+	local Btn = Instance.new("TextButton")
+	Btn.Name = packName
+	Btn.Text = packName
+	Btn.Size = UDim2.new(0, 140, 0, 35)
+	Btn.BackgroundColor3 = Color3.fromRGB(45, 45, 50)
+	Btn.TextColor3 = Color3.fromRGB(200, 200, 200)
+	Btn.Font = Enum.Font.GothamSemibold
+	Btn.TextSize = 12
+	Btn.Parent = ScrollList
+	
+	local BtnCorner = Instance.new("UICorner"); BtnCorner.Parent = Btn
+	
+	local Stroke = Instance.new("UIStroke")
+	Stroke.Name = "SelectionStroke"
+	Stroke.ApplyStrokeMode = Enum.ApplyStrokeMode.Border
+	Stroke.Color = Color3.fromRGB(50, 150, 255) 
+	Stroke.Thickness = 0 
+	Stroke.Parent = Btn
+	
+	Btn.MouseButton1Click:Connect(function()
+		if currentActiveBtn then
+			TweenService:Create(currentActiveBtn, TweenInfo.new(0.2), {BackgroundColor3 = Color3.fromRGB(45, 45, 50), TextColor3 = Color3.fromRGB(200, 200, 200)}):Play()
+			currentActiveBtn.SelectionStroke.Thickness = 0 
+		end
+		
+		currentActiveBtn = Btn
+		
+		TweenService:Create(Btn, TweenInfo.new(0.2), {BackgroundColor3 = Color3.fromRGB(30, 30, 35), TextColor3 = Color3.fromRGB(255, 255, 255)}):Play()
+		Btn.SelectionStroke.Thickness = 2 
+		
+		-- [[ LOGIC SAAT PACK DIPILIH ]]
+		SelectPromptLabel.Visible = false -- Sembunyikan teks instruksi
+		PreviewActionContainer.Visible = true -- Munculkan tombol aksi
+		EquipBtn.Visible = true -- Munculkan tombol apply
+		
+		UpdatePreviewCharacter(packName)
+	end)
+end
+
+-- Start Static
+InitialPreviewSetup()
