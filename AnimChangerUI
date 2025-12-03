@@ -490,7 +490,7 @@ end
 -- BUTTON GENERATORS
 -- =================================================================
 
-local actions = {"Idle", "Idle2", "Walk", "Run", "Jump", "Fall", "Climb", "Swim", "SwimIdle"}
+local actions = {"Idle", "Walk", "Run", "Jump", "Fall", "Climb", "Swim"}
 for _, actionName in ipairs(actions) do
 	local ActionBtn = Instance.new("TextButton")
 	ActionBtn.Name = actionName
