@@ -216,7 +216,7 @@ AnimChangerUI.DisplayOrder = 9999
 AnimChangerUI.ResetOnSpawn = false -- Biar GUI gak ilang pas mati
 AnimChangerUI.ZIndexBehavior = Enum.ZIndexBehavior.Global
 AnimChangerUI.IgnoreGuiInset = true
-AnimChangerUI.Enabled = true
+AnimChangerUI.Enabled = false
 AnimChangerUI.Parent = Player:WaitForChild("PlayerGui")
 
 local MainFrame = Instance.new("Frame")
