@@ -17,6 +17,7 @@ end
 -- == 2. GUI SETUP (YOUR TEMPLATE) ==
 local STSServerUI = Instance.new("ScreenGui")
 STSServerUI.Name = "STSServerUI"
+STSServerUI.DisplayOrder = 9999
 STSServerUI.ResetOnSpawn = false
 STSServerUI.ZIndexBehavior = Enum.ZIndexBehavior.Global
 STSServerUI.IgnoreGuiInset = false
