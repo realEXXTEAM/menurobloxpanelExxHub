@@ -7,6 +7,7 @@ local PlayerGui = Player:WaitForChild("PlayerGui")
 --// ScreenGui Setup
 local TPplayersUI = Instance.new("ScreenGui")
 TPplayersUI.Name = "TPplayersUI"
+TPplayersUI.DisplayOrder = 9999
 TPplayersUI.ResetOnSpawn = false
 TPplayersUI.ZIndexBehavior = Enum.ZIndexBehavior.Global
 TPplayersUI.IgnoreGuiInset = true
