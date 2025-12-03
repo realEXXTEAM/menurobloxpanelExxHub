@@ -4,6 +4,7 @@ local Player = Players.LocalPlayer
 --// ScreenGui Setup
 local ScriptUI = Instance.new("ScreenGui")
 ScriptUI.Name = "ScriptUI"
+ScriptUI.DisplayOrder = 9999
 ScriptUI.ResetOnSpawn = false
 ScriptUI.ZIndexBehavior = Enum.ZIndexBehavior.Global
 ScriptUI.IgnoreGuiInset = true
