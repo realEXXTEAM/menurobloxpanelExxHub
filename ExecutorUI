@@ -18,6 +18,7 @@ if old then old:Destroy() end
 --// ScreenGui
 local ExecutorUI = Instance.new("ScreenGui")
 ExecutorUI.Name = "ExecutorUI"
+ExecutorUI.DisplayOrder = 9999
 ExecutorUI.ResetOnSpawn = false
 ExecutorUI.ZIndexBehavior = Enum.ZIndexBehavior.Global
 ExecutorUI.IgnoreGuiInset = true
