@@ -12,6 +12,7 @@ local PlayerGui = Player:WaitForChild("PlayerGui")
 --// ScreenGui Setup
 local SettingsUI = Instance.new("ScreenGui")
 SettingsUI.Name = "SettingsUI"
+SettingsUI.DisplayOrder = 9999
 SettingsUI.ResetOnSpawn = false
 SettingsUI.ZIndexBehavior = Enum.ZIndexBehavior.Global
 SettingsUI.IgnoreGuiInset = true
