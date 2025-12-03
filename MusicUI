@@ -5,6 +5,7 @@ local TweenService = game:GetService("TweenService")
 --// GUI Setup
 local MusicUI = Instance.new("ScreenGui")
 MusicUI.Name = "MusicUI"
+MusicUI.DisplayOrder = 9999
 MusicUI.ResetOnSpawn = false
 MusicUI.ZIndexBehavior = Enum.ZIndexBehavior.Global
 MusicUI.IgnoreGuiInset = true
