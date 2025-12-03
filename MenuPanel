@@ -88,7 +88,7 @@ local menuItems = {
 	{Text="STSServer", Icon="rbxassetid://18633720097"},
 	{Text="Donate", Icon="rbxassetid://6031097227"},
 	{Text="TPplayers", Icon="rbxassetid://80278360213440"},
-    {Text="AnimChanger", Icon="rbxassetid://0"},
+    {Text="AnimChanger", Icon="rbxassetid://115198205982652"},
 }
 
 local opened = false
