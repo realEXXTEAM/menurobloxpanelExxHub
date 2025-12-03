@@ -1,1 +1,583 @@
+local Players = game:GetService("Players")
+local RunService = game:GetService("RunService")
+local TweenService = game:GetService("TweenService")
 
+local Player = Players.LocalPlayer
+if not Player.Character or not Player.Character.Parent then
+	Player.CharacterAdded:Wait()
+end
+task.wait(1)
+local Character = Player.Character
+local Humanoid = Character:WaitForChild("Humanoid")
+
+-- [[ VARIABEL BUAT NYIMPEN PILIHAN TERAKHIR ]]
+local currentEquippedPack = nil 
+
+-- =================================================================
+-- ANIMATION LIST
+-- =================================================================
+local AnimPackList = {
+    ["(canceled) Sneaky"] = {
+        Idle = "rbxassetid://1132473842",
+        Idle2 = " rbxassetid://1132477671",
+        Walk = "rbxassetid://1132510133",
+        Run = "rbxassetid://1132494274",
+        Jump = "rbxassetid://1132489853",
+        Fall = "rbxassetid://1132469004",
+        Climb = "rbxassetid://1132461372",
+        Swim = "rbxassetid://1132500520",
+        SwimIdle = "rbxassetid://1132506407"
+    },
+   ["(canceled) Patrol"] = {
+        Idle = "rbxassetid://1149612882",
+        Idle2 = " rbxassetid://1212954651",
+        Walk = "rbxassetid://1151231493",
+        Run = "rbxassetid://1150967949",
+        Jump = "rbxassetid://1150944216",
+        Fall = "rbxassetid://1148863382",
+        Climb = "rbxassetid://1148811837",
+        Swim = "rbxassetid://1151204998",
+        SwimIdle = "rbxassetid://1151221899"
+    },
+    ["(canceled) Popstar"] = {
+        Idle = "rbxassetid://1212900985",
+        Idle2 = " rbxassetid://1212954651",
+        Walk = "rbxassetid://1212980338",
+        Run = "rbxassetid://1212980348",
+        Jump = "rbxassetid://1212954642",
+        Fall = "rbxassetid://1212900995",
+        Climb = "rbxassetid://1213044953",    --- 1213044953 or 1213044939
+        Swim = "rbxassetid://1212852603",
+        SwimIdle = "rbxassetid://1212998578"
+    },
+    ["(canceled) Confident"] = {
+        Idle = "rbxassetid://1069977950",
+        Idle2 = " rbxassetid://1069987858",
+        Walk = "rbxassetid://1070017263",
+        Run = "rbxassetid://1070001516",
+        Jump = "rbxassetid://1069984524",
+        Fall = "rbxassetid://1069973677",
+        Climb = "rbxassetid://1069946257",
+        Swim = "rbxassetid://1070009914",
+        SwimIdle = "rbxassetid://1070012133"
+    },
+["(canceled) Cowboy"] = {
+        Idle = "rbxassetid://1014390418",
+        Idle2 = " rbxassetid://1014398616",
+        Walk = "rbxassetid://1014421541",
+        Run = "rbxassetid://1014401683",
+        Jump = "rbxassetid://1014394726",
+        Fall = "rbxassetid://1014384571",
+        Climb = "rbxassetid://1014380606",
+        Swim = "rbxassetid://1014406523",
+        SwimIdle = "rbxassetid://1014411816"
+    },
+    ["[NEW] Uboxed By Amazon"] = {
+        Idle = "rbxassetid://98281136301627",
+        Idle2 = " rbxassetid://138183121662404",
+        Walk = "rbxassetid://90478085024465",
+        Run = "rbxassetid://134824450619865",
+        Jump = "rbxassetid://121454505477205",
+        Fall = "rbxassetid://94788218468396",
+        Climb = "rbxassetid://121145883950231",
+        Swim = "rbxassetid://105962919001086",
+        SwimIdle = "rbxassetid://129126268464847"
+    },
+    ["(canceled) Princess"] = {
+        Idle = "rbxassetid://941003647",
+        Idle2 = "rbxassedid://941013098",
+        Walk = "rbxassetid://941028902",
+        Run = "rbxassetid://941015281",
+        Jump = "rbxassetid://941008832",
+        Fall = "rbxassetid://941000007",
+        Climb = "rbxassetid://940996062",
+        Swim = "rbxassetid://941018893",
+        SwimIdle = "rbxassetid://941025398"
+    },
+    ["FE Zombie"] = {
+        Idle = "rbxassetid://3489171152",
+        Idle2 = " rbxassetid://3489171152",
+        Walk = "rbxassetid://3489174223",
+        Run = "rbxassetid://3489173414",
+        Jump = "rbxassetid://616161997",
+        Fall = "rbxassetid://616157476",
+        Climb = "rbxassetid://616156119",
+        Swim = "rbxassetid://10921253142",
+        SwimIdle = "rbxassetid://10921253767"
+    },
+    ["Ghost"] = {
+        Idle = "rbxassetid://616006778",
+        Idle2 = " rbxassetid://616008087",
+        Walk = "rbxassetid://616010382",
+        Run = "rbxassetid://616013216",
+        Jump = "rbxassetid://616008936",
+        Fall = "rbxassetid://616005863",
+        Climb = "rbxassetid://616005863",
+        Swim = "rbxassetid://10921253142",
+        SwimIdle = "rbxassetid://10921253767"
+    },
+     ["(ðŸ˜œ) Spam Emote Classic"] = {
+        Idle = "rbxassetid://507770818",
+        Idle2 = " rbxassetid://507770818",
+        Walk = "rbxassetid://507770239",
+        Run = "rbxassetid://2506281703",
+        Jump = "rbxassetid://507770677",
+        Fall = "rbxassetid://507770453",
+        Climb = "rbxassetid://507771019",
+        Swim = "rbxassetid://507777268",
+        SwimIdle = "rbxassetid://507776043"
+    },
+     ["Pirate"] = {
+        Idle = "rbxassetid://750781874",
+        Idle2 = " rbxassetid://750782770",
+        Walk = "rbxassetid://750785693",
+        Run = "rbxassetid://750783738",
+        Jump = "rbxassetid://750782230",
+        Fall = "rbxassetid://750780242",
+        Climb = "rbxassetid://750779899",
+        Swim = "rbxassetid://750784579",
+        SwimIdle = "rbxassetid://750785176"
+    },
+     ["Werewolf"] = {
+        Idle = "rbxassetid://10921330408",
+        Idle2 = " rbxassetid://10921333667",
+        Walk = "rbxassetid://10921342074",
+        Run = "rbxassetid://10921336997",
+        Jump = "rbxassetid://1083218792",
+        Fall = "rbxassetid://10921337907",
+        Climb = "rbxassetid://10921329322",
+        Swim = "rbxassetid://10921340419",
+        SwimIdle = "rbxassetid://10921341319"
+    },
+     ["No Boundaries by Walmart"] = {
+        Idle = "rbxassetid://18747067405",
+        Idle2 = " rbxassetid://18747063918",
+        Walk = "rbxassetid://18747074203",
+        Run = "rbxassetid://18747070484",
+        Jump = "rbxassetid://18747069148",
+        Fall = "rbxassetid://18747062535",
+        Climb = "rbxassetid://18747060903",
+        Swim = "rbxassetid://18747073181",
+        SwimIdle = "rbxassetid://18747071682"
+    },
+     ["Adidas Community"] = {
+        Idle = "rbxassetid://122257458498464",
+        Idle2 = " rbxassetid://102357151005774",
+        Walk = "rbxassetid://122150855457006",
+        Run = "rbxassetid://82598234841035",
+        Jump = "rbxassetid://75290611992385",
+        Fall = "rbxassetid://98600215928904",
+        Climb = "rbxassetid://88763136693023",
+        Swim = "rbxassetid://133308483266208",
+        SwimIdle = "rbxassetid://109346520324160"
+    },
+     ["Adidas Sports"] = {
+        Idle = "rbxassetid://18537376492",
+        Idle2 = " rbxassetid://18537371272",
+        Walk = "rbxassetid://109346520324160",
+        Run = "rbxassetid://18537384940",
+        Jump = "rbxassetid://18537380791",
+        Fall = "rbxassetid://18537367238",
+        Climb = "rbxassetid://18537363391",
+        Swim = "rbxassetid://18537389531",
+        SwimIdle = "rbxassetid://18537387180"
+    },
+     ["Catwalk Clam by e.l.f"] = {
+        Idle = "rbxassetid://133806214992291",
+        Idle2 = " rbxassetid://94970088341563",
+        Walk = "rbxassetid://109168724482748",
+        Run = "rbxassetid://81024476153754",
+        Jump = "rbxassetid://116936326516985",
+        Fall = "rbxassetid://92294537340807",
+        Climb = "rbxassetid://18537380791",
+        Swim = "rbxassetid://134591743181628",
+        SwimIdle = "rbxassetid://98854111361360"
+    },
+     ["Animation for Mr.Toilet"] = {
+        Idle = "rbxassetid://4417977954",
+        Idle2 = " rbxassetid://4417978624",
+        Walk = "rbxassetid://10921269718",
+        Run = "rbxassetid://4417979645",
+        Jump = "rbxassetid://10921263860",
+        Fall = "rbxassetid://10921262864",
+        Climb = "rbxassetid://10921257536",
+        Swim = "rbxassetid://10921264784",
+        SwimIdle = "rbxassetid://10921265698"
+    }
+    
+}
+
+-- =================================================================
+-- GUI SETUP
+-- =================================================================
+local AnimChangerUI = Instance.new("ScreenGui")
+AnimChangerUI.Name = "AnimChangerUI"
+AnimChangerUI.DisplayOrder = 9999
+AnimChangerUI.ResetOnSpawn = false -- Biar GUI gak ilang pas mati
+AnimChangerUI.ZIndexBehavior = Enum.ZIndexBehavior.Global
+AnimChangerUI.IgnoreGuiInset = true
+AnimChangerUI.Enabled = true
+AnimChangerUI.Parent = Player:WaitForChild("PlayerGui")
+
+local MainFrame = Instance.new("Frame")
+MainFrame.Name = "MainFrame"
+MainFrame.Size = UDim2.new(0, 450, 0, 310)
+MainFrame.Position = UDim2.new(0.5, -225, 0.5, -155) -- Locked Center
+MainFrame.BackgroundColor3 = Color3.fromRGB(20, 20, 25) 
+MainFrame.BorderSizePixel = 0
+MainFrame.ClipsDescendants = true
+MainFrame.Parent = AnimChangerUI
+
+local UICorner = Instance.new("UICorner")
+UICorner.CornerRadius = UDim.new(0, 10)
+UICorner.Parent = MainFrame
+
+-- TITLE
+local Title = Instance.new("TextLabel")
+Title.Text = "ANIMATION CHANGER"
+Title.Size = UDim2.new(1, -40, 0, 35)
+Title.Position = UDim2.new(0, 10, 0, 0)
+Title.BackgroundTransparency = 1
+Title.TextColor3 = Color3.fromRGB(255, 255, 255)
+Title.Font = Enum.Font.GothamBlack
+Title.TextXAlignment = Enum.TextXAlignment.Left
+Title.TextSize = 16
+Title.Parent = MainFrame
+
+-- CLOSE BUTTON (X) - HIDE ONLY
+local CloseBtn = Instance.new("TextButton")
+CloseBtn.Name = "CloseButton"
+CloseBtn.Text = "X"
+CloseBtn.Size = UDim2.new(0, 30, 0, 30)
+CloseBtn.Position = UDim2.new(1, -35, 0, 5)
+CloseBtn.BackgroundTransparency = 1 
+CloseBtn.TextColor3 = Color3.fromRGB(255, 255, 255)
+CloseBtn.Font = Enum.Font.GothamBlack 
+CloseBtn.TextSize = 18
+CloseBtn.Parent = MainFrame
+
+CloseBtn.MouseButton1Click:Connect(function() 
+    AnimChangerUI.Enabled = false 
+end)
+
+-- Left Side: Pack List
+local ListContainer = Instance.new("Frame")
+ListContainer.Size = UDim2.new(0, 160, 0, 255)
+ListContainer.Position = UDim2.new(0, 10, 0, 45)
+ListContainer.BackgroundColor3 = Color3.fromRGB(30, 30, 35)
+ListContainer.Parent = MainFrame
+local ListCorner = Instance.new("UICorner"); ListCorner.Parent = ListContainer
+
+local ScrollList = Instance.new("ScrollingFrame")
+ScrollList.Size = UDim2.new(1, -6, 1, -10)
+ScrollList.Position = UDim2.new(0, 3, 0, 5)
+ScrollList.BackgroundTransparency = 1
+ScrollList.ScrollBarThickness = 3
+ScrollList.AutomaticCanvasSize = Enum.AutomaticSize.Y
+ScrollList.CanvasSize = UDim2.new(0, 0, 0, 0)
+ScrollList.Parent = ListContainer
+
+local UIListLayout = Instance.new("UIListLayout")
+UIListLayout.Padding = UDim.new(0, 6)
+UIListLayout.SortOrder = Enum.SortOrder.Name
+UIListLayout.Parent = ScrollList
+UIListLayout.HorizontalAlignment = Enum.HorizontalAlignment.Center
+
+-- Right Side: Preview Area
+local RightContainer = Instance.new("Frame")
+RightContainer.Size = UDim2.new(0, 260, 0, 255)
+RightContainer.Position = UDim2.new(0, 180, 0, 45)
+RightContainer.BackgroundTransparency = 1
+RightContainer.Parent = MainFrame
+
+local PreviewFrame = Instance.new("ViewportFrame")
+PreviewFrame.Size = UDim2.new(1, 0, 0, 160)
+PreviewFrame.Position = UDim2.new(0, 0, 0, 0)
+PreviewFrame.BackgroundColor3 = Color3.fromRGB(15, 15, 20)
+PreviewFrame.BorderSizePixel = 0
+PreviewFrame.Parent = RightContainer
+local PreviewCorner = Instance.new("UICorner"); PreviewCorner.Parent = PreviewFrame
+local WorldModel = Instance.new("WorldModel"); WorldModel.Parent = PreviewFrame
+
+-- INSTRUCTION LABEL
+local SelectPromptLabel = Instance.new("TextLabel")
+SelectPromptLabel.Name = "SelectPromptLabel"
+SelectPromptLabel.Text = "Silakan pilih Animation Pack dari daftar di sebelah kiri untuk memulai."
+SelectPromptLabel.Size = UDim2.new(1, -20, 0, 50)
+SelectPromptLabel.Position = UDim2.new(0, 10, 0, 175)
+SelectPromptLabel.BackgroundTransparency = 1
+SelectPromptLabel.TextColor3 = Color3.fromRGB(150, 150, 160)
+SelectPromptLabel.Font = Enum.Font.GothamSemibold
+SelectPromptLabel.TextSize = 13
+SelectPromptLabel.TextWrapped = true
+SelectPromptLabel.Visible = true 
+SelectPromptLabel.Parent = RightContainer
+
+-- CONTAINER TOMBOL AKSI
+local PreviewActionContainer = Instance.new("Frame")
+PreviewActionContainer.Name = "ActionButtons"
+PreviewActionContainer.Size = UDim2.new(1, 0, 0, 40)
+PreviewActionContainer.Position = UDim2.new(0, 0, 0, 165)
+PreviewActionContainer.BackgroundTransparency = 1
+PreviewActionContainer.Visible = false 
+PreviewActionContainer.Parent = RightContainer
+
+local UIGridLayout = Instance.new("UIGridLayout")
+UIGridLayout.CellSize = UDim2.new(0, 60, 0, 18)
+UIGridLayout.CellPadding = UDim2.new(0, 5, 0, 5)
+UIGridLayout.HorizontalAlignment = Enum.HorizontalAlignment.Center
+UIGridLayout.Parent = PreviewActionContainer
+
+-- EQUIP BUTTON (APPLY)
+local EquipBtn = Instance.new("TextButton")
+EquipBtn.Text = "APPLY PACK"
+EquipBtn.Size = UDim2.new(1, 0, 0, 35)
+EquipBtn.Position = UDim2.new(0, 0, 1, -35)
+EquipBtn.BackgroundColor3 = Color3.fromRGB(0, 50, 120) -- Dark Blue
+EquipBtn.TextColor3 = Color3.fromRGB(255, 255, 255)
+EquipBtn.Font = Enum.Font.GothamBold
+EquipBtn.TextSize = 14
+EquipBtn.Visible = false 
+EquipBtn.Parent = RightContainer
+local EquipCorner = Instance.new("UICorner"); EquipCorner.Parent = EquipBtn
+
+-- Variables
+local currentSelectedPack = nil
+local currentPreviewAnimator = nil
+local currentPreviewTrack = nil
+local currentActiveBtn = nil
+
+-- =================================================================
+-- LOGIC APPLY ANIMATION (DIPISAH SUPAYA BISA DIPANGGIL ULANG)
+-- =================================================================
+local function ApplyPackToCharacter(char, packName)
+    local packData = AnimPackList[packName]
+    -- Tunggu Animate script load dulu (biasanya pas respawn butuh waktu dikit)
+    local AnimateScript = char:WaitForChild("Animate", 10)
+    local Hum = char:WaitForChild("Humanoid", 10)
+    
+    if AnimateScript and Hum and packData then
+        -- Stop animasi yang sedang jalan biar refresh
+        local Animator = Hum:FindFirstChild("Animator")
+        if Animator then
+            for _, track in pairs(Animator:GetPlayingAnimationTracks()) do track:Stop() end
+        end
+        
+        local function replaceId(name, id)
+            local animObject = AnimateScript:FindFirstChild(name)
+            if animObject then
+                for _, v in pairs(animObject:GetChildren()) do
+                    if v:IsA("Animation") then v.AnimationId = id end
+                end
+                local possibleValue = AnimateScript:FindFirstChild(name.."Anim")
+                if possibleValue and possibleValue:IsA("StringValue") then possibleValue.Value = id end
+            end
+        end
+
+        replaceId("idle", packData.Idle)
+        replaceId("walk", packData.Walk)
+        replaceId("run", packData.Run)
+        replaceId("jump", packData.Jump)
+        replaceId("fall", packData.Fall)
+        replaceId("swim", packData.Swim)
+        if packData.SwimIdle then
+            replaceId("swimidle", packData.SwimIdle)
+        end
+        replaceId("climb", packData.Climb)
+        
+        -- Restart script Animate biar efeknya jalan
+        AnimateScript.Disabled = true
+        task.wait(0.1)
+        AnimateScript.Disabled = false
+    end
+end
+
+-- =================================================================
+-- AUTO-LOAD SAAT RESET (PERSISTENCE)
+-- =================================================================
+Player.CharacterAdded:Connect(function(newChar)
+    if currentEquippedPack then
+        -- Pasang lagi animasi yang terakhir dipakai
+        task.wait(0.5) -- Delay dikit biar karakter load sempurna
+        ApplyPackToCharacter(newChar, currentEquippedPack)
+    end
+end)
+
+-- =================================================================
+-- PREVIEW LOGIC
+-- =================================================================
+
+local function SetupPreviewCamera(targetPart)
+	local Camera = Instance.new("Camera")
+	Camera.CFrame = CFrame.new(targetPart.Position + (targetPart.CFrame.LookVector * 6) + Vector3.new(0, 0.5, 0), targetPart.Position)
+	PreviewFrame.CurrentCamera = Camera
+	PreviewFrame.CurrentCamera.Parent = PreviewFrame
+end
+
+local function InitialPreviewSetup()
+	for _, child in pairs(WorldModel:GetChildren()) do child:Destroy() end
+	currentPreviewAnimator = nil
+	currentPreviewTrack = nil
+
+	if Player.Character then
+		Player.Character.Archivable = true
+		local CloneChar = Player.Character:Clone()
+		CloneChar.Parent = WorldModel
+		CloneChar:SetPrimaryPartCFrame(CFrame.new(0,0,0))
+
+		local RootPart = CloneChar:FindFirstChild("HumanoidRootPart")
+		if RootPart then SetupPreviewCamera(RootPart) end
+
+		local PreviewHum = CloneChar:FindFirstChild("Humanoid")
+		if PreviewHum then
+			PreviewHum:ChangeState(Enum.HumanoidStateType.Physics)
+			PreviewHum.DisplayDistanceType = Enum.HumanoidDisplayDistanceType.None
+		end
+		Player.Character.Archivable = false
+	end
+end
+
+local function PlayPreviewAction(actionName)
+	if not currentSelectedPack or not currentPreviewAnimator then return end
+	local packData = AnimPackList[currentSelectedPack]
+	local animId = packData[actionName]
+	if actionName == "SwimIdle" and not animId then animId = packData.Swim end 
+	
+	if not animId then return end
+	
+	if currentPreviewTrack then
+		currentPreviewTrack:Stop()
+		currentPreviewTrack = nil
+	end
+	
+	local Animation = Instance.new("Animation")
+	Animation.AnimationId = animId
+	currentPreviewTrack = currentPreviewAnimator:LoadAnimation(Animation)
+	currentPreviewTrack.Priority = Enum.AnimationPriority.Action
+	
+	currentPreviewTrack.Looped = true
+	currentPreviewTrack:Play()
+end
+
+local function UpdatePreviewCharacter(packName)
+	currentSelectedPack = packName
+	currentPreviewAnimator = nil
+	currentPreviewTrack = nil
+
+	for _, child in pairs(WorldModel:GetChildren()) do child:Destroy() end
+	
+	if Player.Character then
+		Player.Character.Archivable = true
+		local CloneChar = Player.Character:Clone()
+		CloneChar.Parent = WorldModel
+		CloneChar:SetPrimaryPartCFrame(CFrame.new(0,0,0))
+		
+		local RootPart = CloneChar:FindFirstChild("HumanoidRootPart")
+		if RootPart then SetupPreviewCamera(RootPart) end
+		
+		local PreviewHum = CloneChar:FindFirstChild("Humanoid")
+		if PreviewHum then
+			PreviewHum:ChangeState(Enum.HumanoidStateType.Physics)
+			PreviewHum.DisplayDistanceType = Enum.HumanoidDisplayDistanceType.None
+			currentPreviewAnimator = PreviewHum:FindFirstChild("Animator") or Instance.new("Animator", PreviewHum)
+			PlayPreviewAction("Idle")
+		end
+		Player.Character.Archivable = false
+	end
+end
+
+-- =================================================================
+-- BUTTON GENERATORS
+-- =================================================================
+
+local actions = {"Idle", "Walk", "Run", "Jump", "Fall", "Climb", "Swim"}
+for _, actionName in ipairs(actions) do
+	local ActionBtn = Instance.new("TextButton")
+	ActionBtn.Name = actionName
+	ActionBtn.Text = actionName
+	ActionBtn.BackgroundColor3 = Color3.fromRGB(50, 50, 55)
+	ActionBtn.TextColor3 = Color3.fromRGB(200, 200, 200)
+	ActionBtn.Font = Enum.Font.GothamSemibold
+	ActionBtn.TextSize = 10
+	ActionBtn.Parent = PreviewActionContainer
+	local AC = Instance.new("UICorner"); AC.CornerRadius = UDim.new(0,5); AC.Parent = ActionBtn
+	
+	ActionBtn.MouseButton1Click:Connect(function()
+		if not currentSelectedPack then return end 
+		
+		PlayPreviewAction(actionName)
+		TweenService:Create(ActionBtn, TweenInfo.new(0.2), {BackgroundColor3 = Color3.fromRGB(0, 100, 255), TextColor3 = Color3.fromRGB(255,255,255)}):Play()
+		delay(0.2, function()
+			TweenService:Create(ActionBtn, TweenInfo.new(0.2), {BackgroundColor3 = Color3.fromRGB(50, 50, 55), TextColor3 = Color3.fromRGB(200, 200, 200)}):Play()
+		end)
+	end)
+end
+
+-- Apply Button Logic
+EquipBtn.MouseButton1Click:Connect(function()
+	if not currentSelectedPack then return end
+    
+    -- SIMPAN YANG SEDANG DIPAKAI
+    currentEquippedPack = currentSelectedPack
+    
+	local Char = Player.Character
+	if Char then
+        EquipBtn.Text = "..."
+        -- Panggil fungsi apply
+        ApplyPackToCharacter(Char, currentEquippedPack)
+        
+        EquipBtn.Text = "APPLIED!"
+        EquipBtn.BackgroundColor3 = Color3.fromRGB(0, 150, 255) 
+        wait(1)
+        EquipBtn.Text = "APPLY PACK"
+        EquipBtn.BackgroundColor3 = Color3.fromRGB(0, 50, 120) 
+	end
+end)
+
+-- Pack List Buttons
+local packNames = {}
+for name, _ in pairs(AnimPackList) do table.insert(packNames, name) end
+table.sort(packNames)
+
+for _, packName in ipairs(packNames) do
+	local Btn = Instance.new("TextButton")
+	Btn.Name = packName
+	Btn.Text = packName
+	Btn.Size = UDim2.new(0, 140, 0, 35)
+	Btn.BackgroundColor3 = Color3.fromRGB(45, 45, 50)
+	Btn.TextColor3 = Color3.fromRGB(200, 200, 200)
+	Btn.Font = Enum.Font.GothamSemibold
+	Btn.TextSize = 12
+	Btn.Parent = ScrollList
+	
+	local BtnCorner = Instance.new("UICorner"); BtnCorner.Parent = Btn
+	
+	local Stroke = Instance.new("UIStroke")
+	Stroke.Name = "SelectionStroke"
+	Stroke.ApplyStrokeMode = Enum.ApplyStrokeMode.Border
+	Stroke.Color = Color3.fromRGB(50, 150, 255) 
+	Stroke.Thickness = 0 
+	Stroke.Parent = Btn
+	
+	Btn.MouseButton1Click:Connect(function()
+		if currentActiveBtn then
+			TweenService:Create(currentActiveBtn, TweenInfo.new(0.2), {BackgroundColor3 = Color3.fromRGB(45, 45, 50), TextColor3 = Color3.fromRGB(200, 200, 200)}):Play()
+			currentActiveBtn.SelectionStroke.Thickness = 0 
+		end
+		
+		currentActiveBtn = Btn
+		
+		TweenService:Create(Btn, TweenInfo.new(0.2), {BackgroundColor3 = Color3.fromRGB(30, 30, 35), TextColor3 = Color3.fromRGB(255, 255, 255)}):Play()
+		Btn.SelectionStroke.Thickness = 2 
+		
+		-- [[ LOGIC SAAT PACK DIPILIH ]]
+		SelectPromptLabel.Visible = false -- Sembunyikan teks instruksi
+		PreviewActionContainer.Visible = true -- Munculkan tombol aksi
+		EquipBtn.Visible = true -- Munculkan tombol apply
+		
+		UpdatePreviewCharacter(packName)
+	end)
+end
+
+-- Start Static
+InitialPreviewSetup()
