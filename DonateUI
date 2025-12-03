@@ -9,7 +9,7 @@ end
 
 local screenGui = Instance.new("ScreenGui")
 screenGui.Name = "DonateUI"
-screenGUI.DisplayOrder = 9999
+screenGui.DisplayOrder = 9999
 screenGui.IgnoreGuiInset = true
 screenGui.ResetOnSpawn = false
 screenGui.Enabled = false
