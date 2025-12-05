@@ -26,7 +26,7 @@ ExecutorUI.DisplayOrder = 9999
 ExecutorUI.ResetOnSpawn = false
 ExecutorUI.ZIndexBehavior = Enum.ZIndexBehavior.Global
 ExecutorUI.IgnoreGuiInset = true
-ExecutorUI.Enabled = false -- Default mati, nyalain manual atau via script lain
+ExecutorUI.Enabled = false
 ExecutorUI.Parent = Player:WaitForChild("PlayerGui")
 
 --// Frame Utama
@@ -192,5 +192,4 @@ Player.CharacterAdded:Connect(function()
 	end
 end)
 
--- Untuk testing di Studio, langsung nyalain UI nya
-ExecutorUI.Enabled = true 
+
