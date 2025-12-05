@@ -31,7 +31,7 @@ elseif syn and syn.protect_gui then
     syn.protect_gui(ScreenGui)
     ScreenGui.Parent = CoreGui
 else
-    if Players.LocalPlayer then
+    if Players.LocalPlayer then  
         ScreenGui.Parent = Players.LocalPlayer:WaitForChild("PlayerGui")
     else
         ScreenGui.Parent = CoreGui
