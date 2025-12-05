@@ -30,7 +30,7 @@ local AnimPackList = {
     },
    ["(canceled) Patrol"] = {
         Idle = "rbxassetid://1149612882",
-        Idle2 = " rbxassetid://1212954651",
+        Idle2 = " rbxassetid://1150842221",
         Walk = "rbxassetid://1151231493",
         Run = "rbxassetid://1150967949",
         Jump = "rbxassetid://1150944216",
