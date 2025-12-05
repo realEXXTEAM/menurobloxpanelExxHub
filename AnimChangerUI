@@ -316,7 +316,7 @@ local WorldModel = Instance.new("WorldModel"); WorldModel.Parent = PreviewFrame
 -- INSTRUCTION LABEL
 local SelectPromptLabel = Instance.new("TextLabel")
 SelectPromptLabel.Name = "SelectPromptLabel"
-SelectPromptLabel.Text = "Silakan pilih Animation Pack dari daftar di sebelah kiri."
+SelectPromptLabel.Text = "Please select an Animation Pack from the list on the left."
 SelectPromptLabel.Size = UDim2.new(1, -20, 0, 50)
 SelectPromptLabel.Position = UDim2.new(0, 10, 0, 175)
 SelectPromptLabel.BackgroundTransparency = 1
