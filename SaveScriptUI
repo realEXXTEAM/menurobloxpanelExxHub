@@ -1,0 +1,462 @@
+-- Services
+local Players = game:GetService("Players")
+local UserInputService = game:GetService("UserInputService")
+local Player = Players.LocalPlayer
+
+-- // CONFIG FOLDER
+local FolderName = "MySavedScripts"
+if not isfolder(FolderName) then
+    makefolder(FolderName)
+end
+
+-- Bersihin UI Lama
+if Player:WaitForChild("PlayerGui"):FindFirstChild("SaveScriptUI") then
+    Player.PlayerGui.SaveScriptUI:Destroy()
+end
+
+-- // --- SETUP SCREENGUI ---
+local SaveScriptUI = Instance.new("ScreenGui")
+SaveScriptUI.Name = "SaveScriptUI"
+SaveScriptUI.DisplayOrder = 9999
+SaveScriptUI.ResetOnSpawn = false
+SaveScriptUI.ZIndexBehavior = Enum.ZIndexBehavior.Global
+SaveScriptUI.IgnoreGuiInset = true
+SaveScriptUI.Enabled = false
+SaveScriptUI.Parent = Player:WaitForChild("PlayerGui")
+-- // -----------------------
+
+-- // WARNA TEMA
+local Theme = {
+    BG = Color3.fromRGB(25, 28, 35),
+    Header = Color3.fromRGB(20, 22, 28),
+    Card = Color3.fromRGB(30, 33, 40),
+    Blue = Color3.fromRGB(0, 110, 255),
+    Black = Color3.fromRGB(15, 15, 15), 
+    Text = Color3.fromRGB(255, 255, 255),
+    Red = Color3.fromRGB(255, 50, 50),
+    Green = Color3.fromRGB(0, 255, 100),
+    Yellow = Color3.fromRGB(255, 200, 0)
+}
+
+local function AddCorner(parent, radius)
+    local c = Instance.new("UICorner")
+    c.CornerRadius = UDim.new(0, radius)
+    c.Parent = parent
+end
+
+local function AddStroke(parent, color, thickness)
+    local s = Instance.new("UIStroke")
+    s.Color = color
+    s.Thickness = thickness
+    s.ApplyStrokeMode = Enum.ApplyStrokeMode.Border
+    s.Parent = parent
+    return s
+end
+
+-- // MAIN FRAME
+local MainFrame = Instance.new("Frame")
+MainFrame.Parent = SaveScriptUI
+MainFrame.BackgroundColor3 = Theme.BG
+MainFrame.AnchorPoint = Vector2.new(0.5, 0.5)
+
+-- [[ !!! GANTI POSISI UI DI SINI !!! ]]
+-- Angka ke-3 (0.5) itu posisi Vertikal (Atas/Bawah).
+-- 0.5 = Tengah Pas
+-- 0.3 = Lebih ke Atas
+-- 0.7 = Lebih ke Bawah
+MainFrame.Position = UDim2.new(0.5, 0, 0.5, 0) 
+-- [[ -------------------------------- ]]
+
+MainFrame.Size = UDim2.new(0.45, 0, 0.75, 0)
+MainFrame.BorderSizePixel = 0
+MainFrame.Active = true
+MainFrame.Draggable = false
+AddCorner(MainFrame, 12)
+
+-- // HEADER AREA
+local Header = Instance.new("Frame")
+Header.Parent = MainFrame
+Header.BackgroundColor3 = Theme.Header
+Header.Size = UDim2.new(1, 0, 0.18, 0)
+AddCorner(Header, 12)
+
+local HeaderFill = Instance.new("Frame")
+HeaderFill.Parent = Header
+HeaderFill.BackgroundColor3 = Theme.Header
+HeaderFill.BorderSizePixel = 0
+HeaderFill.Position = UDim2.new(0, 0, 0.8, 0)
+HeaderFill.Size = UDim2.new(1, 0, 0.2, 0)
+
+-- Title
+local TitleLabel = Instance.new("TextLabel")
+TitleLabel.Parent = Header
+TitleLabel.BackgroundTransparency = 1
+TitleLabel.Position = UDim2.new(0.05, 0, 0.1, 0)
+TitleLabel.Size = UDim2.new(0.5, 0, 0.3, 0)
+TitleLabel.Font = Enum.Font.GothamBold
+TitleLabel.Text = "Save Script"
+TitleLabel.TextColor3 = Theme.Text
+TitleLabel.TextSize = 16
+TitleLabel.TextXAlignment = Enum.TextXAlignment.Left
+
+-- Close Btn
+local CloseBtn = Instance.new("TextButton")
+CloseBtn.Parent = Header
+CloseBtn.BackgroundTransparency = 1
+CloseBtn.Position = UDim2.new(0.90, 0, 0.1, 0)
+CloseBtn.Size = UDim2.new(0.1, 0, 0.3, 0)
+CloseBtn.Font = Enum.Font.GothamBold
+CloseBtn.Text = "X"
+CloseBtn.TextColor3 = Color3.fromRGB(180, 180, 180)
+CloseBtn.TextSize = 14
+CloseBtn.MouseButton1Click:Connect(function() SaveScriptUI.Enabled = false end)
+
+-- Search Bar
+local SearchBar = Instance.new("TextBox")
+SearchBar.Parent = Header
+SearchBar.BackgroundColor3 = Theme.Card
+SearchBar.Position = UDim2.new(0.05, 0, 0.55, 0)
+SearchBar.Size = UDim2.new(0.60, 0, 0.35, 0)
+SearchBar.Font = Enum.Font.Gotham
+SearchBar.PlaceholderText = "Search..."
+SearchBar.Text = ""
+SearchBar.TextColor3 = Theme.Text
+SearchBar.TextSize = 12
+AddCorner(SearchBar, 6)
+
+-- Upload Btn
+local UploadBtn = Instance.new("TextButton")
+UploadBtn.Parent = Header
+UploadBtn.BackgroundColor3 = Theme.Blue
+UploadBtn.Position = UDim2.new(0.68, 0, 0.55, 0)
+UploadBtn.Size = UDim2.new(0.27, 0, 0.35, 0)
+UploadBtn.Font = Enum.Font.GothamBold
+UploadBtn.Text = "UPLOAD"
+UploadBtn.TextColor3 = Theme.Text
+UploadBtn.TextSize = 10
+AddCorner(UploadBtn, 6)
+
+-- // HALAMAN 1: LIST SCRIPT
+local PageList = Instance.new("ScrollingFrame")
+PageList.Name = "PageList"
+PageList.Parent = MainFrame
+PageList.BackgroundTransparency = 1
+PageList.Position = UDim2.new(0, 0, 0.20, 0)
+PageList.Size = UDim2.new(1, 0, 0.78, 0)
+PageList.ScrollBarThickness = 3
+PageList.AutomaticCanvasSize = Enum.AutomaticSize.Y
+PageList.CanvasSize = UDim2.new(0,0,0,0)
+PageList.Visible = true
+
+local UIList = Instance.new("UIListLayout")
+UIList.Parent = PageList
+UIList.SortOrder = Enum.SortOrder.LayoutOrder
+UIList.Padding = UDim.new(0, 8)
+UIList.HorizontalAlignment = Enum.HorizontalAlignment.Center
+
+local ListPad = Instance.new("UIPadding")
+ListPad.Parent = PageList
+ListPad.PaddingTop = UDim.new(0, 5)
+ListPad.PaddingBottom = UDim.new(0, 10)
+
+-- Empty State
+local EmptyLabel = Instance.new("TextLabel")
+EmptyLabel.Parent = PageList
+EmptyLabel.BackgroundTransparency = 1
+EmptyLabel.Size = UDim2.new(1, 0, 0, 80)
+EmptyLabel.Font = Enum.Font.Gotham
+EmptyLabel.Text = "List Kosong!\nKlik tombol UPLOAD di atas."
+EmptyLabel.TextColor3 = Color3.fromRGB(150, 150, 150)
+EmptyLabel.TextSize = 12
+EmptyLabel.Visible = false
+
+-- // HALAMAN 2: INPUT FORM
+local PageAdd = Instance.new("Frame")
+PageAdd.Name = "PageAdd"
+PageAdd.Parent = MainFrame
+PageAdd.BackgroundTransparency = 1
+PageAdd.Position = UDim2.new(0, 0, 0.20, 0)
+PageAdd.Size = UDim2.new(1, 0, 0.78, 0)
+PageAdd.Visible = false 
+
+-- Input Nama
+local InputName = Instance.new("TextBox")
+InputName.Parent = PageAdd
+InputName.BackgroundColor3 = Theme.Card
+InputName.Position = UDim2.new(0.05, 0, 0.02, 0)
+InputName.Size = UDim2.new(0.90, 0, 0.12, 0)
+InputName.Font = Enum.Font.GothamBold
+InputName.PlaceholderText = "Judul Script..."
+InputName.Text = ""
+InputName.TextColor3 = Theme.Text
+InputName.TextSize = 14
+AddCorner(InputName, 6)
+AddStroke(InputName, Theme.Blue, 1)
+
+-- Scroll Input Script
+local ScriptScrollContainer = Instance.new("ScrollingFrame")
+ScriptScrollContainer.Parent = PageAdd
+ScriptScrollContainer.BackgroundColor3 = Theme.Card
+ScriptScrollContainer.Position = UDim2.new(0.05, 0, 0.18, 0)
+ScriptScrollContainer.Size = UDim2.new(0.90, 0, 0.62, 0)
+ScriptScrollContainer.CanvasSize = UDim2.new(0, 0, 0, 0)
+ScriptScrollContainer.AutomaticCanvasSize = Enum.AutomaticSize.XY
+ScriptScrollContainer.ScrollingDirection = Enum.ScrollingDirection.XY
+ScriptScrollContainer.ScrollBarThickness = 4
+AddCorner(ScriptScrollContainer, 6)
+
+local InputScript = Instance.new("TextBox")
+InputScript.Parent = ScriptScrollContainer
+InputScript.BackgroundTransparency = 1
+InputScript.Size = UDim2.new(1, 0, 1, 0) 
+InputScript.AutomaticSize = Enum.AutomaticSize.XY 
+InputScript.Font = Enum.Font.Code
+InputScript.PlaceholderText = "-- Paste Script Disini..."
+InputScript.Text = ""
+InputScript.TextColor3 = Color3.fromRGB(200, 200, 200)
+InputScript.TextSize = 12
+InputScript.TextXAlignment = Enum.TextXAlignment.Left
+InputScript.TextYAlignment = Enum.TextYAlignment.Top
+InputScript.MultiLine = true
+InputScript.ClearTextOnFocus = false
+InputScript.TextWrapped = false 
+
+local SaveButton = Instance.new("TextButton")
+SaveButton.Parent = PageAdd
+SaveButton.BackgroundColor3 = Theme.Blue
+SaveButton.Position = UDim2.new(0.05, 0, 0.85, 0)
+SaveButton.Size = UDim2.new(0.90, 0, 0.12, 0)
+SaveButton.Font = Enum.Font.GothamBold
+SaveButton.Text = "SIMPAN SCRIPT"
+SaveButton.TextColor3 = Theme.Text
+SaveButton.TextSize = 12
+AddCorner(SaveButton, 6)
+
+-- // POPUP KONFIRMASI DELETE
+local ConfirmOverlay = Instance.new("Frame")
+ConfirmOverlay.Parent = SaveScriptUI
+ConfirmOverlay.BackgroundColor3 = Color3.new(0,0,0)
+-- DISINI BRO: Transparency jadi 1 biar gak ada layar hitam
+ConfirmOverlay.BackgroundTransparency = 1 
+ConfirmOverlay.Size = UDim2.new(1, 0, 1, 0)
+ConfirmOverlay.Visible = false
+ConfirmOverlay.ZIndex = 20
+
+local ConfirmBox = Instance.new("Frame")
+ConfirmBox.Parent = ConfirmOverlay
+ConfirmBox.BackgroundColor3 = Theme.BG
+ConfirmBox.AnchorPoint = Vector2.new(0.5, 0.5)
+ConfirmBox.Position = UDim2.new(0.5, 0, 0.5, 0)
+ConfirmBox.Size = UDim2.new(0.6, 0, 0, 120) 
+AddCorner(ConfirmBox, 10)
+AddStroke(ConfirmBox, Theme.Red, 2)
+
+local ConfirmTitle = Instance.new("TextLabel")
+ConfirmTitle.Parent = ConfirmBox
+ConfirmTitle.BackgroundTransparency = 1
+ConfirmTitle.Position = UDim2.new(0, 0, 0.1, 0)
+ConfirmTitle.Size = UDim2.new(1, 0, 0.3, 0)
+ConfirmTitle.Font = Enum.Font.GothamBold
+ConfirmTitle.Text = "HAPUS SCRIPT?"
+ConfirmTitle.TextColor3 = Theme.Text
+ConfirmTitle.TextSize = 14
+
+local ConfirmDesc = Instance.new("TextLabel")
+ConfirmDesc.Parent = ConfirmBox
+ConfirmDesc.BackgroundTransparency = 1
+ConfirmDesc.Position = UDim2.new(0.05, 0, 0.35, 0)
+ConfirmDesc.Size = UDim2.new(0.9, 0, 0.2, 0)
+ConfirmDesc.Font = Enum.Font.Gotham
+ConfirmDesc.Text = "Anda yakin ingin menghapus ini?"
+ConfirmDesc.TextColor3 = Color3.fromRGB(180, 180, 180)
+ConfirmDesc.TextSize = 11
+
+-- YES
+local YesBtn = Instance.new("TextButton")
+YesBtn.Parent = ConfirmBox
+YesBtn.BackgroundColor3 = Theme.Red
+YesBtn.Position = UDim2.new(0.1, 0, 0.65, 0)
+YesBtn.Size = UDim2.new(0.35, 0, 0.25, 0)
+YesBtn.Font = Enum.Font.GothamBold
+YesBtn.Text = "YES"
+YesBtn.TextColor3 = Theme.Text
+YesBtn.TextSize = 12
+AddCorner(YesBtn, 6)
+
+-- NO
+local NoBtn = Instance.new("TextButton")
+NoBtn.Parent = ConfirmBox
+NoBtn.BackgroundColor3 = Theme.Card
+NoBtn.Position = UDim2.new(0.55, 0, 0.65, 0)
+NoBtn.Size = UDim2.new(0.35, 0, 0.25, 0)
+NoBtn.Font = Enum.Font.GothamBold
+NoBtn.Text = "NO"
+NoBtn.TextColor3 = Theme.Text
+NoBtn.TextSize = 12
+AddCorner(NoBtn, 6)
+
+-- // LOGIC VARIABLES
+local isUploading = false
+local currentEditFile = nil 
+local fileToDelete = nil 
+
+-- // LOGIC REFRESH
+local function RefreshList()
+    for _, v in pairs(PageList:GetChildren()) do
+        if v:IsA("Frame") then v:Destroy() end
+    end
+    
+    local foundFiles = false
+    
+    if listfiles then
+        local files = listfiles(FolderName)
+        if #files > 0 then foundFiles = true end
+        
+        for _, file in pairs(files) do
+            if file:sub(-4) == ".lua" or file:sub(-4) == ".txt" then
+                local name = file:match("([^/]+)$"):gsub("%.lua", ""):gsub("%.txt", "")
+                
+                if SearchBar.Text == "" or name:lower():find(SearchBar.Text:lower()) then
+                    -- Card Item
+                    local Item = Instance.new("Frame")
+                    Item.Parent = PageList
+                    Item.BackgroundColor3 = Theme.Card
+                    Item.Size = UDim2.new(0.92, 0, 0, 85)
+                    AddCorner(Item, 6)
+                    AddStroke(Item, Theme.Blue, 1.5)
+                    
+                    local Title = Instance.new("TextLabel")
+                    Title.Parent = Item
+                    Title.BackgroundTransparency = 1
+                    Title.Position = UDim2.new(0.05, 0, 0.05, 0)
+                    Title.Size = UDim2.new(0.9, 0, 0.35, 0)
+                    Title.Font = Enum.Font.GothamBold
+                    Title.Text = name
+                    Title.TextColor3 = Theme.Text
+                    Title.TextSize = 12
+                    Title.TextXAlignment = Enum.TextXAlignment.Left
+                    Title.TextTruncate = Enum.TextTruncate.AtEnd
+                    
+                    -- Container Tombol
+                    local BtnBox = Instance.new("Frame")
+                    BtnBox.Parent = Item
+                    BtnBox.BackgroundTransparency = 1
+                    BtnBox.Position = UDim2.new(0.05, 0, 0.50, 0)
+                    BtnBox.Size = UDim2.new(0.9, 0, 0.40, 0)
+                    
+                    local LayoutBtn = Instance.new("UIListLayout")
+                    LayoutBtn.Parent = BtnBox
+                    LayoutBtn.FillDirection = Enum.FillDirection.Horizontal
+                    LayoutBtn.HorizontalAlignment = Enum.HorizontalAlignment.Left
+                    LayoutBtn.Padding = UDim.new(0, 5)
+                    
+                    local function MakeBtn(txt, func, outlineCol)
+                        local b = Instance.new("TextButton")
+                        b.Parent = BtnBox
+                        b.BackgroundColor3 = Theme.Black
+                        b.Size = UDim2.new(0.31, 0, 1, 0)
+                        b.Font = Enum.Font.GothamBold
+                        b.Text = txt
+                        b.TextColor3 = outlineCol or Theme.Text 
+                        b.TextSize = 9
+                        AddCorner(b, 4)
+                        b.MouseButton1Click:Connect(func)
+                        
+                        if outlineCol then
+                            AddStroke(b, outlineCol, 1)
+                        end
+                    end
+                    
+                    -- EDIT
+                    MakeBtn("EDIT", function()
+                        currentEditFile = file
+                        InputName.Text = name
+                        InputScript.Text = readfile(file)
+                        
+                        isUploading = true
+                        PageList.Visible = false
+                        PageAdd.Visible = true
+                        UploadBtn.Text = "BACK"
+                        UploadBtn.BackgroundColor3 = Theme.Red
+                        SaveButton.Text = "UPDATE SCRIPT"
+                    end, Theme.Yellow)
+                    
+                    -- DEL
+                    MakeBtn("DEL", function()
+                        fileToDelete = file
+                        ConfirmDesc.Text = "Hapus '"..name.."'?"
+                        ConfirmOverlay.Visible = true
+                    end, Theme.Red)
+                    
+                    -- RUN
+                    MakeBtn("RUN", function() 
+                        loadstring(readfile(file))()
+                    end, Theme.Green)
+                end
+            end
+        end
+    end
+    
+    EmptyLabel.Visible = not foundFiles
+end
+
+-- // EVENTS
+UploadBtn.MouseButton1Click:Connect(function()
+    isUploading = not isUploading
+    if isUploading then
+        currentEditFile = nil
+        PageList.Visible = false
+        PageAdd.Visible = true
+        UploadBtn.Text = "BACK"
+        UploadBtn.BackgroundColor3 = Theme.Red
+        InputName.Text = ""
+        InputScript.Text = ""
+        SaveButton.Text = "SIMPAN SCRIPT"
+    else
+        PageList.Visible = true
+        PageAdd.Visible = false
+        UploadBtn.Text = "UPLOAD"
+        UploadBtn.BackgroundColor3 = Theme.Blue
+    end
+end)
+
+SearchBar:GetPropertyChangedSignal("Text"):Connect(RefreshList)
+
+SaveButton.MouseButton1Click:Connect(function()
+    local name = InputName.Text
+    local content = InputScript.Text
+    
+    if name ~= "" and content ~= "" then
+        if not name:find(".lua") then name = name..".lua" end
+        
+        if currentEditFile and currentEditFile ~= (FolderName.."/"..name) then
+            delfile(currentEditFile) 
+        end
+        
+        writefile(FolderName.."/"..name, content)
+        
+        isUploading = false
+        PageList.Visible = true
+        PageAdd.Visible = false
+        UploadBtn.Text = "UPLOAD"
+        UploadBtn.BackgroundColor3 = Theme.Blue
+        RefreshList()
+    end
+end)
+
+-- Confirm Delete Logic
+YesBtn.MouseButton1Click:Connect(function()
+    if fileToDelete then
+        delfile(fileToDelete) 
+        fileToDelete = nil
+        RefreshList()
+    end
+    ConfirmOverlay.Visible = false 
+end)
+
+NoBtn.MouseButton1Click:Connect(function()
+    fileToDelete = nil
+    ConfirmOverlay.Visible = false 
+end)
+
+RefreshList()
