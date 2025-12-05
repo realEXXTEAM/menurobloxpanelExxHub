@@ -1,4 +1,4 @@
----- BETA TESTING ----
+--- BETA TESTING ---
 
 local HttpService = game:GetService("HttpService")
 local UserInputService = game:GetService("UserInputService")
@@ -23,14 +23,14 @@ ScreenGui.Name = "ScriptBloxUI"
 ScreenGui.DisplayOrder = 10000
 ScreenGui.ResetOnSpawn = false
 ScreenGui.IgnoreGuiInset = true
-ScreenGui.Enabled = false
+ScreeGui.Enabled = false
 ScreenGui.ZIndexBehavior = Enum.ZIndexBehavior.Sibling
 
--- === PARENTING FIX (PlayerGui ONLY) ===
+-- === PARENTING (PlayerGui ONLY) ===
 if Players.LocalPlayer then
     ScreenGui.Parent = Players.LocalPlayer:WaitForChild("PlayerGui")
 else
-    warn("LocalPlayer not found")
+    warn("[⚠️] LocalPlayer Not Found")
     return
 end
 
@@ -44,7 +44,7 @@ local Colors = {
     SubText = Color3.fromRGB(160, 160, 160), 
 }
 
--- === MAIN FRAME (UKURAN DIPERKECIL) ===
+-- === MAIN FRAME (COMPACT SIZE 400x260) ===
 local MainFrame = Instance.new("Frame")
 MainFrame.Name = "MainUI"
 MainFrame.Parent = ScreenGui
@@ -52,7 +52,6 @@ MainFrame.BackgroundColor3 = Colors.Bg
 MainFrame.BorderSizePixel = 0
 MainFrame.AnchorPoint = Vector2.new(0.5, 0.5)
 MainFrame.Position = UDim2.new(0.5, 0, 0.5, 0)
--- FIX SIZE: 400x260 (Jauh lebih kecil)
 MainFrame.Size = UDim2.new(0, 400, 0, 260) 
 MainFrame.ClipsDescendants = true
 MainFrame.Active = true
@@ -62,12 +61,12 @@ local MainCorner = Instance.new("UICorner")
 MainCorner.CornerRadius = UDim.new(0, 8)
 MainCorner.Parent = MainFrame
 
--- === 1. HEADBAR (COMPACT) ===
+-- === 1. HEADBAR ===
 local HeaderBar = Instance.new("Frame")
 HeaderBar.Name = "Header"
 HeaderBar.Parent = MainFrame
 HeaderBar.BackgroundColor3 = Colors.Header
-HeaderBar.Size = UDim2.new(1, 0, 0, 30) -- Tinggi Header cuma 30px
+HeaderBar.Size = UDim2.new(1, 0, 0, 30)
 HeaderBar.BorderSizePixel = 0
 HeaderBar.ZIndex = 2
 
@@ -92,7 +91,7 @@ TitleLabel.Size = UDim2.new(1, -40, 1, 0)
 TitleLabel.Font = Enum.Font.GothamBold
 TitleLabel.Text = "Search Script In ScriptBlox"
 TitleLabel.TextColor3 = Colors.Text
-TitleLabel.TextSize = 12 -- Font kecil
+TitleLabel.TextSize = 12
 TitleLabel.TextXAlignment = Enum.TextXAlignment.Left
 TitleLabel.ZIndex = 3
 
@@ -115,12 +114,12 @@ CloseUIBtn.MouseLeave:Connect(function()
     TweenService:Create(CloseUIBtn, TweenInfo.new(0.2), {TextColor3 = Colors.SubText}):Play()
 end)
 
--- === 2. SEARCH BAR AREA (COMPACT) ===
+-- === 2. SEARCH BAR AREA ===
 local SearchContainer = Instance.new("Frame")
 SearchContainer.Parent = MainFrame
 SearchContainer.BackgroundColor3 = Colors.Card
-SearchContainer.Position = UDim2.new(0, 10, 0, 38) -- Jarak rapat
-SearchContainer.Size = UDim2.new(1, -20, 0, 32) -- Tinggi 32px
+SearchContainer.Position = UDim2.new(0, 10, 0, 38)
+SearchContainer.Size = UDim2.new(1, -20, 0, 32)
 local SearchCorner = Instance.new("UICorner")
 SearchCorner.CornerRadius = UDim.new(0, 6)
 SearchCorner.Parent = SearchContainer
@@ -148,7 +147,7 @@ InputBox.PlaceholderColor3 = Colors.SubText
 InputBox.TextSize = 12
 InputBox.TextXAlignment = Enum.TextXAlignment.Left
 
--- === 3. RESULTS SCROLL (COMPACT GRID) ===
+-- === 3. RESULTS SCROLL ===
 local ResultsScroll = Instance.new("ScrollingFrame")
 ResultsScroll.Parent = MainFrame
 ResultsScroll.BackgroundTransparency = 1
@@ -163,8 +162,7 @@ ResultsScroll.Visible = false
 local Grid = Instance.new("UIGridLayout")
 Grid.Parent = ResultsScroll
 Grid.CellPadding = UDim2.new(0, 6, 0, 6)
--- GRID SIZE: Diatur biar muat 3 kotak kecil (120px)
-Grid.CellSize = UDim2.new(0, 120, 0, 75) 
+Grid.CellSize = UDim2.new(0, 120, 0, 75)
 Grid.FillDirectionMaxCells = 3
 
 -- Placeholder Text
@@ -179,7 +177,7 @@ Placeholder.TextColor3 = Colors.SubText
 Placeholder.TextSize = 14
 Placeholder.TextWrapped = true
 
--- === MODAL NOTIFICATION (SMALLER) ===
+-- === MODAL NOTIFICATION ===
 local ModalOverlay = Instance.new("Frame")
 ModalOverlay.Name = "ModalOverlay"
 ModalOverlay.Parent = ScreenGui
@@ -194,7 +192,7 @@ ModalBox.Parent = ModalOverlay
 ModalBox.BackgroundColor3 = Colors.Card
 ModalBox.AnchorPoint = Vector2.new(0.5, 0.5)
 ModalBox.Position = UDim2.new(0.5, 0, 0.5, 0)
-ModalBox.Size = UDim2.new(0, 240, 0, 150) -- Ukuran Modal Mini
+ModalBox.Size = UDim2.new(0, 240, 0, 150)
 ModalBox.ZIndex = 51
 Instance.new("UICorner", ModalBox).CornerRadius = UDim.new(0, 8)
 
@@ -239,7 +237,7 @@ local BtnRun = Instance.new("TextButton")
 BtnRun.Parent = ModalBox
 BtnRun.BackgroundColor3 = Color3.fromRGB(0, 180, 100)
 BtnRun.Position = UDim2.new(0, 10, 1, -35)
-BtnRun.Size = UDim2.new(0.5, -15, 0, 25) -- Tombol kecil
+BtnRun.Size = UDim2.new(0.5, -15, 0, 25)
 BtnRun.Font = Enum.Font.GothamBold
 BtnRun.Text = "RUN"
 BtnRun.TextColor3 = Color3.new(1,1,1)
@@ -278,7 +276,7 @@ local function CreateCard(data)
     title.Font = Enum.Font.GothamBold
     title.Text = data.title
     title.TextColor3 = Colors.Text
-    title.TextSize = 10 -- Text kartu kecil
+    title.TextSize = 10
     title.TextWrapped = true
     title.TextYAlignment = Enum.TextYAlignment.Top
     title.TextXAlignment = Enum.TextXAlignment.Left
@@ -365,12 +363,19 @@ BtnCopy.MouseButton1Click:Connect(function()
     end
 end)
 
+-- LOGIC BARU: Run & Auto Close
 BtnRun.MouseButton1Click:Connect(function()
     if currentScript ~= "" then
+        -- Execute
         loadstring(currentScript)()
-        BtnRun.Text = "RUNNING..."
-        wait(1)
-        BtnRun.Text = "RUN"
+        
+        -- Visual Feedback
+        BtnRun.Text = "EXECUTED!"
+        wait(0.5) -- Jeda sebentar biar user liat statusnya
+        
+        -- Auto Close Modal
+        ModalOverlay.Visible = false
+        BtnRun.Text = "RUN" -- Reset
     end
 end)
 
