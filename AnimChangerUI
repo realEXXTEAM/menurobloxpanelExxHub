@@ -10,11 +10,12 @@ task.wait(1)
 local Character = Player.Character
 local Humanoid = Character:WaitForChild("Humanoid")
 
--- [[ VARIABEL BUAT NYIMPEN PILIHAN TERAKHIR ]]
+-- [[ VARIABLES ]]
 local currentEquippedPack = nil 
+local BACKGROUND_IMAGE_ID = "rbxassetid://81194177204917" -- Background ID
 
 -- =================================================================
--- ANIMATION LIST (ISI LIST LO DI SINI)
+-- ANIMATION LIST
 -- =================================================================
 local AnimPackList = {
     ["(canceled) Sneaky"] = {
@@ -61,7 +62,7 @@ local AnimPackList = {
         Swim = "rbxassetid://1070009914",
         SwimIdle = "rbxassetid://1070012133"
     },
-["(canceled) Cowboy"] = {
+    ["(canceled) Cowboy"] = {
         Idle = "rbxassetid://1014390418",
         Idle2 = " rbxassetid://1014398616",
         Walk = "rbxassetid://1014421541",
@@ -116,7 +117,7 @@ local AnimPackList = {
         Swim = "rbxassetid://10921253142",
         SwimIdle = "rbxassetid://10921253767"
     },
-     ["(😹) Spam Emote Classic"] = {
+     ["(ðŸ˜œ) Spam Emote Classic"] = {
         Idle = "rbxassetid://507770818",
         Idle2 = " rbxassetid://507770818",
         Walk = "rbxassetid://507770239",
@@ -204,7 +205,6 @@ local AnimPackList = {
         Swim = "rbxassetid://10921264784",
         SwimIdle = "rbxassetid://10921265698"
     }
-	
 }
 
 -- =================================================================
@@ -216,7 +216,7 @@ AnimChangerUI.DisplayOrder = 9999
 AnimChangerUI.ResetOnSpawn = false 
 AnimChangerUI.ZIndexBehavior = Enum.ZIndexBehavior.Global
 AnimChangerUI.IgnoreGuiInset = true
-AnimChangerUI.Enabled = false
+AnimChangerUI.Enabled = true
 AnimChangerUI.Parent = Player:WaitForChild("PlayerGui")
 
 local MainFrame = Instance.new("Frame")
@@ -290,19 +290,33 @@ RightContainer.Position = UDim2.new(0, 180, 0, 45)
 RightContainer.BackgroundTransparency = 1
 RightContainer.Parent = MainFrame
 
+-- [[ BACKGROUND IMAGE ]]
+local PreviewBackground = Instance.new("ImageLabel")
+PreviewBackground.Name = "PreviewBackground"
+PreviewBackground.Size = UDim2.new(1, 0, 0, 160)
+PreviewBackground.Position = UDim2.new(0, 0, 0, 0)
+PreviewBackground.BackgroundTransparency = 1
+PreviewBackground.Image = BACKGROUND_IMAGE_ID
+PreviewBackground.ScaleType = Enum.ScaleType.Crop
+PreviewBackground.ZIndex = 1 
+PreviewBackground.Parent = RightContainer
+local BGCorner = Instance.new("UICorner"); BGCorner.CornerRadius = UDim.new(0, 10); BGCorner.Parent = PreviewBackground
+
+-- [[ VIEWPORT FRAME ]]
 local PreviewFrame = Instance.new("ViewportFrame")
 PreviewFrame.Size = UDim2.new(1, 0, 0, 160)
 PreviewFrame.Position = UDim2.new(0, 0, 0, 0)
-PreviewFrame.BackgroundColor3 = Color3.fromRGB(15, 15, 20)
+PreviewFrame.BackgroundTransparency = 1 
 PreviewFrame.BorderSizePixel = 0
+PreviewFrame.ZIndex = 2 
 PreviewFrame.Parent = RightContainer
-local PreviewCorner = Instance.new("UICorner"); PreviewCorner.Parent = PreviewFrame
+
 local WorldModel = Instance.new("WorldModel"); WorldModel.Parent = PreviewFrame
 
 -- INSTRUCTION LABEL
 local SelectPromptLabel = Instance.new("TextLabel")
 SelectPromptLabel.Name = "SelectPromptLabel"
-SelectPromptLabel.Text = "Please select an Animation Pack from the list on the left to get started."
+SelectPromptLabel.Text = "Silakan pilih Animation Pack dari daftar di sebelah kiri."
 SelectPromptLabel.Size = UDim2.new(1, -20, 0, 50)
 SelectPromptLabel.Position = UDim2.new(0, 10, 0, 175)
 SelectPromptLabel.BackgroundTransparency = 1
@@ -313,7 +327,7 @@ SelectPromptLabel.TextWrapped = true
 SelectPromptLabel.Visible = true 
 SelectPromptLabel.Parent = RightContainer
 
--- CONTAINER TOMBOL AKSI
+-- ACTION BUTTONS
 local PreviewActionContainer = Instance.new("Frame")
 PreviewActionContainer.Name = "ActionButtons"
 PreviewActionContainer.Size = UDim2.new(1, 0, 0, 40)
@@ -328,12 +342,12 @@ UIGridLayout.CellPadding = UDim2.new(0, 5, 0, 5)
 UIGridLayout.HorizontalAlignment = Enum.HorizontalAlignment.Center
 UIGridLayout.Parent = PreviewActionContainer
 
--- EQUIP BUTTON (APPLY)
+-- EQUIP BUTTON
 local EquipBtn = Instance.new("TextButton")
 EquipBtn.Text = "APPLY PACK"
 EquipBtn.Size = UDim2.new(1, 0, 0, 35)
 EquipBtn.Position = UDim2.new(0, 0, 1, -35)
-EquipBtn.BackgroundColor3 = Color3.fromRGB(0, 50, 120) -- Dark Blue
+EquipBtn.BackgroundColor3 = Color3.fromRGB(0, 50, 120)
 EquipBtn.TextColor3 = Color3.fromRGB(255, 255, 255)
 EquipBtn.Font = Enum.Font.GothamBold
 EquipBtn.TextSize = 14
@@ -348,7 +362,7 @@ local currentPreviewTrack = nil
 local currentActiveBtn = nil
 
 -- =================================================================
--- LOGIC APPLY ANIMATION (FIXED FOR IDLE2)
+-- LOGIC APPLY ANIMATION (Ke Character Asli)
 -- =================================================================
 local function ApplyPackToCharacter(char, packName)
 	local packData = AnimPackList[packName]
@@ -361,51 +375,32 @@ local function ApplyPackToCharacter(char, packName)
 			for _, track in pairs(Animator:GetPlayingAnimationTracks()) do track:Stop() end
 		end
 
-		-- Helper function biasa
 		local function replaceStandard(name, id)
 			if not id then return end
-			-- Clean ID just in case (remove spaces)
-			id = id:gsub(" ", "")
-			
+			id = id:gsub(" ", "") 
 			local animObject = AnimateScript:FindFirstChild(name)
 			if animObject then
 				for _, v in pairs(animObject:GetChildren()) do
 					if v:IsA("Animation") then v.AnimationId = id end
 				end
-				-- Juga update StringValue kalau ada (biasanya di R15)
 				local val = AnimateScript:FindFirstChild(name.."Anim")
 				if val and val:IsA("StringValue") then val.Value = id end
 			end
 		end
 
-		-- [[ PERBAIKAN: KHUSUS IDLE ]]
 		local idleObject = AnimateScript:FindFirstChild("idle")
 		if idleObject then
-			-- Clean ID
 			local idle1Id = packData.Idle and packData.Idle:gsub(" ", "") or ""
-			
-			-- Set Idle Utama (Animation1)
 			local anim1 = idleObject:FindFirstChild("Animation1") 
-			if not anim1 then 
-				anim1 = Instance.new("Animation", idleObject)
-				anim1.Name = "Animation1"
-			end
+			if not anim1 then anim1 = Instance.new("Animation", idleObject); anim1.Name = "Animation1" end
 			anim1.AnimationId = idle1Id
 
-			-- Set Idle Kedua (Animation2)
 			local idle2Id = packData.Idle2 and packData.Idle2:gsub(" ", "") or "" 
 			local anim2 = idleObject:FindFirstChild("Animation2")
-			
 			if idle2Id ~= "" then
-				if not anim2 then 
-					anim2 = Instance.new("Animation", idleObject)
-					anim2.Name = "Animation2"
-				end
+				if not anim2 then anim2 = Instance.new("Animation", idleObject); anim2.Name = "Animation2" end
 				anim2.AnimationId = idle2Id
-				-- Set weight (bobot) biar kadang-kadang muncul
-				-- Note: Bobot biasanya diatur via script Animate core, tapi kita inject ID nya aja cukup.
 			else
-				-- Hapus Animation2 kalo pack gak punya idle2 biar gak ngebug/mix
 				if anim2 then anim2:Destroy() end
 			end
 		end
@@ -418,7 +413,6 @@ local function ApplyPackToCharacter(char, packName)
 		if packData.SwimIdle then replaceStandard("swimidle", packData.SwimIdle) end
 		replaceStandard("climb", packData.Climb)
 
-		-- Restart script Animate biar efeknya jalan
 		AnimateScript.Disabled = true
 		task.wait(0.1)
 		AnimateScript.Disabled = false
@@ -426,19 +420,8 @@ local function ApplyPackToCharacter(char, packName)
 end
 
 -- =================================================================
--- AUTO-LOAD SAAT RESET (PERSISTENCE)
--- =================================================================
-Player.CharacterAdded:Connect(function(newChar)
-	if currentEquippedPack then
-		task.wait(0.5) 
-		ApplyPackToCharacter(newChar, currentEquippedPack)
-	end
-end)
-
--- =================================================================
 -- PREVIEW LOGIC
 -- =================================================================
-
 local function SetupPreviewCamera(targetPart)
 	local Camera = Instance.new("Camera")
 	Camera.CFrame = CFrame.new(targetPart.Position + (targetPart.CFrame.LookVector * 6) + Vector3.new(0, 0.5, 0), targetPart.Position)
@@ -469,39 +452,41 @@ local function InitialPreviewSetup()
 	end
 end
 
+-- [[ FUNGSI PLAY PREVIEW (DENGAN ROTASI RENANG) ]]
 local function PlayPreviewAction(actionName)
 	if not currentSelectedPack or not currentPreviewAnimator then return end
 	local packData = AnimPackList[currentSelectedPack]
 	
-	-- Handle Idle2 Preview Fallback
 	local animId = packData[actionName]
-	
-	-- Jika tombol Idle2 ditekan tapi animasi kosong, pakai Idle biasa
-	if actionName == "Idle2" and (not animId or animId == "") then 
-		animId = packData.Idle 
-	end
-	
-	-- Fallback SwimIdle
-	if actionName == "SwimIdle" and (not animId or animId == "") then 
-		animId = packData.Swim 
-	end 
-	
-	-- Bersihin spasi
+	if actionName == "Idle2" and (not animId or animId == "") then animId = packData.Idle end
+	if actionName == "SwimIdle" and (not animId or animId == "") then animId = packData.Swim end 
 	if animId then animId = animId:gsub(" ", "") end
 
 	if not animId or animId == "" then return end
 
+	-- 1. Mainkan Animasi
 	if currentPreviewTrack then
 		currentPreviewTrack:Stop()
 		currentPreviewTrack = nil
 	end
-
 	local Animation = Instance.new("Animation")
 	Animation.AnimationId = animId
 	currentPreviewTrack = currentPreviewAnimator:LoadAnimation(Animation)
 	currentPreviewTrack.Priority = Enum.AnimationPriority.Action
 	currentPreviewTrack.Looped = true
 	currentPreviewTrack:Play()
+
+	-- 2. ATUR ROTASI KARAKTER (Fix Berdiri/Tiduran)
+	local previewChar = WorldModel:FindFirstChildOfClass("Model")
+	if previewChar and previewChar.PrimaryPart then
+		if actionName == "Swim" or actionName == "SwimIdle" then
+			-- Rotasi -90 derajat di sumbu X biar TIDURAN (Swimming Posture)
+			previewChar:SetPrimaryPartCFrame(CFrame.new(0, 0, 0) * CFrame.Angles(math.rad(-90), 0, 0))
+		else
+			-- Reset ke posisi BERDIRI normal
+			previewChar:SetPrimaryPartCFrame(CFrame.new(0, 0, 0))
+		end
+	end
 end
 
 local function UpdatePreviewCharacter(packName)
@@ -531,13 +516,8 @@ local function UpdatePreviewCharacter(packName)
 	end
 end
 
--- =================================================================
--- BUTTON GENERATORS
--- =================================================================
-
--- LIST TOMBOL ACTION (Termasuk Idle2)
+-- BUTTONS
 local actions = {"Idle", "Idle2", "Walk", "Run", "Jump", "Fall", "Climb", "Swim"} 
-
 for _, actionName in ipairs(actions) do
 	local ActionBtn = Instance.new("TextButton")
 	ActionBtn.Name = actionName
@@ -551,8 +531,8 @@ for _, actionName in ipairs(actions) do
 
 	ActionBtn.MouseButton1Click:Connect(function()
 		if not currentSelectedPack then return end 
-
 		PlayPreviewAction(actionName)
+		-- Efek Klik
 		TweenService:Create(ActionBtn, TweenInfo.new(0.2), {BackgroundColor3 = Color3.fromRGB(0, 100, 255), TextColor3 = Color3.fromRGB(255,255,255)}):Play()
 		delay(0.2, function()
 			TweenService:Create(ActionBtn, TweenInfo.new(0.2), {BackgroundColor3 = Color3.fromRGB(50, 50, 55), TextColor3 = Color3.fromRGB(200, 200, 200)}):Play()
@@ -560,17 +540,13 @@ for _, actionName in ipairs(actions) do
 	end)
 end
 
--- Apply Button Logic
 EquipBtn.MouseButton1Click:Connect(function()
 	if not currentSelectedPack then return end
-
 	currentEquippedPack = currentSelectedPack
-
 	local Char = Player.Character
 	if Char then
 		EquipBtn.Text = "..."
 		ApplyPackToCharacter(Char, currentEquippedPack)
-
 		EquipBtn.Text = "APPLIED!"
 		EquipBtn.BackgroundColor3 = Color3.fromRGB(0, 150, 255) 
 		wait(1)
@@ -579,7 +555,7 @@ EquipBtn.MouseButton1Click:Connect(function()
 	end
 end)
 
--- Pack List Buttons (Dynamically generated from AnimPackList)
+-- LIST GENERATOR
 local packNames = {}
 for name, _ in pairs(AnimPackList) do table.insert(packNames, name) end
 table.sort(packNames)
@@ -594,34 +570,22 @@ for _, packName in ipairs(packNames) do
 	Btn.Font = Enum.Font.GothamSemibold
 	Btn.TextSize = 12
 	Btn.Parent = ScrollList
-
 	local BtnCorner = Instance.new("UICorner"); BtnCorner.Parent = Btn
-
-	local Stroke = Instance.new("UIStroke")
-	Stroke.Name = "SelectionStroke"
-	Stroke.ApplyStrokeMode = Enum.ApplyStrokeMode.Border
-	Stroke.Color = Color3.fromRGB(50, 150, 255) 
-	Stroke.Thickness = 0 
-	Stroke.Parent = Btn
+	local Stroke = Instance.new("UIStroke"); Stroke.Name = "SelectionStroke"; Stroke.ApplyStrokeMode = Enum.ApplyStrokeMode.Border; Stroke.Color = Color3.fromRGB(50, 150, 255); Stroke.Thickness = 0; Stroke.Parent = Btn
 
 	Btn.MouseButton1Click:Connect(function()
 		if currentActiveBtn then
 			TweenService:Create(currentActiveBtn, TweenInfo.new(0.2), {BackgroundColor3 = Color3.fromRGB(45, 45, 50), TextColor3 = Color3.fromRGB(200, 200, 200)}):Play()
 			currentActiveBtn.SelectionStroke.Thickness = 0 
 		end
-
 		currentActiveBtn = Btn
-
 		TweenService:Create(Btn, TweenInfo.new(0.2), {BackgroundColor3 = Color3.fromRGB(30, 30, 35), TextColor3 = Color3.fromRGB(255, 255, 255)}):Play()
 		Btn.SelectionStroke.Thickness = 2 
-
 		SelectPromptLabel.Visible = false
 		PreviewActionContainer.Visible = true
 		EquipBtn.Visible = true 
-
 		UpdatePreviewCharacter(packName)
 	end)
 end
 
--- Start Static
 InitialPreviewSetup()
