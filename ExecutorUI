@@ -4,14 +4,18 @@ local Player = Players.LocalPlayer
 
 --// Anti Delete
 local function protectUI(gui)
-	gui.AncestryChanged:Connect(function(_, parent)
+	local connection
+	connection = gui.AncestryChanged:Connect(function(_, parent)
 		if not parent then
-			gui.Parent = Player:WaitForChild("PlayerGui")
+			pcall(function() connection:Disconnect() end) -- Clean up
+			-- Re-parent logic handled by CharacterAdded mostly, 
+			-- but valid for immediate parenting issues.
+			gui.Parent = Player:WaitForChild("PlayerGui") 
 		end
 	end)
 end
 
---// Hapus versi lama
+--// Hapus versi lama biar gak numpuk
 local old = Player:WaitForChild("PlayerGui"):FindFirstChild("ExecutorUI")
 if old then old:Destroy() end
 
@@ -22,7 +26,7 @@ ExecutorUI.DisplayOrder = 9999
 ExecutorUI.ResetOnSpawn = false
 ExecutorUI.ZIndexBehavior = Enum.ZIndexBehavior.Global
 ExecutorUI.IgnoreGuiInset = true
-ExecutorUI.Enabled = false
+ExecutorUI.Enabled = false -- Default mati, nyalain manual atau via script lain
 ExecutorUI.Parent = Player:WaitForChild("PlayerGui")
 
 --// Frame Utama
@@ -31,7 +35,7 @@ bg.Size = UDim2.new(0, 520, 0, 300)
 bg.AnchorPoint = Vector2.new(0.5, 0.5)
 bg.Position = UDim2.new(0.5, 0, 0.5, 0)
 bg.BackgroundColor3 = Color3.fromRGB(20, 20, 25)
-bg.BackgroundTransparency = 0.2
+bg.BackgroundTransparency = 0.1 -- Sedikit lebih solid biar text jelas
 bg.BorderSizePixel = 0
 bg.Parent = ExecutorUI
 
@@ -66,15 +70,16 @@ closeBtn.MouseButton1Click:Connect(function()
 	ExecutorUI.Enabled = false
 end)
 
---// Scrolling Frame (scroll kanan & bawah)
+--// Scrolling Frame (Container Script)
 local scroll = Instance.new("ScrollingFrame")
 scroll.Size = UDim2.new(1, -40, 1, -90)
 scroll.Position = UDim2.new(0, 20, 0, 45)
 scroll.BackgroundColor3 = Color3.fromRGB(15, 15, 20)
 scroll.BackgroundTransparency = 0.3
-scroll.ScrollBarThickness = 6
-scroll.ScrollingDirection = Enum.ScrollingDirection.XY
-scroll.AutomaticCanvasSize = Enum.AutomaticSize.XY
+scroll.ScrollBarThickness = 8 -- Sedikit tebal biar gampang di klik
+scroll.ScrollBarImageColor3 = Color3.fromRGB(100, 100, 255) -- Warna scrollbar biar keliatan
+scroll.ScrollingDirection = Enum.ScrollingDirection.XY -- Bisa scroll atas-bawah & kiri-kanan
+scroll.AutomaticCanvasSize = Enum.AutomaticSize.XY -- Canvas ngikutin isi text
 scroll.CanvasSize = UDim2.new(0, 0, 0, 0)
 scroll.BorderSizePixel = 0
 scroll.Parent = bg
@@ -83,21 +88,32 @@ local scrollCorner = Instance.new("UICorner")
 scrollCorner.CornerRadius = UDim.new(0, 10)
 scrollCorner.Parent = scroll
 
---// TextBox
+--// TextBox (Area Ketik Script)
 local input = Instance.new("TextBox")
-input.Size = UDim2.new(1, -10, 1, -10)
-input.Position = UDim2.new(0, 5, 0, 5)
+-- Size set ke 1,0, 1,0 tapi AutomaticSize akan memperbesar ini sesuai text
+input.Size = UDim2.new(1, 0, 1, 0) 
+input.Position = UDim2.new(0, 0, 0, 0)
 input.BackgroundTransparency = 1
 input.ClearTextOnFocus = false
 input.MultiLine = true
-input.TextWrapped = false
+input.TextWrapped = false -- PENTING: Biar codingan panjang ga turun ke bawah (wrap), tapi manjang ke samping
+input.AutomaticSize = Enum.AutomaticSize.XY -- PENTING: Biar TextBox membesar otomatis dan trigger scrollbar
 input.TextXAlignment = Enum.TextXAlignment.Left
 input.TextYAlignment = Enum.TextYAlignment.Top
-input.Font = Enum.Font.Code
-input.TextSize = 16
-input.TextColor3 = Color3.new(1, 1, 1)
-input.Text = "-- Paste your script here"
+input.Font = Enum.Font.Code -- PENTING: Font coding biar spasi/garis lurus
+input.TextSize = 15
+input.TextColor3 = Color3.fromRGB(240, 240, 240)
+input.PlaceholderText = "-- Paste your script here..."
+input.Text = "" 
 input.Parent = scroll
+
+-- Tambahin padding dikit biar text gak nempel banget sama pinggir scroll
+local pad = Instance.new("UIPadding")
+pad.PaddingLeft = UDim.new(0, 5)
+pad.PaddingTop = UDim.new(0, 5)
+pad.PaddingRight = UDim.new(0, 5)
+pad.PaddingBottom = UDim.new(0, 5)
+pad.Parent = input
 
 --// Tombol RUN
 local runBtn = Instance.new("ImageButton")
@@ -128,7 +144,7 @@ runBtn.MouseLeave:Connect(function()
 	}):Play()
 end)
 
--- Notifikasi
+-- Notifikasi System
 local function notify(msg)
 	pcall(function()
 		game.StarterGui:SetCore("SendNotification", {
@@ -149,27 +165,32 @@ runBtn.MouseButton1Click:Connect(function()
 	tweenOut:Play()
 
 	local code = input.Text
-	if code == "" or code:match("^%s*$") or code == "-- Paste your script here" then
+	if code == "" or code:match("^%s*$") then
 		notify("⚠️ Enter the script first!")
 		return
 	end
 
+	-- Eksekusi Script (Loadstring)
 	local func, err = loadstring(code)
 	if func then
-		notify("✅ script executed successfully!")
+		notify("✅ Script Executed!")
 		task.spawn(func)
 	else
 		notify("⚠️ Error: "..tostring(err))
+		warn("Executor Error:", err) -- Print ke console (F9) biar lebih jelas
 	end
 end)
 
--- Anti delete
+-- Anti delete & Persist
 protectUI(ExecutorUI)
 
--- Respawn protection
+-- Biar UI tetap ada pas mati/respawn
 Player.CharacterAdded:Connect(function()
-	task.wait(1)
+	task.wait(0.5)
 	if not Player.PlayerGui:FindFirstChild("ExecutorUI") then
 		ExecutorUI.Parent = Player:WaitForChild("PlayerGui")
 	end
 end)
+
+-- Untuk testing di Studio, langsung nyalain UI nya
+ExecutorUI.Enabled = true 
