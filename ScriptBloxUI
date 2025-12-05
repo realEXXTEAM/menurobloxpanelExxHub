@@ -1,0 +1,390 @@
+local HttpService = game:GetService("HttpService")
+local UserInputService = game:GetService("UserInputService")
+local CoreGui = game:GetService("CoreGui")
+local Players = game:GetService("Players")
+local TweenService = game:GetService("TweenService")
+
+-- 1. Check Executor
+local requestFunc = request or http_request or (syn and syn.request)
+local setclipboardFunc = setclipboard or toclipboard or set_clipboard
+
+if not requestFunc then
+    game:GetService("StarterGui"):SetCore("SendNotification", {
+        Title = "Warning";
+        Text = "Executor tidak support request()!";
+    })
+    return
+end
+
+-- 2. UI Setup
+local ScreenGui = Instance.new("ScreenGui")
+ScreenGui.Name = "ScriptBlox"
+ScreenGui.DisplayOrder = 9999
+ScreenGui.ResetOnSpawn = false
+ScreenGui.IgnoreGuiInset = true
+ScreenGui.ZIndexBehavior = Enum.ZIndexBehavior.Sibling
+
+-- Parenting (Priority: Hui -> CoreGui -> PlayerGui)
+if gethui then
+    ScreenGui.Parent = gethui()
+elseif syn and syn.protect_gui then
+    syn.protect_gui(ScreenGui)
+    ScreenGui.Parent = CoreGui
+else
+    if Players.LocalPlayer then
+        ScreenGui.Parent = Players.LocalPlayer:WaitForChild("PlayerGui")
+    else
+        ScreenGui.Parent = CoreGui
+    end
+end
+
+-- Theme Colors
+local Colors = {
+    Bg = Color3.fromRGB(18, 18, 22),         -- Main Background
+    Header = Color3.fromRGB(25, 25, 30),     -- Header Background
+    Card = Color3.fromRGB(32, 32, 38),       -- Card/Input Background
+    Accent = Color3.fromRGB(0, 140, 255),    -- Blue Accent
+    Text = Color3.fromRGB(245, 245, 245),    -- White Text
+    SubText = Color3.fromRGB(160, 160, 160), -- Grey Text
+}
+
+-- === MAIN FRAME ===
+local MainFrame = Instance.new("Frame")
+MainFrame.Name = "MainUI"
+MainFrame.Parent = ScreenGui
+MainFrame.BackgroundColor3 = Colors.Bg
+MainFrame.BorderSizePixel = 0
+MainFrame.AnchorPoint = Vector2.new(0.5, 0.5)
+MainFrame.Position = UDim2.new(0.5, 0, 0.5, 0)
+MainFrame.Size = UDim2.new(0, 500, 0, 350) -- Sedikit lebih tinggi buat Header
+MainFrame.ClipsDescendants = true
+MainFrame.Active = true
+MainFrame.Draggable = true 
+
+local MainCorner = Instance.new("UICorner")
+MainCorner.CornerRadius = UDim.new(0, 10)
+MainCorner.Parent = MainFrame
+
+-- === 1. HEADBAR (BARU) ===
+local HeaderBar = Instance.new("Frame")
+HeaderBar.Name = "Header"
+HeaderBar.Parent = MainFrame
+HeaderBar.BackgroundColor3 = Colors.Header
+HeaderBar.Size = UDim2.new(1, 0, 0, 40) -- Tinggi Header 40px
+HeaderBar.BorderSizePixel = 0
+HeaderBar.ZIndex = 2
+
+local HeaderCorner = Instance.new("UICorner")
+HeaderCorner.CornerRadius = UDim.new(0, 10)
+HeaderCorner.Parent = HeaderBar
+
+-- Tutup rounded corner bawah header biar nyatu sama body
+local HeaderFill = Instance.new("Frame")
+HeaderFill.Parent = HeaderBar
+HeaderFill.BackgroundColor3 = Colors.Header
+HeaderFill.BorderSizePixel = 0
+HeaderFill.Size = UDim2.new(1, 0, 0, 10)
+HeaderFill.Position = UDim2.new(0, 0, 1, -10)
+HeaderFill.ZIndex = 2
+
+-- Title Text
+local TitleLabel = Instance.new("TextLabel")
+TitleLabel.Parent = HeaderBar
+TitleLabel.BackgroundTransparency = 1
+TitleLabel.Position = UDim2.new(0, 15, 0, 0)
+TitleLabel.Size = UDim2.new(1, -50, 1, 0)
+TitleLabel.Font = Enum.Font.GothamBold
+TitleLabel.Text = "Search Script In ScriptBlox"
+TitleLabel.TextColor3 = Colors.Text
+TitleLabel.TextSize = 14
+TitleLabel.TextXAlignment = Enum.TextXAlignment.Left
+TitleLabel.ZIndex = 3
+
+-- Close Button "X" (REQUEST: Clean, No Red Box)
+local CloseUIBtn = Instance.new("TextButton")
+CloseUIBtn.Parent = HeaderBar
+CloseUIBtn.BackgroundTransparency = 1
+CloseUIBtn.Position = UDim2.new(1, -35, 0, 0)
+CloseUIBtn.Size = UDim2.new(0, 35, 1, 0)
+CloseUIBtn.Font = Enum.Font.GothamBold
+CloseUIBtn.Text = "X"
+CloseUIBtn.TextColor3 = Colors.SubText -- Warna abu-abu clean
+CloseUIBtn.TextSize = 18
+CloseUIBtn.ZIndex = 3
+
+-- Hover Effect Close Button
+CloseUIBtn.MouseEnter:Connect(function()
+    TweenService:Create(CloseUIBtn, TweenInfo.new(0.2), {TextColor3 = Color3.fromRGB(255, 255, 255)}):Play()
+end)
+CloseUIBtn.MouseLeave:Connect(function()
+    TweenService:Create(CloseUIBtn, TweenInfo.new(0.2), {TextColor3 = Colors.SubText}):Play()
+end)
+
+-- === 2. SEARCH BAR AREA ===
+local SearchContainer = Instance.new("Frame")
+SearchContainer.Parent = MainFrame
+SearchContainer.BackgroundColor3 = Colors.Card
+SearchContainer.Position = UDim2.new(0, 15, 0, 50) -- Dibawah Header
+SearchContainer.Size = UDim2.new(1, -30, 0, 40)
+local SearchCorner = Instance.new("UICorner")
+SearchCorner.CornerRadius = UDim.new(0, 8)
+SearchCorner.Parent = SearchContainer
+
+local SearchIcon = Instance.new("ImageLabel")
+SearchIcon.Parent = SearchContainer
+SearchIcon.BackgroundTransparency = 1
+SearchIcon.Position = UDim2.new(0, 10, 0.5, -9)
+SearchIcon.Size = UDim2.new(0, 18, 0, 18)
+SearchIcon.Image = "rbxassetid://3926305904"
+SearchIcon.ImageRectOffset = Vector2.new(964, 324)
+SearchIcon.ImageRectSize = Vector2.new(36, 36)
+SearchIcon.ImageColor3 = Colors.SubText
+
+local InputBox = Instance.new("TextBox")
+InputBox.Parent = SearchContainer
+InputBox.BackgroundTransparency = 1
+InputBox.Position = UDim2.new(0, 35, 0, 0)
+InputBox.Size = UDim2.new(1, -45, 1, 0)
+InputBox.Font = Enum.Font.GothamMedium
+InputBox.Text = ""
+InputBox.PlaceholderText = "Type script name (e.g. Blox Fruits)..."
+InputBox.TextColor3 = Colors.Text
+InputBox.PlaceholderColor3 = Colors.SubText
+InputBox.TextSize = 14
+InputBox.TextXAlignment = Enum.TextXAlignment.Left
+
+-- === 3. RESULTS SCROLL (SCROLL FIX) ===
+local ResultsScroll = Instance.new("ScrollingFrame")
+ResultsScroll.Parent = MainFrame
+ResultsScroll.BackgroundTransparency = 1
+ResultsScroll.Position = UDim2.new(0, 15, 0, 100)
+ResultsScroll.Size = UDim2.new(1, -15, 1, -110) -- Sisa ruang ke bawah
+ResultsScroll.ScrollBarThickness = 3
+ResultsScroll.ScrollBarImageColor3 = Colors.Accent
+ResultsScroll.CanvasSize = UDim2.new(0, 0, 0, 0) -- Reset awal
+ResultsScroll.AutomaticCanvasSize = Enum.AutomaticSize.Y -- FIX BUG: Ini biar bisa scroll otomatis
+ResultsScroll.Visible = false
+
+local Grid = Instance.new("UIGridLayout")
+Grid.Parent = ResultsScroll
+Grid.CellPadding = UDim2.new(0, 8, 0, 8)
+Grid.CellSize = UDim2.new(0, 148, 0, 95)
+Grid.FillDirectionMaxCells = 3
+
+-- Placeholder Text
+local Placeholder = Instance.new("TextLabel")
+Placeholder.Parent = MainFrame
+Placeholder.BackgroundTransparency = 1
+Placeholder.Position = UDim2.new(0, 0, 0, 100)
+Placeholder.Size = UDim2.new(1, 0, 1, -100)
+Placeholder.Font = Enum.Font.GothamBold
+Placeholder.Text = "Cari script masukan text pada searchbox"
+Placeholder.TextColor3 = Colors.SubText
+Placeholder.TextSize = 16
+Placeholder.TextWrapped = true
+
+-- === MODAL NOTIFICATION (EXTERNAL) ===
+local ModalOverlay = Instance.new("Frame")
+ModalOverlay.Name = "ModalOverlay"
+ModalOverlay.Parent = ScreenGui
+ModalOverlay.BackgroundColor3 = Color3.new(0,0,0)
+ModalOverlay.BackgroundTransparency = 0.5
+ModalOverlay.Size = UDim2.new(1, 0, 1, 0)
+ModalOverlay.ZIndex = 50
+ModalOverlay.Visible = false
+
+local ModalBox = Instance.new("Frame")
+ModalBox.Parent = ModalOverlay
+ModalBox.BackgroundColor3 = Colors.Card
+ModalBox.AnchorPoint = Vector2.new(0.5, 0.5)
+ModalBox.Position = UDim2.new(0.5, 0, 0.5, 0)
+ModalBox.Size = UDim2.new(0, 280, 0, 180)
+ModalBox.ZIndex = 51
+Instance.new("UICorner", ModalBox).CornerRadius = UDim.new(0, 8)
+
+local MTitle = Instance.new("TextLabel")
+MTitle.Parent = ModalBox
+MTitle.BackgroundTransparency = 1
+MTitle.Position = UDim2.new(0, 15, 0, 10)
+MTitle.Size = UDim2.new(1, -50, 0, 25)
+MTitle.Font = Enum.Font.GothamBold
+MTitle.Text = "Script Title"
+MTitle.TextColor3 = Colors.Text
+MTitle.TextSize = 14
+MTitle.TextXAlignment = Enum.TextXAlignment.Left
+MTitle.TextTruncate = Enum.TextTruncate.AtEnd
+MTitle.ZIndex = 52
+
+local MClose = Instance.new("TextButton")
+MClose.Parent = ModalBox
+MClose.BackgroundTransparency = 1
+MClose.Position = UDim2.new(1, -30, 0, 8)
+MClose.Size = UDim2.new(0, 25, 0, 25)
+MClose.Text = "X"
+MClose.Font = Enum.Font.GothamBold
+MClose.TextColor3 = Colors.SubText
+MClose.TextSize = 16
+MClose.ZIndex = 52
+
+local MDesc = Instance.new("TextLabel")
+MDesc.Parent = ModalBox
+MDesc.BackgroundTransparency = 1
+MDesc.Position = UDim2.new(0, 15, 0, 40)
+MDesc.Size = UDim2.new(1, -30, 0, 80)
+MDesc.Font = Enum.Font.Gotham
+MDesc.Text = "Loading..."
+MDesc.TextColor3 = Colors.SubText
+MDesc.TextSize = 12
+MDesc.TextWrapped = true
+MDesc.TextYAlignment = Enum.TextYAlignment.Top
+MDesc.ZIndex = 52
+
+local BtnRun = Instance.new("TextButton")
+BtnRun.Parent = ModalBox
+BtnRun.BackgroundColor3 = Color3.fromRGB(0, 180, 100)
+BtnRun.Position = UDim2.new(0, 15, 1, -45)
+BtnRun.Size = UDim2.new(0.5, -20, 0, 35)
+BtnRun.Font = Enum.Font.GothamBold
+BtnRun.Text = "RUN"
+BtnRun.TextColor3 = Color3.new(1,1,1)
+BtnRun.TextSize = 12
+BtnRun.ZIndex = 52
+Instance.new("UICorner", BtnRun).CornerRadius = UDim.new(0,6)
+
+local BtnCopy = Instance.new("TextButton")
+BtnCopy.Parent = ModalBox
+BtnCopy.BackgroundColor3 = Colors.Accent
+BtnCopy.Position = UDim2.new(0.5, 5, 1, -45)
+BtnCopy.Size = UDim2.new(0.5, -20, 0, 35)
+BtnCopy.Font = Enum.Font.GothamBold
+BtnCopy.Text = "COPY"
+BtnCopy.TextColor3 = Color3.new(1,1,1)
+BtnCopy.TextSize = 12
+BtnCopy.ZIndex = 52
+Instance.new("UICorner", BtnCopy).CornerRadius = UDim.new(0,6)
+
+-- === LOGIC ===
+local currentScript = ""
+local isGuiVisible = true
+
+local function CreateCard(data)
+    local btn = Instance.new("TextButton")
+    btn.Parent = ResultsScroll
+    btn.BackgroundColor3 = Colors.Card
+    btn.Text = ""
+    Instance.new("UICorner", btn).CornerRadius = UDim.new(0, 6)
+    
+    local title = Instance.new("TextLabel")
+    title.Parent = btn
+    title.BackgroundTransparency = 1
+    title.Position = UDim2.new(0, 8, 0, 25)
+    title.Size = UDim2.new(1, -16, 0, 35)
+    title.Font = Enum.Font.GothamBold
+    title.Text = data.title
+    title.TextColor3 = Colors.Text
+    title.TextSize = 11
+    title.TextWrapped = true
+    title.TextYAlignment = Enum.TextYAlignment.Top
+    title.TextXAlignment = Enum.TextXAlignment.Left
+    
+    local typeTag = Instance.new("TextLabel")
+    typeTag.Parent = btn
+    typeTag.BackgroundTransparency = 1
+    typeTag.Position = UDim2.new(0, 8, 0, 5)
+    typeTag.Size = UDim2.new(1, -16, 0, 15)
+    typeTag.Font = Enum.Font.GothamBold
+    typeTag.Text = (data.game and data.game.name) or "Universal"
+    typeTag.TextColor3 = Colors.Accent
+    typeTag.TextSize = 9
+    typeTag.TextXAlignment = Enum.TextXAlignment.Left
+    
+    local views = Instance.new("TextLabel")
+    views.Parent = btn
+    views.BackgroundTransparency = 1
+    views.Position = UDim2.new(0, 8, 1, -20)
+    views.Size = UDim2.new(1, -16, 0, 15)
+    views.Font = Enum.Font.Gotham
+    views.Text = "👁 "..(data.views or 0)
+    views.TextColor3 = Colors.SubText
+    views.TextSize = 10
+    views.TextXAlignment = Enum.TextXAlignment.Left
+
+    btn.MouseButton1Click:Connect(function()
+        MTitle.Text = data.title
+        MDesc.Text = "Game: " .. ((data.game and data.game.name) or "Universal") .. "\nViews: " .. (data.views or 0)
+        currentScript = data.script or ""
+        ModalOverlay.Visible = true
+    end)
+end
+
+local function Search(txt)
+    -- Clean Old Results
+    for _,v in pairs(ResultsScroll:GetChildren()) do
+        if v:IsA("TextButton") then v:Destroy() end
+    end
+    
+    if txt == "" then
+        Placeholder.Visible = true
+        ResultsScroll.Visible = false
+        return
+    end
+    
+    Placeholder.Visible = false
+    ResultsScroll.Visible = true
+    
+    spawn(function()
+        local encoded = HttpService:UrlEncode(txt)
+        local url = "https://scriptblox.com/api/script/search?q="..encoded.."&mode=free&page=1"
+        local s, r = pcall(function() return requestFunc({Url=url, Method="GET"}) end)
+        if s and r.StatusCode == 200 then
+            local d = HttpService:JSONDecode(r.Body)
+            if d.result and d.result.scripts then
+                for _, sc in pairs(d.result.scripts) do
+                    CreateCard(sc)
+                end
+                -- Update Canvas Position to Top
+                ResultsScroll.CanvasPosition = Vector2.new(0,0)
+            end
+        end
+    end)
+end
+
+-- Events
+InputBox.FocusLost:Connect(function(enter)
+    if enter then Search(InputBox.Text) end
+end)
+
+-- Tombol Close di Headbar (Yang baru)
+CloseUIBtn.MouseButton1Click:Connect(function()
+    isGuiVisible = false
+    ScreenGui.Enabled = false
+end)
+
+MClose.MouseButton1Click:Connect(function()
+    ModalOverlay.Visible = false
+end)
+
+BtnCopy.MouseButton1Click:Connect(function()
+    if currentScript ~= "" then
+        setclipboardFunc(currentScript)
+        BtnCopy.Text = "COPIED!"
+        wait(1)
+        BtnCopy.Text = "COPY"
+    end
+end)
+
+BtnRun.MouseButton1Click:Connect(function()
+    if currentScript ~= "" then
+        loadstring(currentScript)()
+        BtnRun.Text = "RUNNING..."
+        wait(1)
+        BtnRun.Text = "RUN"
+    end
+end)
+
+UserInputService.InputBegan:Connect(function(input)
+    if input.KeyCode == Enum.KeyCode.RightControl then
+        isGuiVisible = not isGuiVisible
+        ScreenGui.Enabled = isGuiVisible
+    end
+end)
