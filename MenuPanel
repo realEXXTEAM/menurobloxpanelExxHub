@@ -82,7 +82,7 @@ scroll.Parent = mainFrame
 --// Menu Items
 local menuItems = {
 	{Text="Executor", Icon="rbxassetid://6031075938"},
-    {Text="ScriptSearchBlox", Icon"rbxassetid://0"},  
+    {Text="ScriptSearchBlox", Icon="rbxassetid://0"},  
     {Text="Script", Icon="rbxassetid://122385028196411"},
 	{Text="Music", Icon="rbxassetid://95034182657328"},
 	{Text="Settings", Icon="rbxassetid://6034509993"},
