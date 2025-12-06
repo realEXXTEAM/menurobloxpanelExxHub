@@ -64,7 +64,7 @@ local AnimPackList = {
     },
 ["(canceled) Cowboy"] = {
         Idle = "rbxassetid://1014390418",
-        Idle2 = " rbxassetid://1014398616",
+        Idle2 = "rbxassetid://1014398616",
         Walk = "rbxassetid://1014421541",
         Run = "rbxassetid://1014401683",
         Jump = "rbxassetid://1014394726",
