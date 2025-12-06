@@ -1,5 +1,4 @@
 local Players = game:GetService("Players")
-local RunService = game:GetService("RunService")
 local TweenService = game:GetService("TweenService")
 
 local Player = Players.LocalPlayer
@@ -10,9 +9,10 @@ task.wait(1)
 local Character = Player.Character
 local Humanoid = Character:WaitForChild("Humanoid")
 
--- [[ VARIABLES ]]
+-- [[ SETTING BACKGROUND ID DI SINI ]]
+local BACKGROUND_IMAGE_ID = "rbxassetid://81194177204917" 
+
 local currentEquippedPack = nil 
-local BACKGROUND_IMAGE_ID = "rbxassetid://81194177204917" -- Background ID
 
 -- =================================================================
 -- ANIMATION LIST
@@ -62,7 +62,7 @@ local AnimPackList = {
         Swim = "rbxassetid://1070009914",
         SwimIdle = "rbxassetid://1070012133"
     },
-    ["(canceled) Cowboy"] = {
+["(canceled) Cowboy"] = {
         Idle = "rbxassetid://1014390418",
         Idle2 = " rbxassetid://1014398616",
         Walk = "rbxassetid://1014421541",
@@ -205,10 +205,12 @@ local AnimPackList = {
         Swim = "rbxassetid://10921264784",
         SwimIdle = "rbxassetid://10921265698"
     }
+
+	
 }
 
 -- =================================================================
--- GUI SETUP
+-- GUI SETUP (SAMA PERSIS KAYA ASLINYA)
 -- =================================================================
 local AnimChangerUI = Instance.new("ScreenGui")
 AnimChangerUI.Name = "AnimChangerUI"
@@ -217,6 +219,9 @@ AnimChangerUI.ResetOnSpawn = false
 AnimChangerUI.ZIndexBehavior = Enum.ZIndexBehavior.Global
 AnimChangerUI.IgnoreGuiInset = true
 AnimChangerUI.Enabled = false
+if Player:WaitForChild("PlayerGui"):FindFirstChild("AnimChangerUI") then
+	Player.PlayerGui.AnimChangerUI:Destroy()
+end
 AnimChangerUI.Parent = Player:WaitForChild("PlayerGui")
 
 local MainFrame = Instance.new("Frame")
@@ -244,7 +249,7 @@ Title.TextXAlignment = Enum.TextXAlignment.Left
 Title.TextSize = 16
 Title.Parent = MainFrame
 
--- CLOSE BUTTON (X)
+-- CLOSE BUTTON
 local CloseBtn = Instance.new("TextButton")
 CloseBtn.Name = "CloseButton"
 CloseBtn.Text = "X"
@@ -260,7 +265,7 @@ CloseBtn.MouseButton1Click:Connect(function()
 	AnimChangerUI.Enabled = false 
 end)
 
--- Left Side: Pack List
+-- Left Side
 local ListContainer = Instance.new("Frame")
 ListContainer.Size = UDim2.new(0, 160, 0, 255)
 ListContainer.Position = UDim2.new(0, 10, 0, 45)
@@ -276,21 +281,18 @@ ScrollList.ScrollBarThickness = 3
 ScrollList.AutomaticCanvasSize = Enum.AutomaticSize.Y
 ScrollList.CanvasSize = UDim2.new(0, 0, 0, 0)
 ScrollList.Parent = ListContainer
+local UIListLayout = Instance.new("UIListLayout"); UIListLayout.Padding = UDim.new(0, 6); UIListLayout.SortOrder = Enum.SortOrder.Name; UIListLayout.Parent = ScrollList; UIListLayout.HorizontalAlignment = Enum.HorizontalAlignment.Center
 
-local UIListLayout = Instance.new("UIListLayout")
-UIListLayout.Padding = UDim.new(0, 6)
-UIListLayout.SortOrder = Enum.SortOrder.Name
-UIListLayout.Parent = ScrollList
-UIListLayout.HorizontalAlignment = Enum.HorizontalAlignment.Center
-
--- Right Side: Preview Area
+-- Right Side (Preview Area)
 local RightContainer = Instance.new("Frame")
 RightContainer.Size = UDim2.new(0, 260, 0, 255)
 RightContainer.Position = UDim2.new(0, 180, 0, 45)
 RightContainer.BackgroundTransparency = 1
 RightContainer.Parent = MainFrame
 
--- [[ BACKGROUND IMAGE ]]
+-- [[ INI BAGIAN YANG GW UBAH BIAR BACKGROUND MUNCUL ]] --
+
+-- 1. ImageLabel (Background) - Ditaruh Paling Belakang (ZIndex 1)
 local PreviewBackground = Instance.new("ImageLabel")
 PreviewBackground.Name = "PreviewBackground"
 PreviewBackground.Size = UDim2.new(1, 0, 0, 160)
@@ -302,21 +304,19 @@ PreviewBackground.ZIndex = 1
 PreviewBackground.Parent = RightContainer
 local BGCorner = Instance.new("UICorner"); BGCorner.CornerRadius = UDim.new(0, 10); BGCorner.Parent = PreviewBackground
 
--- [[ VIEWPORT FRAME ]]
+-- 2. ViewportFrame (Karakter) - Ditaruh Depan (ZIndex 2) tapi TRANSPARAN
 local PreviewFrame = Instance.new("ViewportFrame")
 PreviewFrame.Size = UDim2.new(1, 0, 0, 160)
 PreviewFrame.Position = UDim2.new(0, 0, 0, 0)
-PreviewFrame.BackgroundTransparency = 1 
+PreviewFrame.BackgroundTransparency = 1 -- << INI KUNCINYA (Dulu script lu warnanya hitam, jadi nutupin)
 PreviewFrame.BorderSizePixel = 0
-PreviewFrame.ZIndex = 2 
+PreviewFrame.ZIndex = 2
 PreviewFrame.Parent = RightContainer
-
 local WorldModel = Instance.new("WorldModel"); WorldModel.Parent = PreviewFrame
 
--- INSTRUCTION LABEL
+-- Instruction
 local SelectPromptLabel = Instance.new("TextLabel")
-SelectPromptLabel.Name = "SelectPromptLabel"
-SelectPromptLabel.Text = "Please select an Animation Pack from the list on the left."
+SelectPromptLabel.Text = "Silakan pilih Animation Pack dari daftar di sebelah kiri."
 SelectPromptLabel.Size = UDim2.new(1, -20, 0, 50)
 SelectPromptLabel.Position = UDim2.new(0, 10, 0, 175)
 SelectPromptLabel.BackgroundTransparency = 1
@@ -327,7 +327,6 @@ SelectPromptLabel.TextWrapped = true
 SelectPromptLabel.Visible = true 
 SelectPromptLabel.Parent = RightContainer
 
--- ACTION BUTTONS
 local PreviewActionContainer = Instance.new("Frame")
 PreviewActionContainer.Name = "ActionButtons"
 PreviewActionContainer.Size = UDim2.new(1, 0, 0, 40)
@@ -335,14 +334,8 @@ PreviewActionContainer.Position = UDim2.new(0, 0, 0, 165)
 PreviewActionContainer.BackgroundTransparency = 1
 PreviewActionContainer.Visible = false 
 PreviewActionContainer.Parent = RightContainer
+local UIGridLayout = Instance.new("UIGridLayout"); UIGridLayout.CellSize = UDim2.new(0, 60, 0, 18); UIGridLayout.CellPadding = UDim2.new(0, 5, 0, 5); UIGridLayout.HorizontalAlignment = Enum.HorizontalAlignment.Center; UIGridLayout.Parent = PreviewActionContainer
 
-local UIGridLayout = Instance.new("UIGridLayout")
-UIGridLayout.CellSize = UDim2.new(0, 60, 0, 18)
-UIGridLayout.CellPadding = UDim2.new(0, 5, 0, 5)
-UIGridLayout.HorizontalAlignment = Enum.HorizontalAlignment.Center
-UIGridLayout.Parent = PreviewActionContainer
-
--- EQUIP BUTTON
 local EquipBtn = Instance.new("TextButton")
 EquipBtn.Text = "APPLY PACK"
 EquipBtn.Size = UDim2.new(1, 0, 0, 35)
@@ -362,14 +355,17 @@ local currentPreviewTrack = nil
 local currentActiveBtn = nil
 
 -- =================================================================
--- LOGIC APPLY ANIMATION (Ke Character Asli)
+-- LOGIC APPLY
 -- =================================================================
 local function ApplyPackToCharacter(char, packName)
+	if not packName then return end
 	local packData = AnimPackList[packName]
+	if not packData then return end
+
 	local AnimateScript = char:WaitForChild("Animate", 10)
 	local Hum = char:WaitForChild("Humanoid", 10)
 
-	if AnimateScript and Hum and packData then
+	if AnimateScript and Hum then
 		local Animator = Hum:FindFirstChild("Animator")
 		if Animator then
 			for _, track in pairs(Animator:GetPlayingAnimationTracks()) do track:Stop() end
@@ -452,7 +448,6 @@ local function InitialPreviewSetup()
 	end
 end
 
--- [[ FUNGSI PLAY PREVIEW (DENGAN ROTASI RENANG) ]]
 local function PlayPreviewAction(actionName)
 	if not currentSelectedPack or not currentPreviewAnimator then return end
 	local packData = AnimPackList[currentSelectedPack]
@@ -464,7 +459,6 @@ local function PlayPreviewAction(actionName)
 
 	if not animId or animId == "" then return end
 
-	-- 1. Mainkan Animasi
 	if currentPreviewTrack then
 		currentPreviewTrack:Stop()
 		currentPreviewTrack = nil
@@ -476,16 +470,15 @@ local function PlayPreviewAction(actionName)
 	currentPreviewTrack.Looped = true
 	currentPreviewTrack:Play()
 
-	-- 2. ATUR ROTASI KARAKTER (Fix Berdiri/Tiduran)
+	-- Fix Rotasi Renang (Fitur ini gw simpen karena penting biar ga aneh)
 	local previewChar = WorldModel:FindFirstChildOfClass("Model")
 	if previewChar and previewChar.PrimaryPart then
 		if actionName == "Swim" or actionName == "SwimIdle" then
-			-- Rotasi -90 derajat di sumbu X biar TIDURAN (Swimming Posture)
 			previewChar:SetPrimaryPartCFrame(CFrame.new(0, 0, 0) * CFrame.Angles(math.rad(-90), 0, 0))
 		else
-			-- Reset ke posisi BERDIRI normal
 			previewChar:SetPrimaryPartCFrame(CFrame.new(0, 0, 0))
 		end
+		SetupPreviewCamera(previewChar.PrimaryPart) -- Reset camera
 	end
 end
 
@@ -532,7 +525,6 @@ for _, actionName in ipairs(actions) do
 	ActionBtn.MouseButton1Click:Connect(function()
 		if not currentSelectedPack then return end 
 		PlayPreviewAction(actionName)
-		-- Efek Klik
 		TweenService:Create(ActionBtn, TweenInfo.new(0.2), {BackgroundColor3 = Color3.fromRGB(0, 100, 255), TextColor3 = Color3.fromRGB(255,255,255)}):Play()
 		delay(0.2, function()
 			TweenService:Create(ActionBtn, TweenInfo.new(0.2), {BackgroundColor3 = Color3.fromRGB(50, 50, 55), TextColor3 = Color3.fromRGB(200, 200, 200)}):Play()
@@ -543,6 +535,7 @@ end
 EquipBtn.MouseButton1Click:Connect(function()
 	if not currentSelectedPack then return end
 	currentEquippedPack = currentSelectedPack
+
 	local Char = Player.Character
 	if Char then
 		EquipBtn.Text = "..."
@@ -587,5 +580,13 @@ for _, packName in ipairs(packNames) do
 		UpdatePreviewCharacter(packName)
 	end)
 end
+
+-- AUTO-LOAD
+Player.CharacterAdded:Connect(function(newChar)
+	if currentEquippedPack then
+		task.wait(0.5) 
+		ApplyPackToCharacter(newChar, currentEquippedPack)
+	end
+end)
 
 InitialPreviewSetup()
