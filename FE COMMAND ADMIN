@@ -1,10 +1,5 @@
 --[[
-    FE ADMIN COMMANDS by CrafterRealExxTeam
-    Prefix: !
-    Updates:
-    - REMOVED Throne
-    - Retained Neon Borders & Void Particles
-    - Sound ID: 1862047553
+    FE ADMIN COMMANDS
 ]]
 
 local Players = game:GetService("Players")
@@ -146,14 +141,14 @@ if LocalPlayer.Character then hookChar(LocalPlayer.Character) end
 -- GUI FUNCTION
 -- ==========================================
 local function showHelpMenu()
-    if LocalPlayer.PlayerGui:FindFirstChild("AdminUI_NoThrone") then 
-        LocalPlayer.PlayerGui.AdminUI_NoThrone.Enabled = true
+    if LocalPlayer.PlayerGui:FindFirstChild("AdminUIExxTeam") then 
+        LocalPlayer.PlayerGui.AdminUIExxTeam.Enabled = true
         playSound()
         return 
     end
 
     local sg = Instance.new("ScreenGui")
-    sg.Name = "AdminUI_NoThrone"
+    sg.Name = "AdminUIExxTeam"
     sg.Parent = LocalPlayer.PlayerGui
     sg.ResetOnSpawn = false 
 
@@ -171,7 +166,7 @@ local function showHelpMenu()
     corner.Parent = frame
 
     local title = Instance.new("TextLabel")
-    title.Text = "COMMANDS"
+    title.Text = "LIST COMMANDS"
     title.Size = UDim2.new(1, 0, 0, 40)
     title.BackgroundTransparency = 1
     title.TextColor3 = Color3.fromRGB(255, 255, 255)
@@ -222,17 +217,12 @@ local function showHelpMenu()
 [!visible]       - Visible Mode
 [!playanim id]   - Play Animation
 [!fling user]    - Fling Player
-[!unfling]       - Stop Fling
-[!superring]     - Drag Parts (Orbit)
-[!blackhole]     - Drag Parts (Pull)
-[!stopcontrol]   - Stop Drag Parts
-[!hop]           - Server Hop
+[!unfling]       - Stop Fling[!hop]           - Server Hop
 [!rejoin]        - Rejoin Server
 [!job]           - Copy Job ID
 [!joinjobid id]  - Join Job ID
 [!goto user]     - TP to Player
 [!join user]     - Join Server Player
-[!follow user]   - Loop TP (Stick)
 [!kamui]         - Void Box Arena
 [!unkamui]       - Return to World
 [!cmds / !]      - Open This Menu
@@ -356,11 +346,6 @@ LocalPlayer.Chatted:Connect(function(msg)
     elseif cmd == prefix.."fling" then
         if args[2] then local target = getPlayer(args[2]); if target then flingTarget = target; isNoclipping = true; setNoclip(true); notify("Fling", "Flinging "..target.Name) end end
     elseif cmd == prefix.."unfling" then flingTarget = nil; isNoclipping = false; setNoclip(false); if LocalPlayer.Character and LocalPlayer.Character:FindFirstChild("HumanoidRootPart") then LocalPlayer.Character.HumanoidRootPart.Velocity = Vector3.new(0,0,0); LocalPlayer.Character.HumanoidRootPart.RotVelocity = Vector3.new(0,0,0) end; notify("Fling", "Stopped")
-
-    elseif cmd == prefix.."superring" or cmd == prefix.."supering" then isSuperRing = true; isBlackhole = false; notify("Super Ring", "Dragging parts (Orbit)...")
-    elseif cmd == prefix.."blackhole" then isBlackhole = true; isSuperRing = false; notify("Blackhole", "Dragging parts (Pull)...")
-    elseif cmd == prefix.."stopcontrol" then isSuperRing = false; isBlackhole = false; notify("Part Control", "Stopped")
-
     elseif cmd == prefix.."doublejump" then isDoubleJump = true; isInfiniteJump = false; notify("Status", "Double Jump ON")
     elseif cmd == prefix.."undoublejump" then isDoubleJump = false; notify("Status", "Double Jump OFF")
     elseif cmd == prefix.."infjump" then isInfiniteJump = true; isDoubleJump = false; notify("Status", "Infinite Jump ON")
@@ -421,4 +406,4 @@ LocalPlayer.Chatted:Connect(function(msg)
     end
 end)
 
-notify("Script Loaded", "Type '!' or '!cmds' to open menu.")
+notify("EXX HD", "Type '!' or '!cmds' to open menu.", 139054452496213)
