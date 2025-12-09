@@ -42,7 +42,7 @@ local AnimPackList = {
     },
     ["(canceled) Popstar"] = {
         Idle = "rbxassetid://1212900985",
-        Idle2 = " rbxassetid://1212954651",
+        Idle2 = "rbxassetid://1212954651",
         Walk = "rbxassetid://1212980338",
         Run = "rbxassetid://1212980348",
         Jump = "rbxassetid://1212954642",
@@ -53,7 +53,7 @@ local AnimPackList = {
     },
     ["(canceled) Confident"] = {
         Idle = "rbxassetid://1069977950",
-        Idle2 = " rbxassetid://1069987858",
+        Idle2 = "rbxassetid://1069987858",
         Walk = "rbxassetid://1070017263",
         Run = "rbxassetid://1070001516",
         Jump = "rbxassetid://1069984524",
@@ -75,7 +75,7 @@ local AnimPackList = {
     },
     ["[NEW] Uboxed By Amazon"] = {
         Idle = "rbxassetid://98281136301627",
-        Idle2 = " rbxassetid://138183121662404",
+        Idle2 = "rbxassetid://138183121662404",
         Walk = "rbxassetid://90478085024465",
         Run = "rbxassetid://134824450619865",
         Jump = "rbxassetid://121454505477205",
@@ -97,7 +97,7 @@ local AnimPackList = {
     },
     ["FE Zombie"] = {
         Idle = "rbxassetid://3489171152",
-        Idle2 = " rbxassetid://3489171152",
+        Idle2 = "rbxassetid://3489171152",
         Walk = "rbxassetid://3489174223",
         Run = "rbxassetid://3489173414",
         Jump = "rbxassetid://616161997",
@@ -108,7 +108,7 @@ local AnimPackList = {
     },
     ["Ghost"] = {
         Idle = "rbxassetid://616006778",
-        Idle2 = " rbxassetid://616008087",
+        Idle2 = "rbxassetid://616008087",
         Walk = "rbxassetid://616010382",
         Run = "rbxassetid://616013216",
         Jump = "rbxassetid://616008936",
@@ -119,7 +119,7 @@ local AnimPackList = {
     },
      ["(ðŸ˜œ) Spam Emote Classic"] = {
         Idle = "rbxassetid://507770818",
-        Idle2 = " rbxassetid://507770818",
+        Idle2 = "rbxassetid://507770818",
         Walk = "rbxassetid://507770239",
         Run = "rbxassetid://2506281703",
         Jump = "rbxassetid://507770677",
@@ -130,7 +130,7 @@ local AnimPackList = {
     },
      ["Pirate"] = {
         Idle = "rbxassetid://750781874",
-        Idle2 = " rbxassetid://750782770",
+        Idle2 = "rbxassetid://750782770",
         Walk = "rbxassetid://750785693",
         Run = "rbxassetid://750783738",
         Jump = "rbxassetid://750782230",
@@ -141,7 +141,7 @@ local AnimPackList = {
     },
      ["Werewolf"] = {
         Idle = "rbxassetid://10921330408",
-        Idle2 = " rbxassetid://10921333667",
+        Idle2 = "rbxassetid://10921333667",
         Walk = "rbxassetid://10921342074",
         Run = "rbxassetid://10921336997",
         Jump = "rbxassetid://1083218792",
@@ -152,7 +152,7 @@ local AnimPackList = {
     },
      ["No Boundaries by Walmart"] = {
         Idle = "rbxassetid://18747067405",
-        Idle2 = " rbxassetid://18747063918",
+        Idle2 = "rbxassetid://18747063918",
         Walk = "rbxassetid://18747074203",
         Run = "rbxassetid://18747070484",
         Jump = "rbxassetid://18747069148",
@@ -163,7 +163,7 @@ local AnimPackList = {
     },
      ["Adidas Community"] = {
         Idle = "rbxassetid://122257458498464",
-        Idle2 = " rbxassetid://102357151005774",
+        Idle2 = "rbxassetid://102357151005774",
         Walk = "rbxassetid://122150855457006",
         Run = "rbxassetid://82598234841035",
         Jump = "rbxassetid://75290611992385",
@@ -174,7 +174,7 @@ local AnimPackList = {
     },
      ["Adidas Sports"] = {
         Idle = "rbxassetid://18537376492",
-        Idle2 = " rbxassetid://18537371272",
+        Idle2 = "rbxassetid://18537371272",
         Walk = "rbxassetid://109346520324160",
         Run = "rbxassetid://18537384940",
         Jump = "rbxassetid://18537380791",
@@ -185,7 +185,7 @@ local AnimPackList = {
     },
      ["Catwalk Clam by e.l.f"] = {
         Idle = "rbxassetid://133806214992291",
-        Idle2 = " rbxassetid://94970088341563",
+        Idle2 = "rbxassetid://94970088341563",
         Walk = "rbxassetid://109168724482748",
         Run = "rbxassetid://81024476153754",
         Jump = "rbxassetid://116936326516985",
@@ -196,7 +196,7 @@ local AnimPackList = {
     },
      ["Animation for Mr.Toilet"] = {
         Idle = "rbxassetid://4417977954",
-        Idle2 = " rbxassetid://4417978624",
+        Idle2 = "rbxassetid://4417978624",
         Walk = "rbxassetid://10921269718",
         Run = "rbxassetid://4417979645",
         Jump = "rbxassetid://10921263860",
@@ -316,7 +316,7 @@ local WorldModel = Instance.new("WorldModel"); WorldModel.Parent = PreviewFrame
 
 -- Instruction
 local SelectPromptLabel = Instance.new("TextLabel")
-SelectPromptLabel.Text = "Silakan pilih Animation Pack dari daftar di sebelah kiri."
+SelectPromptLabel.Text = "Please select an Animation Pack from the list on the left."
 SelectPromptLabel.Size = UDim2.new(1, -20, 0, 50)
 SelectPromptLabel.Position = UDim2.new(0, 10, 0, 175)
 SelectPromptLabel.BackgroundTransparency = 1
