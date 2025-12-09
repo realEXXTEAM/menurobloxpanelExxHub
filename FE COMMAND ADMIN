@@ -397,7 +397,7 @@ LocalPlayer.Chatted:Connect(function(msg)
             local emitter = Instance.new("ParticleEmitter"); emitter.Texture = "rbxassetid://243098098"; emitter.Rate = 50; emitter.Lifetime = NumberRange.new(5, 10); emitter.Speed = NumberRange.new(2, 5); emitter.Color = ColorSequence.new(Color3.fromRGB(50,50,50)); emitter.Parent = particlePart
 
             char.HumanoidRootPart.CFrame = CFrame.new(centerPos + Vector3.new(0, 5, 0))
-            notify("Kamui", "Arena Generated (No Throne).")
+            notify("Kamui", "Arena Generated.")
         end
 
     elseif cmd == prefix.."unkamui" then
