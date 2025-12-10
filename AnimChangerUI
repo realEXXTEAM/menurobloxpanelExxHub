@@ -20,7 +20,7 @@ local currentEquippedPack = nil
 local AnimPackList = {
     ["(canceled) Sneaky"] = {
         Idle = "rbxassetid://1132473842",
-        Idle2 = " rbxassetid://1132477671",
+        Idle2 = "rbxassetid://1132477671",
         Walk = "rbxassetid://1132510133",
         Run = "rbxassetid://1132494274",
         Jump = "rbxassetid://1132489853",
@@ -31,7 +31,7 @@ local AnimPackList = {
     },
    ["(canceled) Patrol"] = {
         Idle = "rbxassetid://1149612882",
-        Idle2 = " rbxassetid://1150842221",
+        Idle2 = "rbxassetid://1150842221",
         Walk = "rbxassetid://1151231493",
         Run = "rbxassetid://1150967949",
         Jump = "rbxassetid://1150944216",
@@ -86,7 +86,7 @@ local AnimPackList = {
     },
     ["(canceled) Princess"] = {
         Idle = "rbxassetid://941003647",
-        Idle2 = "rbxassedid://941013098",
+        Idle2 = "rbxassetid://941013098",
         Walk = "rbxassetid://941028902",
         Run = "rbxassetid://941015281",
         Jump = "rbxassetid://941008832",
@@ -117,7 +117,7 @@ local AnimPackList = {
         Swim = "rbxassetid://10921253142",
         SwimIdle = "rbxassetid://10921253767"
     },
-     ["(ðŸ˜œ) Spam Emote Classic"] = {
+     ["(😂) Spam Emote Classic"] = {
         Idle = "rbxassetid://507770818",
         Idle2 = "rbxassetid://507770818",
         Walk = "rbxassetid://507770239",
