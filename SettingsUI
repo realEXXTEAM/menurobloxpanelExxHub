@@ -28,7 +28,7 @@ MainFrame.BackgroundColor3 = Color3.fromRGB(0, 0, 0)
 MainFrame.BackgroundTransparency = 0.2
 MainFrame.BorderSizePixel = 0
 MainFrame.Active = true
-MainFrame.Draggable = true
+MainFrame.Draggable = false
 
 local UICorner = Instance.new("UICorner", MainFrame)
 UICorner.CornerRadius = UDim.new(0, 12)
@@ -72,8 +72,8 @@ local UIListLayout = Instance.new("UIListLayout", ScrollFrame)
 UIListLayout.Padding = UDim.new(0, 8)
 
 --// Toggle Template
-local OFF_IMAGE = "rbxassetid://6031068420"
-local ON_IMAGE  = "rbxassetid://6031068421"
+local OFF_IMAGE = "rbxassetid://93251040409753"
+local ON_IMAGE  = "rbxassetid://118371707759193"
 
 local function CreateToggle(name, callback)
 	local Item = Instance.new("Frame")
