@@ -5,9 +5,54 @@ local HttpService = game:GetService("HttpService")
 local UIS = game:GetService("UserInputService")
 local Player = Players.LocalPlayer
 
+-- ====================================================================
+-- // CUSTOM CONFIGURATION: PLACE ID & POSITION //
+-- ====================================================================
+
+-- Daftar Place ID yang posisinya akan diubah (SEA 1, SEA 2, SEA 3)
+local TARGET_PLACE_IDS = {
+    2753915549, -- SEA 1
+    4442272183, -- SEA 2
+    7449423635, -- SEA 3
+}
+
+-- Posisi Default (Kanan Atas)
+local DEFAULT_TOGGLE_POS = UDim2.new(1, -112, 0, 8)
+local DEFAULT_PANEL_POS = UDim2.new(1, -275, 0, 12)
+
+-- Posisi BARU (Kiri Atas)
+local NEW_TOGGLE_POS = UDim2.new(0, 8, 0, 8) 
+local NEW_PANEL_POS = UDim2.new(0, 8, 0, 12) 
+
+-- Fungsi untuk memeriksa apakah Place ID saat ini termasuk target
+local function isTargetPlace()
+    for _, id in ipairs(TARGET_PLACE_IDS) do
+        if game.PlaceId == id then
+            return true
+        end
+    end
+    return false
+end
+
+-- Tentukan posisi yang akan digunakan saat ini
+local currentTogglePos
+local currentPanelPos
+
+if isTargetPlace() then
+    -- Gunakan posisi Kiri Atas
+    currentTogglePos = NEW_TOGGLE_POS
+    currentPanelPos = NEW_PANEL_POS
+else
+    -- Gunakan posisi Kanan Atas (Default)
+    currentTogglePos = DEFAULT_TOGGLE_POS
+    currentPanelPos = DEFAULT_PANEL_POS
+end
+
+-- ====================================================================
+
 --// GUI Setup
 local gui = Instance.new("ScreenGui")
-gui.Name = "ServerToolsUI"
+gui.Name = "ServerHOPUI"
 gui.IgnoreGuiInset = true
 gui.ResetOnSpawn = false
 gui.DisplayOrder = 10000
@@ -18,11 +63,11 @@ gui.Parent = Player:WaitForChild("PlayerGui")
 local toggleButton = Instance.new("ImageButton")
 toggleButton.Name = "ToggleButton"
 toggleButton.Size = UDim2.new(0, 50, 0, 50)
-toggleButton.Position = UDim2.new(1, -112, 0, 8)
+toggleButton.Position = currentTogglePos 
 toggleButton.BackgroundColor3 = Color3.fromRGB(0, 0, 0)
 toggleButton.BackgroundTransparency = 0.2
 toggleButton.AutoButtonColor = false
-toggleButton.Image = "rbxassetid://119828878228867" -- 🔹 Image OFF
+[span_2](start_span)toggleButton.Image = "rbxassetid://119828878228867" -- 🔹 Image OFF[span_2](end_span)
 toggleButton.ZIndex = 9999
 toggleButton.Parent = gui
 
@@ -32,11 +77,11 @@ corner.Parent = toggleButton
 
 --// Popup Panel
 local panel = Instance.new("Frame")
-panel.Name = "Frame"
+[span_3](start_span)panel.Name = "Frame"[span_3](end_span)
 panel.Size = UDim2.new(0, 160, 0, 0)
-panel.Position = UDim2.new(1, -275, 0, 12)
+panel.Position = currentPanelPos 
 panel.BackgroundColor3 = Color3.fromRGB(15, 15, 15)
-panel.BackgroundTransparency = 0.1
+[span_4](start_span)panel.BackgroundTransparency = 0.1[span_4](end_span)
 panel.ClipsDescendants = true
 panel.Visible = false
 panel.ZIndex = 9998
@@ -61,7 +106,7 @@ local list = {}
 local open = false
 local anim = false
 local imageOn = "rbxassetid://81298821796665"  -- 🔹 Image ON
-local imageOff = "rbxassetid://119828878228867" -- 🔹 Image OFF
+[span_5](start_span)local imageOff = "rbxassetid://119828878228867" -- 🔹 Image OFF[span_5](end_span)
 
 local function togglePanel(state)
 	if anim then return end
@@ -77,7 +122,7 @@ local function togglePanel(state)
 			totalHeight += v.AbsoluteSize.Y + 5
 		end
 
-		totalHeight = math.min(totalHeight + 10, 150)
+		[span_6](start_span)totalHeight = math.min(totalHeight + 10, 150)[span_6](end_span)
 		TweenService:Create(panel, TweenInfo.new(0.25, Enum.EasingStyle.Sine, Enum.EasingDirection.Out), {
 			Size = UDim2.new(0, 160, 0, totalHeight)
 		}):Play()
@@ -125,7 +170,7 @@ local function addButton(text, callback, closeAfter)
 	end)
 
 	table.insert(list, b)
-	scroll.CanvasSize = UDim2.new(0, 0, 0, scroll.CanvasSize.Y.Offset + 37)
+	[span_7](start_span)scroll.CanvasSize = UDim2.new(0, 0, 0, scroll.CanvasSize.Y.Offset + 37)[span_7](end_span)
 end
 
 --// Add TextBox Function
@@ -161,10 +206,11 @@ end
 --// Buttons
 addButton("HOP SERVER", function()
 	local data = HttpService:JSONDecode(game:HttpGet(
-		"https://games.roblox.com/v1/games/"..game.PlaceId.."/servers/Public?sortOrder=Desc&limit=100"
+		-- PERBAIKAN: Menggunakan sortOrder=Asc (paling sedikit pemain) agar menemukan server kosong lebih mudah
+		"https://games.roblox.com/v1/games/"..game.PlaceId.."/servers/Public?sortOrder=Asc&limit=100"
 	))
 	for _, s in ipairs(data.data) do
-		if s.playing < s.maxPlayers then
+		[span_8](start_span)if s.playing < s.maxPlayers then[span_8](end_span)
 			TeleportService:TeleportToPlaceInstance(game.PlaceId, s.id, Player)
 			break
 		end
@@ -176,7 +222,7 @@ addButton("HOP LOW SERVER", function()
 		"https://games.roblox.com/v1/games/"..game.PlaceId.."/servers/Public?sortOrder=Asc&limit=100"
 	))
 	for _, s in ipairs(data.data) do
-		if s.playing < s.maxPlayers then
+		[span_9](start_span)if s.playing < s.maxPlayers then[span_9](end_span)
 			TeleportService:TeleportToPlaceInstance(game.PlaceId, s.id, Player)
 			break
 		end
