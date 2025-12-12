@@ -205,9 +205,106 @@ local AnimPackList = {
         Climb = "rbxassetid://10921257536",
         Swim = "rbxassetid://10921264784",
         SwimIdle = "rbxassetid://10921265698"
+    },
+    ["Wicked Dancing Through Life"] = {
+        Idle = "rbxassetid://92849173543269",
+        Idle2 = "rbxassetid://132238900951109",
+        Walk = "rbxassetid://73718308412641",
+        Run = "rbxassetid://135515454877967",
+        Jump = "rbxassetid://78508480717326",
+        Fall = "rbxassetid://78147885297412",
+        Climb = "rbxassetid://129447497744818",
+        Swim = "rbxassetid://110657013921774",
+        SwimIdle = "rbxassetid://129183123083281"
+    },
+     ["Wicked Popular"] = {
+        Idle = "rbxassetid://118832222982049",
+        Idle2 = "rbxassetid://76049494037641",
+        Walk = "rbxassetid://92072849924640",
+        Run = "rbxassetid://72301599441680",
+        Jump = "rbxassetid://104325245285198",
+        Fall = "rbxassetid://121152442762481",
+        Climb = "rbxassetid://131326830509784",
+        Swim = "rbxassetid://99384245425157",
+        SwimIdle = "rbxassetid://113199415118199"
+    },
+    ["NFL"] = {
+        Idle = "rbxassetid://92080889861410",
+        Idle2 = "rbxassetid://74451233229259",
+        Walk = "rbxassetid://110358958299415",
+        Run = "rbxassetid://117333533048078",
+        Jump = "rbxassetid://119846112151352",
+        Fall = "rbxassetid://129773241321032",
+        Climb = "rbxassetid://134630013742019",
+        Swim = "rbxassetid://132697394189921",
+        SwimIdle = "rbxassetid://79090109939093"
+    },
+   ["Bold by e.l.f"] = {
+        Idle = "rbxassetid://16738333868",
+        Idle2 = "rbxassetid://16738334710",
+        Walk = "rbxassetid://16738340646",
+        Run = "rbxassetid://16738337225",
+        Jump = "rbxassetid://16738336650",
+        Fall = "rbxassetid://16738333171",
+        Climb = "rbxassetid://16738332169",
+        Swim = "rbxassetid://16738339158",
+        SwimIdle = "rbxassetid://16738339817"
+    },
+   ["Ninja"] = {
+        Idle = "rbxassetid://10921155160",
+        Idle2 = "rbxassetid://10921155867",
+        Walk = "rbxassetid://10921162768",
+        Run = "rbxassetid://10921157929",
+        Jump = "rbxassetid://10921160088",
+        Fall = "rbxassetid://10921159222",
+        Climb = "rbxassetid://10921154678",
+        Swim = "rbxassetid://10921161002",
+        SwimIdle = "rbxassetid://10922757002"
+    },
+   ["Bubbly"] = {
+        Idle = "rbxassetid://10921054344",
+        Idle2 = "rbxassetid://10921055107",
+        Walk = "rbxassetid://10980888364",
+        Run = "rbxassetid://10921057244",
+        Jump = "rbxassetid://10921062673",
+        Fall = "rbxassetid://10921061530",
+        Climb = "rbxassetid://10921053544",
+        Swim = "rbxassetid://10921063569",
+        SwimIdle = "rbxassetid://10922582160"
+    },
+   ["Cartoony"] = {
+        Idle = "rbxassetid://10921071918",
+        Idle2 = "rbxassetid://10921072875",
+        Walk = "rbxassetid://10921082452",
+        Run = "rbxassetid://10921076136",
+        Jump = "rbxassetid://10921078135",
+        Fall = "rbxassetid://10921077030",
+        Climb = "rbxassetid://10921070953",
+        Swim = "rbxassetid://10921079380",
+        SwimIdle = "rbxassetid://10921081059"
+    },
+   ["Animation for Ud'zal"] = {
+        Idle = "rbxassetid://3303162274",
+        Idle2 = "rbxassetid://3303162549",
+        Walk = "rbxassetid://3303162967",
+        Run = "rbxassetid://3236836670",
+        Jump = "rbxassetid://10921263860",
+        Fall = "rbxassetid://10921262864",
+        Climb = "rbxassetid://10921257536",
+        Swim = "rbxassetid://10921264784",
+        SwimIdle = "rbxassetid://10921265698"
+    },
+   ["Animation for Borock the conqueror"] = {
+        Idle = "rbxassetid://3293641938",
+        Idle2 = "rbxassetid://3293642554",
+        Walk = "rbxassetid://10921269718",
+        Run = "rbxassetid://3236836670",
+        Jump = "rbxassetid://10921263860",
+        Fall = "rbxassetid://10921262864",
+        Climb = "rbxassetid://10921257536",
+        Swim = "rbxassetid://10921264784",
+        SwimIdle = "rbxassetid://10921265698"
     }
-
-	
 }
 
 -- =================================================================
