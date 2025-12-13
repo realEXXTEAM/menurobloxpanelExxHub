@@ -50,7 +50,7 @@ local TopCorner = Instance.new("UICorner"); TopCorner.CornerRadius = UDim.new(0,
 local TopFix = Instance.new("Frame"); TopFix.Size = UDim2.new(1,0,0,10); TopFix.Position = UDim2.new(0,0,1,-10); TopFix.BackgroundColor3 = Color3.fromRGB(30,30,35); TopFix.BorderSizePixel=0; TopFix.Parent=TopBar
 
 local Title = Instance.new("TextLabel")
-Title.Text = "STSServer | Profile"
+Title.Text = "InfoServer | Profile"
 Title.Font = Enum.Font.GothamBlack
 Title.TextColor3 = Color3.fromRGB(255, 255, 255)
 Title.TextSize = 14
@@ -227,7 +227,7 @@ local JobBox = createTextBox("Paste Job ID here...", 6)
 createBtn("Join Job ID", 7, Color3.fromRGB(40, 120, 80), function() if JobBox.Text ~= "" then TeleportService:TeleportToPlaceInstance(game.PlaceId, JobBox.Text, Player) end end)
 
 createHeader("SERVER HOP", 8)
-createBtn("Hop Low Server (Sepi)", 9, Color3.fromRGB(0, 160, 100), function()
+createBtn("Hop Low Server", 9, Color3.fromRGB(0, 160, 100), function()
     local PlaceID = game.PlaceId; local AllIDs = {}
     local function ListServers(Cursor)
         local Raw = game:HttpGet("https://games.roblox.com/v1/games/" .. PlaceID .. "/servers/Public?sortOrder=Asc&limit=100" .. (Cursor and "&cursor=" .. Cursor or ""))
@@ -279,6 +279,6 @@ end)
 -- == 7. TOGGLE KEYBIND (RIGHT CONTROL) ==
 UserInputService.InputBegan:Connect(function(input, gpe)
     if not gpe and input.KeyCode == Enum.KeyCode.RightControl then
-        STSServerUI.Enabled = not STSServerUI.Enabled
+        InfoServerUI.Enabled = not InfoServerUI.Enabled
     end
 end)
