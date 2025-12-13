@@ -114,6 +114,7 @@ local Next = newButton(Controls, "⏭", 0.66)
 
 --// Songs
 local Songs = {
+    {Name = "Tor Monitor Ketua", SoundId = "rbxassetid://70633665224310"},
 	{Name = "Breakdutch Vip", SoundId = "rbxassetid://82162714102729"},
 	{Name = "DJ CINNAMON GIRL", SoundId = "rbxassetid://135018311294635"},
 	{Name = "Trauma (DJ SEAN)", SoundId = "rbxassetid://73339410351095"},
