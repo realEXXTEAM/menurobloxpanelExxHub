@@ -1,0 +1,246 @@
+local Player = game.Players.LocalPlayer
+local PlayerGui = Player:WaitForChild("PlayerGui")
+local GuiService = game:GetService("GuiService")
+local RunService = game:GetService("RunService")
+local TweenService = game:GetService("TweenService")
+
+-- **SOUND IDS**
+local OPEN_GIFT_SOUND_ID = "rbxassetid://122013786812898"
+local PAPER_OPEN_CLOSE_SOUND_ID = "rbxassetid://2217513097"
+
+-- **SETUP DATA**
+local WINNER_USER_ID = 5193469584
+local GIFT_IMAGE_ID = "rbxassetid://95813773299412" -- Gambar Kotak Hadiah
+local REWARD_BACKGROUND_ID = "rbxassetid://95328046889806" -- Gambar Background Kertas
+local GIFT_USERNAME = "BFChampionUser"
+local GIFT_PASSWORD = "SecretPass_BF123!"
+
+-- ====================================================================
+-- FUNGSI UTILITAS SUARA
+-- ====================================================================
+
+local function PlaySound(SoundId)
+    local sound = Instance.new("Sound")
+    sound.SoundId = SoundId
+    sound.Parent = PlayerGui
+    sound:Play()
+    task.wait(0.5) 
+    sound:Destroy()
+end
+
+-- ====================================================================
+-- 1. CEK ID PEMENANG
+-- ====================================================================
+if Player.UserId ~= WINNER_USER_ID then
+    script:Destroy()
+    return 
+end
+
+-- ====================================================================
+-- 2. SETUP GUI UTAMA
+-- ====================================================================
+local ScreenGui = Instance.new("ScreenGui")
+ScreenGui.Name = "FixedGiveawayUI"
+ScreenGui.IgnoreGuiInset = true
+ScreenGui.ResetOnSpawn = false
+ScreenGui.Parent = PlayerGui
+
+-- ====================================================================
+-- 3. TOMBOL HADIAH (KADO) - DIKEMBALIKAN
+-- ====================================================================
+local GiftButton = Instance.new("ImageButton")
+GiftButton.Name = "GiftButton"
+GiftButton.Size = UDim2.new(0, 180, 0, 180)
+GiftButton.AnchorPoint = Vector2.new(0.5, 0.5)
+GiftButton.Position = UDim2.new(0.5, 0, 0.5, 0)
+GiftButton.BackgroundTransparency = 1
+GiftButton.Image = GIFT_IMAGE_ID
+GiftButton.ZIndex = 10 
+GiftButton.Parent = ScreenGui
+
+local UICornerBtn = Instance.new("UICorner")
+UICornerBtn.CornerRadius = UDim.new(0, 20)
+UICornerBtn.Parent = GiftButton
+
+-- ====================================================================
+-- 4. UI HADIAH (FRAME KERTAS) - PERBAIKAN VISIBILITY
+-- ====================================================================
+local RewardFrame = Instance.new("ImageLabel")
+RewardFrame.Name = "RewardFrame"
+-- Size dan Rotation diatur ke nilai awal animasi
+RewardFrame.Size = UDim2.new(0, 450, 0, 300) 
+RewardFrame.AnchorPoint = Vector2.new(0.5, 0.5)
+RewardFrame.Position = UDim2.new(0.5, 0, 0.5, 0)
+RewardFrame.Image = REWARD_BACKGROUND_ID
+RewardFrame.BackgroundTransparency = 1
+RewardFrame.ScaleType = Enum.ScaleType.Stretch 
+RewardFrame.Visible = false -- Sembunyikan di awal
+RewardFrame.ZIndex = 5 
+RewardFrame.Parent = ScreenGui
+
+-- >> TOMBOL TUTUP (X) <<
+local CloseButton = Instance.new("TextButton")
+CloseButton.Name = "CloseButton"
+CloseButton.Text = "X"
+CloseButton.Font = Enum.Font.FredokaOne
+CloseButton.TextSize = 20
+CloseButton.TextColor3 = Color3.fromRGB(255, 255, 255)
+CloseButton.BackgroundColor3 = Color3.fromRGB(0, 0, 0)
+CloseButton.Size = UDim2.new(0, 30, 0, 30)
+CloseButton.AnchorPoint = Vector2.new(1, 0) 
+CloseButton.Position = UDim2.new(1, -10, 0, 10) 
+CloseButton.ZIndex = 15
+CloseButton.Visible = false -- Sembunyikan saat kado belum terbuka
+CloseButton.Parent = RewardFrame
+
+local UICornerClose = Instance.new("UICorner")
+UICornerClose.CornerRadius = UDim.new(0, 6)
+UICornerClose.Parent = CloseButton
+
+-- >> CONTAINER TEKS <<
+local TextContainer = Instance.new("Frame")
+TextContainer.Size = UDim2.new(0.8, 0, 0.8, 0) 
+TextContainer.AnchorPoint = Vector2.new(0.5, 0.5)
+TextContainer.Position = UDim2.new(0.5, 0, 0.5, 0)
+TextContainer.BackgroundTransparency = 1
+TextContainer.ZIndex = 7
+TextContainer.Visible = false -- Sembunyikan semua teks saat kado belum terbuka
+TextContainer.Parent = RewardFrame
+
+local UIList = Instance.new("UIListLayout")
+UIList.Padding = UDim.new(0, 5)
+UIList.HorizontalAlignment = Enum.HorizontalAlignment.Center
+UIList.VerticalAlignment = Enum.VerticalAlignment.Center
+UIList.Parent = TextContainer
+
+-- >> JUDUL BARU (You Won Giveaway) <<
+local SubTitle = Instance.new("TextLabel")
+SubTitle.Text = "YOU WON GIVEAWAY"
+SubTitle.Size = UDim2.new(1, 0, 0, 30)
+SubTitle.Font = Enum.Font.SourceSansBold
+SubTitle.TextSize = 20
+SubTitle.TextColor3 = Color3.fromRGB(200, 50, 50) 
+SubTitle.BackgroundTransparency = 1
+SubTitle.ZIndex = 8
+SubTitle.TextXAlignment = Enum.TextXAlignment.Center
+SubTitle.Parent = TextContainer
+
+-- >> JUDUL UTAMA (YOU WON GOT ACCOUNT) <<
+local Title = Instance.new("TextLabel")
+Title.Text = "YOU WON GOT ACCOUNT" 
+Title.Size = UDim2.new(1, 0, 0, 50)
+Title.Font = Enum.Font.FredokaOne
+Title.TextSize = 26
+Title.TextColor3 = Color3.fromRGB(0, 0, 0)
+Title.BackgroundTransparency = 1
+Title.ZIndex = 8
+Title.TextXAlignment = Enum.TextXAlignment.Center
+Title.TextWrapped = true
+Title.Parent = TextContainer
+
+-- >> USERNAME LABEL <<
+local UserLabel = Instance.new("TextLabel")
+UserLabel.Text = "Username:\n" .. GIFT_USERNAME
+UserLabel.Size = UDim2.new(1, 0, 0, 60)
+UserLabel.Font = Enum.Font.SourceSansBold
+UserLabel.TextSize = 22
+UserLabel.TextColor3 = Color3.fromRGB(50, 50, 50)
+UserLabel.BackgroundTransparency = 1
+UserLabel.ZIndex = 8
+UserLabel.TextXAlignment = Enum.TextXAlignment.Center
+UserLabel.Parent = TextContainer
+
+-- >> PASSWORD LABEL <<
+local PassLabel = Instance.new("TextLabel")
+PassLabel.Text = "Password:\n" .. GIFT_PASSWORD
+PassLabel.Size = UDim2.new(1, 0, 0, 60)
+PassLabel.Font = Enum.Font.SourceSansBold
+PassLabel.TextSize = 22
+PassLabel.TextColor3 = Color3.fromRGB(50, 50, 50)
+PassLabel.BackgroundTransparency = 1
+PassLabel.ZIndex = 8
+PassLabel.TextXAlignment = Enum.TextXAlignment.Center
+PassLabel.Parent = TextContainer
+
+-- ====================================================================
+-- 5. ANIMASI & LOGIKA
+-- ====================================================================
+
+-- Animasi Goyang (Tidak ada perubahan)
+local function ShakeFrame(Frame)
+    local originalPos = Frame.Position
+    local tweenInfo = TweenInfo.new(0.05, Enum.EasingStyle.Sine, Enum.EasingDirection.Out, 0, true, 0)
+    for i = 1, 6 do
+        local randomX = (math.random() * 2 - 1) * 0.01
+        local randomY = (math.random() * 2 - 1) * 0.01
+        local targetPos = originalPos + UDim2.new(randomX, 0, randomY, 0)
+        TweenService:Create(Frame, tweenInfo, {Position = targetPos}):Play()
+        task.wait(0.05)
+    end
+    Frame.Position = originalPos
+end
+
+-- Fungsi Tutup dengan Animasi dan Suara
+local function CloseReward()
+    -- 1. Mainkan suara tutup
+    PlaySound(PAPER_OPEN_CLOSE_SOUND_ID)
+    
+    -- 2. Animasi mengecil
+    local closeTween = TweenService:Create(RewardFrame, TweenInfo.new(0.3, Enum.EasingStyle.Quad, Enum.EasingDirection.In), {
+        Size = UDim2.new(0, 0, 0, 0)
+    })
+    closeTween:Play()
+    closeTween.Completed:Wait()
+
+    -- 3. Hancurkan GUI
+    ScreenGui:Destroy()
+end
+
+
+-- Fungsi Buka (Dipicu oleh klik Tombol Hadiah)
+local isOpening = false
+local function OpenReward()
+    if isOpening then return end
+    isOpening = true
+    
+    -- Mainkan suara hadiah diklik
+    PlaySound(OPEN_GIFT_SOUND_ID)
+
+    -- 1. Goyang & Hilangkan Tombol Hadiah
+    ShakeFrame(GiftButton)
+    
+    local explodeTween = TweenService:Create(GiftButton, TweenInfo.new(0.3), {Size = UDim2.new(0,0,0,0), ImageTransparency = 1})
+    explodeTween:Play()
+    explodeTween.Completed:Wait()
+    GiftButton.Visible = false
+    
+    -- 2. Atur Frame Kertas ke posisi awal animasi
+    RewardFrame.Rotation = -180 
+    RewardFrame.Size = UDim2.new(0, 0, 0, 0)
+    RewardFrame.Visible = true
+    
+    -- Mainkan suara kertas muncul
+    PlaySound(PAPER_OPEN_CLOSE_SOUND_ID)
+
+    -- 3. Tween: Mutar Cepat dan Membesar ke Normal
+    local spinTweenInfo = TweenInfo.new(0.4, Enum.EasingStyle.Back, Enum.EasingDirection.Out)
+    local spinGoal = {
+        Rotation = 0, -- Putar kembali ke 0 (normal)
+        Size = UDim2.new(0, 450, 0, 300) -- Membesar ke ukuran normal
+    }
+    
+    local spinTween = TweenService:Create(RewardFrame, spinTweenInfo, spinGoal)
+    spinTween:Play()
+    spinTween.Completed:Wait() 
+
+    -- 4. Tampilkan Teks dan Tombol X setelah animasi selesai
+    TextContainer.Visible = true
+    CloseButton.Visible = true
+end
+
+-- Hubungkan Event Klik Tombol Hadiah
+GiftButton.MouseButton1Click:Connect(OpenReward)
+
+-- Hubungkan Event Tutup
+CloseButton.MouseButton1Click:Connect(CloseReward)
+
