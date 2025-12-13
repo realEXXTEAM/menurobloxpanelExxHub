@@ -87,7 +87,7 @@ local menuItems = {
     {Text="SaveScript", Icon="rbxassetid://112238336567509"},
 	{Text="Music", Icon="rbxassetid://95034182657328"},
 	{Text="Settings", Icon="rbxassetid://6034509993"},
-	{Text="STSServer", Icon="rbxassetid://18633720097"},
+	{Text="InfoServer", Icon="rbxassetid://18633720097"},
 	{Text="Donate", Icon="rbxassetid://6031097227"},
 	{Text="TPplayers", Icon="rbxassetid://80278360213440"},
     {Text="AnimChanger", Icon="rbxassetid://115198205982652"},
