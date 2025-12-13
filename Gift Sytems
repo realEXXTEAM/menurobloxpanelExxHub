@@ -113,9 +113,9 @@ UIList.HorizontalAlignment = Enum.HorizontalAlignment.Center
 UIList.VerticalAlignment = Enum.VerticalAlignment.Center
 UIList.Parent = TextContainer
 
--- >> JUDUL BARU (You Won Giveaway) <<
+-- TITLE TEXT
 local SubTitle = Instance.new("TextLabel")
-SubTitle.Text = "GIFT FOR SAYEN"
+SubTitle.Text = "a gift from Sayen"
 SubTitle.Size = UDim2.new(1, 0, 0, 30)
 SubTitle.Font = Enum.Font.SourceSansBold
 SubTitle.TextSize = 20
@@ -125,9 +125,9 @@ SubTitle.ZIndex = 8
 SubTitle.TextXAlignment = Enum.TextXAlignment.Center
 SubTitle.Parent = TextContainer
 
--- >> JUDUL UTAMA (YOU WON GOT ACCOUNT) <<
+-- FRIST TITLE
 local Title = Instance.new("TextLabel")
-Title.Text = "Sayen Memberikan Akun Kepada Anda!" 
+Title.Text = "Sayen Memberikan Hadiah Akun Kepada Anda!" 
 Title.Size = UDim2.new(1, 0, 0, 50)
 Title.Font = Enum.Font.FredokaOne
 Title.TextSize = 26
