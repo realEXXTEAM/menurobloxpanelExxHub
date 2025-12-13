@@ -7,7 +7,7 @@ local Player = Players.LocalPlayer
 
 --// GUI Setup
 local gui = Instance.new("ScreenGui")
-gui.Name = "ServerToolsUI"
+gui.Name = "TopBarServerHOPUI"
 gui.IgnoreGuiInset = true
 gui.ResetOnSpawn = false
 gui.DisplayOrder = 10000
