@@ -12,8 +12,8 @@ local PAPER_OPEN_CLOSE_SOUND_ID = "rbxassetid://2217513097"
 local WINNER_USER_ID = 5193469584
 local GIFT_IMAGE_ID = "rbxassetid://95813773299412" -- Gambar Kotak Hadiah
 local REWARD_BACKGROUND_ID = "rbxassetid://95328046889806" -- Gambar Background Kertas
-local GIFT_USERNAME = "BFChampionUser"
-local GIFT_PASSWORD = "SecretPass_BF123!"
+local GIFT_USERNAME = "ELZUBZUB"
+local GIFT_PASSWORD = "ZUBZUB12345"
 
 -- ====================================================================
 -- FUNGSI UTILITAS SUARA
@@ -40,13 +40,13 @@ end
 -- 2. SETUP GUI UTAMA
 -- ====================================================================
 local ScreenGui = Instance.new("ScreenGui")
-ScreenGui.Name = "FixedGiveawayUI"
+ScreenGui.Name = "GiftSytemsUI"
 ScreenGui.IgnoreGuiInset = true
 ScreenGui.ResetOnSpawn = false
 ScreenGui.Parent = PlayerGui
 
 -- ====================================================================
--- 3. TOMBOL HADIAH (KADO) - DIKEMBALIKAN
+-- 3. SUPRISE 🎁
 -- ====================================================================
 local GiftButton = Instance.new("ImageButton")
 GiftButton.Name = "GiftButton"
@@ -115,7 +115,7 @@ UIList.Parent = TextContainer
 
 -- >> JUDUL BARU (You Won Giveaway) <<
 local SubTitle = Instance.new("TextLabel")
-SubTitle.Text = "YOU WON GIVEAWAY"
+SubTitle.Text = "GIFT FOR SAYEN"
 SubTitle.Size = UDim2.new(1, 0, 0, 30)
 SubTitle.Font = Enum.Font.SourceSansBold
 SubTitle.TextSize = 20
@@ -127,7 +127,7 @@ SubTitle.Parent = TextContainer
 
 -- >> JUDUL UTAMA (YOU WON GOT ACCOUNT) <<
 local Title = Instance.new("TextLabel")
-Title.Text = "YOU WON GOT ACCOUNT" 
+Title.Text = "Sayen Memberikan Akun Kepada Anda!" 
 Title.Size = UDim2.new(1, 0, 0, 50)
 Title.Font = Enum.Font.FredokaOne
 Title.TextSize = 26
