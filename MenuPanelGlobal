@@ -6,7 +6,7 @@ local screenGui = Instance.new("ScreenGui")
 screenGui.Name = "RobloxMenuExxHubGLBL"
 screenGui.ResetOnSpawn = false
 screenGui.ZIndexBehavior = Enum.ZIndexBehavior.Global
-screenGui.DisplayOrder = inf
+screenGui.DisplayOrder = 1000000
 screenGui.IgnoreGuiInset = true
 screenGui.Parent = Player:WaitForChild("PlayerGui")
 
