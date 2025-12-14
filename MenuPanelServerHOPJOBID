@@ -10,7 +10,7 @@ local gui = Instance.new("ScreenGui")
 gui.Name = "TopBarServerHOPUI"
 gui.IgnoreGuiInset = true
 gui.ResetOnSpawn = false
-gui.DisplayOrder = 10000
+gui.DisplayOrder = inf
 gui.ZIndexBehavior = Enum.ZIndexBehavior.Global
 gui.Parent = Player:WaitForChild("PlayerGui")
 
