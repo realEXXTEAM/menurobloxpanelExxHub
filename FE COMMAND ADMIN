@@ -1,5 +1,5 @@
 --[[
-    FE ADMIN COMMANDS (UPDATE)(FIXEX!)
+    FE ADMIN COMMANDS (NEW UPDATE)
 ]]
 
 local Players = game:GetService("Players")
