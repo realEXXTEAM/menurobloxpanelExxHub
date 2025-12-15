@@ -35,7 +35,7 @@ Title.Parent = Header
 Title.Size = UDim2.new(0, 200, 1, 0)
 Title.Position = UDim2.new(0, 10, 0, 0)
 Title.BackgroundTransparency = 1
-Title.Text = "🎵 Playlists"
+Title.Text = "🎵 Playlists (New Music Added)"
 Title.TextColor3 = Color3.fromRGB(255, 255, 255)
 Title.Font = Enum.Font.GothamBold
 Title.TextSize = 20
@@ -137,7 +137,7 @@ local Songs = {
 	{Name = "Aku Tetap Cinta", SoundId = "rbxassetid://138399521757966"},
 	{Name = "Rasa Yang Tertinggal", SoundId = "rbxassetid://91195881581393"},
 	{Name = "Alone", SoundId = "rbxassetid://108092699453319"},
-	{Name = "Useles - Let Down", SoundId = "rbxassetid://105560839345019"},
+	{Name = "Lequid", SoundId = "rbxassetid://105663768150465"},
 	{Name = "Dj Alone Ranto Gudel แดนซ์", SoundId = "rbxassetid://109149632133821"},
 	{Name = "Undown - Stray.wav", SoundId = "rbxassetid://120102995443063"},
 	{Name = "Kamu Kangen Ga sih", SoundId = "rbxassetid://106291412410472"},
