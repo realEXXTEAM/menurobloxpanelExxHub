@@ -653,4 +653,4 @@ LocalPlayer.Chatted:Connect(function(msg)
     end
 end)
 
-notify("Script Loaded", "Type '!' or '!cmds' to open menu.")
+notify("EXX HUB", "Type '!' or '!cmds' to open menu.")
