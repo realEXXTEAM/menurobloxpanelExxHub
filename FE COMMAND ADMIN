@@ -428,21 +428,16 @@ local function showHelpMenu()
 [!speed num]     - Set WalkSpeed
 [!doublejump]    - Jump Twice
 [!infjump]       - Spam Jump
-
 [!freeze]        - Anchor Player
 [!unfreeze]      - Restore Movement
-
 [!spectate user] - View Player
 [!unspectate]    - Reset View
 [!invisible]     - Ghost Mode
 [!visible]       - Visible Mode
 [!playanim id]   - Play Anim ID
 [!unpose]        - Stop All Animations
-
 [!fling user]    - Launch Player
 [!unfling]       - Stop Fling
--- COMMAND PART CONTROL DIHAPUS
-
 [!hop]           - Server Hop
 [!rejoin]        - Rejoin Server
 [!job]           - Copy Job ID
