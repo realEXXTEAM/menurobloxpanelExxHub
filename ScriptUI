@@ -43,8 +43,8 @@ closeBtn.MouseButton1Click:Connect(function()
 end)
 
 --// Refresh Button
-local refreshBtn = Instance.new("TextButton")
-refreshBtn.Text = "🔄"
+local refreshBtn = Instance.new("ImageButton")
+refreshBtn.Image = "rbxassetid://86084882582277"
 refreshBtn.Font = Enum.Font.GothamBold
 refreshBtn.TextScaled = true
 refreshBtn.TextColor3 = Color3.fromRGB(255, 255, 255)
