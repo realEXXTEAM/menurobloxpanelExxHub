@@ -132,8 +132,6 @@ local Songs = {
 	{Name = "Remix Kamnh", SoundId = "rbxassetid://130721206402716"},
 	{Name = "Aku Bete Sama Kamu", SoundId = "rbxassetid://83817418053316"},
 	{Name = "DJ CEMBURU", SoundId = "rbxassetid://134090638788064"},
-	{Name = "PHONK MUSIC #1", SoundId = "rbxassetid://131532804085254"},
-	{Name = "PHONK MUSIC (TOMA TOMA)#2", SoundId = "rbxassetid://129098116998483"},
 	{Name = "Aku Tetap Cinta", SoundId = "rbxassetid://138399521757966"},
 	{Name = "Rasa Yang Tertinggal", SoundId = "rbxassetid://91195881581393"},
     {Name = "Boom", SoundId = "rbxassetid://73859601978760"},
@@ -179,6 +177,8 @@ local Songs = {
 	{Name = "Funkot Velocitiy (DJ FUNKOT)", SoundId = "rbxassetid://127548536837903"},
 	{Name = "Nanana Maninssu (DJ FUNKOT)", SoundId = "rbxassetid://136842585273816"},
 	{Name = "Baile Funk 1.0 (DJ FUNKOT)", SoundId = "rbxassetid://71524249419499"},
+	{Name = "PHONK MUSIC #1", SoundId = "rbxassetid://131532804085254"},
+	{Name = "PHONK MUSIC (TOMA TOMA)#2", SoundId = "rbxassetid://129098116998483"},
 }
 
 local currentIndex = nil
