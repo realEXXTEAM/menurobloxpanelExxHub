@@ -8,7 +8,7 @@ ScriptUI.DisplayOrder = 9999
 ScriptUI.ResetOnSpawn = false
 ScriptUI.ZIndexBehavior = Enum.ZIndexBehavior.Global
 ScriptUI.IgnoreGuiInset = true
-ScriptUI.Enabled = true -- Pastikan ini true biar muncul
+ScriptUI.Enabled = false
 ScriptUI.Parent = Player:WaitForChild("PlayerGui")
 
 --// Main Frame (UKURAN DIPERKECIL)
