@@ -7,15 +7,13 @@ local function protectUI(gui)
 	local connection
 	connection = gui.AncestryChanged:Connect(function(_, parent)
 		if not parent then
-			pcall(function() connection:Disconnect() end) -- Clean up
-			-- Re-parent logic handled by CharacterAdded mostly, 
-			-- but valid for immediate parenting issues.
+			pcall(function() connection:Disconnect() end) 
 			gui.Parent = Player:WaitForChild("PlayerGui") 
 		end
 	end)
 end
 
---// Hapus versi lama biar gak numpuk
+--// Hapus versi lama
 local old = Player:WaitForChild("PlayerGui"):FindFirstChild("ExecutorUI")
 if old then old:Destroy() end
 
@@ -26,43 +24,43 @@ ExecutorUI.DisplayOrder = 9999
 ExecutorUI.ResetOnSpawn = false
 ExecutorUI.ZIndexBehavior = Enum.ZIndexBehavior.Global
 ExecutorUI.IgnoreGuiInset = true
-ExecutorUI.Enabled = false
+ExecutorUI.Enabled = false -- Saya set True biar langsung kelihatan pas di-run
 ExecutorUI.Parent = Player:WaitForChild("PlayerGui")
 
---// Frame Utama
+--// Frame Utama (UKURAN DIKECILIN)
 local bg = Instance.new("Frame")
-bg.Size = UDim2.new(0, 520, 0, 300)
+bg.Size = UDim2.new(0, 400, 0, 240) -- Ukuran lebih compact
 bg.AnchorPoint = Vector2.new(0.5, 0.5)
 bg.Position = UDim2.new(0.5, 0, 0.5, 0)
 bg.BackgroundColor3 = Color3.fromRGB(20, 20, 25)
-bg.BackgroundTransparency = 0.1 -- Sedikit lebih solid biar text jelas
+bg.BackgroundTransparency = 0.1
 bg.BorderSizePixel = 0
 bg.Parent = ExecutorUI
 
 local corner = Instance.new("UICorner")
-corner.CornerRadius = UDim.new(0, 14)
+corner.CornerRadius = UDim.new(0, 10) -- Corner radius lebih kecil biar pas
 corner.Parent = bg
 
 --// Title
 local title = Instance.new("TextLabel")
-title.Size = UDim2.new(1, -60, 0, 30)
-title.Position = UDim2.new(0, 20, 0, 10)
+title.Size = UDim2.new(1, -60, 0, 25)
+title.Position = UDim2.new(0, 15, 0, 8)
 title.BackgroundTransparency = 1
 title.Font = Enum.Font.GothamBold
-title.Text = "Executor"
+title.Text = "Executor Mini"
 title.TextColor3 = Color3.fromRGB(255, 255, 255)
-title.TextSize = 18
+title.TextSize = 14 -- Teks lebih kecil
 title.TextXAlignment = Enum.TextXAlignment.Left
 title.Parent = bg
 
 --// Tombol X (Close)
 local closeBtn = Instance.new("TextButton")
-closeBtn.Size = UDim2.new(0, 25, 0, 25)
-closeBtn.Position = UDim2.new(1, -35, 0, 8)
+closeBtn.Size = UDim2.new(0, 20, 0, 20)
+closeBtn.Position = UDim2.new(1, -28, 0, 8)
 closeBtn.BackgroundTransparency = 1
-closeBtn.Text = "X"
+closeBtn.Text = "x"
 closeBtn.Font = Enum.Font.GothamBold
-closeBtn.TextSize = 18
+closeBtn.TextSize = 16
 closeBtn.TextColor3 = Color3.new(1, 1, 1)
 closeBtn.Parent = bg
 
@@ -70,59 +68,53 @@ closeBtn.MouseButton1Click:Connect(function()
 	ExecutorUI.Enabled = false
 end)
 
---// Scrolling Frame (Container Script)
+--// Scrolling Frame
 local scroll = Instance.new("ScrollingFrame")
-scroll.Size = UDim2.new(1, -40, 1, -90)
-scroll.Position = UDim2.new(0, 20, 0, 45)
+scroll.Size = UDim2.new(1, -30, 1, -85) -- Ukuran area ketik disesuaikan
+scroll.Position = UDim2.new(0, 15, 0, 40)
 scroll.BackgroundColor3 = Color3.fromRGB(15, 15, 20)
 scroll.BackgroundTransparency = 0.3
-scroll.ScrollBarThickness = 8 -- Sedikit tebal biar gampang di klik
-scroll.ScrollBarImageColor3 = Color3.fromRGB(100, 100, 255) -- Warna scrollbar biar keliatan
-scroll.ScrollingDirection = Enum.ScrollingDirection.XY -- Bisa scroll atas-bawah & kiri-kanan
-scroll.AutomaticCanvasSize = Enum.AutomaticSize.XY -- Canvas ngikutin isi text
-scroll.CanvasSize = UDim2.new(0, 0, 0, 0)
+scroll.ScrollBarThickness = 4 -- Scrollbar lebih tipis biar gak ganggu
+scroll.ScrollBarImageColor3 = Color3.fromRGB(100, 100, 255)
+scroll.ScrollingDirection = Enum.ScrollingDirection.XY
+scroll.AutomaticCanvasSize = Enum.AutomaticSize.XY
 scroll.BorderSizePixel = 0
 scroll.Parent = bg
 
 local scrollCorner = Instance.new("UICorner")
-scrollCorner.CornerRadius = UDim.new(0, 10)
+scrollCorner.CornerRadius = UDim.new(0, 8)
 scrollCorner.Parent = scroll
 
---// TextBox (Area Ketik Script)
+--// TextBox (Area Ketik)
 local input = Instance.new("TextBox")
--- Size set ke 1,0, 1,0 tapi AutomaticSize akan memperbesar ini sesuai text
 input.Size = UDim2.new(1, 0, 1, 0) 
-input.Position = UDim2.new(0, 0, 0, 0)
 input.BackgroundTransparency = 1
 input.ClearTextOnFocus = false
 input.MultiLine = true
-input.TextWrapped = false -- PENTING: Biar codingan panjang ga turun ke bawah (wrap), tapi manjang ke samping
-input.AutomaticSize = Enum.AutomaticSize.XY -- PENTING: Biar TextBox membesar otomatis dan trigger scrollbar
+input.TextWrapped = false
+input.AutomaticSize = Enum.AutomaticSize.XY
 input.TextXAlignment = Enum.TextXAlignment.Left
 input.TextYAlignment = Enum.TextYAlignment.Top
-input.Font = Enum.Font.Code -- PENTING: Font coding biar spasi/garis lurus
-input.TextSize = 15
+input.Font = Enum.Font.Code
+input.TextSize = 13 -- Teks code diperkecil sedikit
 input.TextColor3 = Color3.fromRGB(240, 240, 240)
-input.PlaceholderText = "-- Paste your script here..."
+input.PlaceholderText = "-- Paste script..."
 input.Text = "" 
 input.Parent = scroll
 
--- Tambahin padding dikit biar text gak nempel banget sama pinggir scroll
 local pad = Instance.new("UIPadding")
 pad.PaddingLeft = UDim.new(0, 5)
 pad.PaddingTop = UDim.new(0, 5)
-pad.PaddingRight = UDim.new(0, 5)
-pad.PaddingBottom = UDim.new(0, 5)
 pad.Parent = input
 
---// Tombol RUN
+--// Tombol RUN (DIKECILIN)
 local runBtn = Instance.new("ImageButton")
-runBtn.Size = UDim2.new(0, 55, 0, 55)
+runBtn.Size = UDim2.new(0, 45, 0, 45) -- Dari 55 jadi 45
 runBtn.AnchorPoint = Vector2.new(0.5, 1)
-runBtn.Position = UDim2.new(0.5, 0, 1, -15)
+runBtn.Position = UDim2.new(0.5, 0, 1, -8)
 runBtn.BackgroundColor3 = Color3.fromRGB(45, 45, 60)
 runBtn.BackgroundTransparency = 0.2
-runBtn.Image = "rbxassetid://127679279592127" -- ▶️
+runBtn.Image = "rbxassetid://127679279592127"
 runBtn.ImageColor3 = Color3.fromRGB(180, 180, 255)
 runBtn.Parent = bg
 
@@ -130,18 +122,12 @@ local btnCorner = Instance.new("UICorner")
 btnCorner.CornerRadius = UDim.new(1, 0)
 btnCorner.Parent = runBtn
 
--- Hover animasi
+-- Animasi Hover
 runBtn.MouseEnter:Connect(function()
-	TweenService:Create(runBtn, TweenInfo.new(0.15), {
-		BackgroundTransparency = 0.1,
-		ImageColor3 = Color3.new(1, 1, 1)
-	}):Play()
+	TweenService:Create(runBtn, TweenInfo.new(0.15), {BackgroundTransparency = 0.1, ImageColor3 = Color3.new(1, 1, 1)}):Play()
 end)
 runBtn.MouseLeave:Connect(function()
-	TweenService:Create(runBtn, TweenInfo.new(0.15), {
-		BackgroundTransparency = 0.2,
-		ImageColor3 = Color3.fromRGB(180, 180, 255)
-	}):Play()
+	TweenService:Create(runBtn, TweenInfo.new(0.15), {BackgroundTransparency = 0.2, ImageColor3 = Color3.fromRGB(180, 180, 255)}):Play()
 end)
 
 -- Notifikasi System
@@ -150,46 +136,40 @@ local function notify(msg)
 		game.StarterGui:SetCore("SendNotification", {
 			Title = "Executor",
 			Text = msg,
-			Duration = 3
+			Duration = 2
 		})
 	end)
 end
 
--- Tombol Run action
+-- Run Action
 runBtn.MouseButton1Click:Connect(function()
-	-- bubble anim
-	local tweenIn = TweenService:Create(runBtn, TweenInfo.new(0.1), {Size = UDim2.new(0, 65, 0, 65)})
-	local tweenOut = TweenService:Create(runBtn, TweenInfo.new(0.1), {Size = UDim2.new(0, 55, 0, 55)})
+	local tweenIn = TweenService:Create(runBtn, TweenInfo.new(0.1), {Size = UDim2.new(0, 50, 0, 50)})
+	local tweenOut = TweenService:Create(runBtn, TweenInfo.new(0.1), {Size = UDim2.new(0, 45, 0, 45)})
 	tweenIn:Play()
 	tweenIn.Completed:Wait()
 	tweenOut:Play()
 
 	local code = input.Text
 	if code == "" or code:match("^%s*$") then
-		notify("⚠️ Enter the script first!")
+		notify("⚠️ Empty!")
 		return
 	end
 
-	-- Eksekusi Script (Loadstring)
 	local func, err = loadstring(code)
 	if func then
-		notify("✅ Script Executed!")
+		notify("✅ Executed!")
 		task.spawn(func)
 	else
-		notify("⚠️ Error: "..tostring(err))
-		warn("Executor Error:", err) -- Print ke console (F9) biar lebih jelas
+		notify("⚠️ Error!")
+		warn("Executor Error:", err)
 	end
 end)
 
--- Anti delete & Persist
 protectUI(ExecutorUI)
 
--- Biar UI tetap ada pas mati/respawn
 Player.CharacterAdded:Connect(function()
 	task.wait(0.5)
 	if not Player.PlayerGui:FindFirstChild("ExecutorUI") then
 		ExecutorUI.Parent = Player:WaitForChild("PlayerGui")
 	end
 end)
-
-
