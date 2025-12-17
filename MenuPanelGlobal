@@ -3,7 +3,7 @@ local Player = game.Players.LocalPlayer
 
 --// GUI Setup
 local screenGui = Instance.new("ScreenGui")
-screenGui.Name = "RobloxMenuExxHubGLBL"
+screenGui.Name = "TopBarMenuExxHubGBL"
 screenGui.ResetOnSpawn = false
 screenGui.ZIndexBehavior = Enum.ZIndexBehavior.Global
 screenGui.DisplayOrder = 1000000
@@ -12,8 +12,8 @@ screenGui.Parent = Player:WaitForChild("PlayerGui")
 
 --// Toggle Button
 local toggleButton = Instance.new("TextButton")
-toggleButton.Size = UDim2.new(0, 43, 0, 43)
-toggleButton.Position = UDim2.new(1, -55, 0, 11)
+toggleButton.Size = UDim2.new(0, 44, 0, 44)
+toggleButton.Position = UDim2.new(1, -55, 0, 12)
 toggleButton.BackgroundColor3 = Color3.fromRGB(0, 0, 0)
 toggleButton.BackgroundTransparency = 0.2
 toggleButton.AutoButtonColor = false
