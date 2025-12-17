@@ -9,7 +9,7 @@ local OPEN_GIFT_SOUND_ID = "rbxassetid://122013786812898"
 local PAPER_OPEN_CLOSE_SOUND_ID = "rbxassetid://2217513097"
 
 -- **SETUP DATA**
-local WINNER_USER_ID = 5193469584
+local WINNER_USER_ID = 0
 local GIFT_IMAGE_ID = "rbxassetid://95813773299412" -- Gambar Kotak Hadiah
 local REWARD_BACKGROUND_ID = "rbxassetid://95328046889806" -- Gambar Background Kertas
 local GIFT_USERNAME = "ELZUBZUB"
