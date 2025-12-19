@@ -149,11 +149,8 @@ UIListLayout.Padding = UDim.new(0, 5)
 
 --// Songs List
 local Songs = {
-    {Name = "Aishiteru", SoundId = "rbxassetid://129086133868696"},
     {Name = "Tor Monitor Ketua", SoundId = "rbxassetid://70633665224310"},
-	{Name = "Breakdutch Vip", SoundId = "rbxassetid://82162714102729"},
 	{Name = "DJ CINNAMON GIRL", SoundId = "rbxassetid://135018311294635"},
-	{Name = "Trauma (DJ SEAN)", SoundId = "rbxassetid://73339410351095"},
 	{Name = "Kopi Lambada", SoundId = "rbxassetid://110949419969810"},
 	{Name = "Tabola bale", SoundId = "rbxassetid://104207837699519"},
 	{Name = "Dola Dola", SoundId = "rbxassetid://139590201617508"}, 
