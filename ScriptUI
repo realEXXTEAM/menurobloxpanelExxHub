@@ -50,7 +50,6 @@ refreshBtn.Size = UDim2.new(0, 25, 0, 25) -- Ukuran disesuaikan
 refreshBtn.Position = UDim2.new(1, -60, 0, 5) -- Posisi digeser dikit
 refreshBtn.ZIndex = 5
 refreshBtn.Parent = mainFrame
--- CATATAN: Properti Text (Font, TextColor, dll) SUDAHDIHAPUS biar ga error/bug.
 
 refreshBtn.MouseButton1Click:Connect(function()
     if Player.PlayerGui:FindFirstChild("ScriptUI") then
