@@ -7,112 +7,147 @@ local MusicUI = Instance.new("ScreenGui")
 MusicUI.Name = "MusicUI"
 MusicUI.DisplayOrder = 9999
 MusicUI.ResetOnSpawn = false
-MusicUI.ZIndexBehavior = Enum.ZIndexBehavior.Global
+MusicUI.ZIndexBehavior = Enum.ZIndexBehavior.Global -- Tetap Global
 MusicUI.IgnoreGuiInset = true
-MusicUI.Enabled = false
+MusicUI.Enabled = true
 MusicUI.Parent = Player:WaitForChild("PlayerGui")
 
 --// Main Frame
 local Main = Instance.new("Frame")
 Main.Parent = MusicUI
-Main.Size = UDim2.new(0, 400, 0, 300)
-Main.Position = UDim2.new(0.5, -200, 0.5, -150)
-Main.BackgroundColor3 = Color3.fromRGB(25, 25, 25)
-Main.BackgroundTransparency = 0.2
+Main.Size = UDim2.new(0, 320, 0, 250)
+Main.Position = UDim2.new(0.5, -160, 0.5, -125)
+Main.BackgroundColor3 = Color3.fromRGB(5, 5, 5)
+Main.BackgroundTransparency = 0.1
 Main.BorderSizePixel = 0
 Instance.new("UICorner", Main).CornerRadius = UDim.new(0, 10)
-Instance.new("UIStroke", Main).Color = Color3.fromRGB(80, 80, 80)
+local MainStroke = Instance.new("UIStroke", Main)
+MainStroke.Color = Color3.fromRGB(45, 45, 45)
+MainStroke.Thickness = 1.5
 
---// Header
+--// Header (KUNCI: ZIndex 10)
 local Header = Instance.new("Frame")
 Header.Parent = Main
 Header.Size = UDim2.new(1, 0, 0, 40)
-Header.BackgroundColor3 = Color3.fromRGB(30, 30, 30)
+Header.BackgroundColor3 = Color3.fromRGB(2, 2, 2)
+Header.ZIndex = 10 
 Instance.new("UICorner", Header).CornerRadius = UDim.new(0, 10)
 
 local Title = Instance.new("TextLabel")
 Title.Parent = Header
-Title.Size = UDim2.new(0, 200, 1, 0)
+Title.Size = UDim2.new(0, 100, 1, 0)
 Title.Position = UDim2.new(0, 10, 0, 0)
 Title.BackgroundTransparency = 1
-Title.Text = "🎵 Playlists"
+Title.Text = "MUSIC PLAYER"
 Title.TextColor3 = Color3.fromRGB(255, 255, 255)
 Title.Font = Enum.Font.GothamBold
-Title.TextSize = 20
+Title.TextSize = 14
 Title.TextXAlignment = Enum.TextXAlignment.Left
+Title.ZIndex = 11
 
---// SearchBar
-local Search = Instance.new("TextBox")
-Search.Parent = Header
-Search.Size = UDim2.new(0, 120, 0, 25)
-Search.Position = UDim2.new(1, -170, 0.5, -12)
-Search.PlaceholderText = "Search..."
-Search.Text = ""
-Search.BackgroundColor3 = Color3.fromRGB(50, 50, 50)
-Search.TextColor3 = Color3.fromRGB(255, 255, 255)
-Search.Font = Enum.Font.Gotham
-Search.TextSize = 14
-Instance.new("UICorner", Search).CornerRadius = UDim.new(0, 6)
+--// Global Vars
+local currentSound = nil
+local currentIndex = nil
+local buttons = {} 
+local isPlaying = false
 
---// Close Button
-local Close = Instance.new("TextButton")
-Close.Parent = Header
-Close.Size = UDim2.new(0, 25, 0, 25)
-Close.Position = UDim2.new(1, -35, 0.5, -12)
-Close.BackgroundColor3 = Color3.fromRGB(50, 50, 50)
-Close.Text = "X"
-Close.Font = Enum.Font.GothamBold
-Close.TextColor3 = Color3.fromRGB(255, 100, 100)
-Close.TextSize = 16
-Instance.new("UICorner", Close).CornerRadius = UDim.new(0, 6)
-Close.MouseButton1Click:Connect(function()
-	MusicUI.Enabled = false
-end)
+--// Animasi Tombol
+local function playClickAnim(obj)
+	local originalSize = obj.Size
+	local smallSize = UDim2.new(0, originalSize.X.Offset - 5, 0, originalSize.Y.Offset - 5)
+	local clickIn = TweenService:Create(obj, TweenInfo.new(0.1), {Size = smallSize})
+	local clickOut = TweenService:Create(obj, TweenInfo.new(0.1), {Size = originalSize})
+	clickIn:Play()
+	clickIn.Completed:Connect(function() clickOut:Play() end)
+end
 
---// Scrollable Music List
-local Scrolling = Instance.new("ScrollingFrame")
-Scrolling.Parent = Main
-Scrolling.Size = UDim2.new(1, -20, 1, -100)
-Scrolling.Position = UDim2.new(0, 10, 0, 50)
-Scrolling.CanvasSize = UDim2.new(0, 0, 0, 0)
-Scrolling.ScrollBarThickness = 6
-Scrolling.BackgroundTransparency = 1
-
-local UIListLayout = Instance.new("UIListLayout")
-UIListLayout.Parent = Scrolling
-UIListLayout.Padding = UDim.new(0, 6)
-
-UIListLayout:GetPropertyChangedSignal("AbsoluteContentSize"):Connect(function()
-	Scrolling.CanvasSize = UDim2.new(0, 0, 0, UIListLayout.AbsoluteContentSize.Y + 10)
-end)
-
---// Control Bar
+--// Control Bar & Buttons (KUNCI: ZIndex 10)
 local Controls = Instance.new("Frame")
 Controls.Parent = Main
-Controls.Size = UDim2.new(1, 0, 0, 50)
-Controls.Position = UDim2.new(0, 0, 1, -55)
-Controls.BackgroundColor3 = Color3.fromRGB(30, 30, 30)
+Controls.Size = UDim2.new(1, 0, 0, 45)
+Controls.Position = UDim2.new(0, 0, 1, -50)
+Controls.BackgroundColor3 = Color3.fromRGB(2, 2, 2)
+Controls.ZIndex = 10
 Instance.new("UICorner", Controls).CornerRadius = UDim.new(0, 10)
 
-local function newButton(parent, text, xPos)
-	local btn = Instance.new("TextButton")
-	btn.Parent = parent
-	btn.Size = UDim2.new(0, 80, 0, 35)
-	btn.Position = UDim2.new(xPos, 0, 0.15, 0)
-	btn.BackgroundColor3 = Color3.fromRGB(50, 50, 50)
-	btn.Text = text
-	btn.Font = Enum.Font.GothamBold
-	btn.TextColor3 = Color3.fromRGB(255,255,255)
-	btn.TextSize = 20
-	Instance.new("UICorner", btn).CornerRadius = UDim.new(0, 8)
+local function newImgButton(id, xPos, size)
+	local btn = Instance.new("ImageButton")
+	btn.Parent = Controls
+	btn.Size = UDim2.new(0, size, 0, size)
+	btn.Position = UDim2.new(xPos, -(size/2), 0.5, -(size/2))
+	btn.BackgroundTransparency = 1
+	btn.Image = "rbxassetid://" .. id
+	btn.ZIndex = 11 -- Di atas Control Bar
 	return btn
 end
 
-local Prev = newButton(Controls, "⏮", 0.18)
-local PlayPause = newButton(Controls, "▶️", 0.42)
-local Next = newButton(Controls, "⏭", 0.66)
+local Prev = newImgButton("109754291227660", 0.2, 25)
+local PlayPause = newImgButton("127467405552658", 0.5, 30)
+local Next = newImgButton("130872317323632", 0.8, 25)
 
---// Songs
+--// Refresh Button
+local refreshBtn = Instance.new("ImageButton")
+refreshBtn.Name = "RefreshBtn"
+refreshBtn.Parent = Header
+refreshBtn.Image = "rbxassetid://86084882582277"
+refreshBtn.BackgroundTransparency = 1
+refreshBtn.Size = UDim2.new(0, 22, 0, 22)
+refreshBtn.Position = UDim2.new(1, -152, 0.5, -11)
+refreshBtn.ZIndex = 11 -- Di atas Header
+
+refreshBtn.MouseButton1Click:Connect(function()
+	local tweenInfo = TweenInfo.new(0.6, Enum.EasingStyle.Quart, Enum.EasingDirection.Out)
+	TweenService:Create(refreshBtn, tweenInfo, {Rotation = refreshBtn.Rotation + 360}):Play()
+	if currentSound then currentSound:Destroy() currentSound = nil end
+	isPlaying = false
+	PlayPause.Image = "rbxassetid://127467405552658"
+	task.wait(0.5)
+	if Player.PlayerGui:FindFirstChild("MusicUI") then Player.PlayerGui.MusicUI:Destroy() end
+	loadstring(game:HttpGet("https://raw.githubusercontent.com/realEXXTEAM/panelmenuuniversal/refs/heads/main/FITUR%20REFRESH%20MUSICUI"))()
+end)
+
+--// SearchBar & Close
+local Search = Instance.new("TextBox")
+Search.Parent = Header
+Search.Size = UDim2.new(0, 90, 0, 25)
+Search.Position = UDim2.new(1, -125, 0.5, -12)
+Search.PlaceholderText = "Search..."
+Search.Text = ""
+Search.BackgroundColor3 = Color3.fromRGB(25, 25, 25)
+Search.TextColor3 = Color3.fromRGB(255, 255, 255)
+Search.Font = Enum.Font.Gotham
+Search.TextSize = 12
+Search.ZIndex = 11 -- Di atas Header
+Instance.new("UICorner", Search).CornerRadius = UDim.new(0, 6)
+
+local Close = Instance.new("TextButton")
+Close.Parent = Header
+Close.Size = UDim2.new(0, 25, 0, 25)
+Close.Position = UDim2.new(1, -30, 0.5, -12)
+Close.BackgroundTransparency = 1 -- Sesuai request lu tadi
+Close.Text = "X"
+Close.Font = Enum.Font.GothamBold
+Close.TextColor3 = Color3.fromRGB(255, 255, 255)
+Close.TextSize = 14
+Close.ZIndex = 11 -- Di atas Header
+Close.MouseButton1Click:Connect(function() MusicUI.Enabled = false end)
+
+--// Scrolling List
+local Scrolling = Instance.new("ScrollingFrame")
+Scrolling.Parent = Main
+Scrolling.Size = UDim2.new(1, -20, 1, -100)
+Scrolling.Position = UDim2.new(0, 10, 0, 45)
+Scrolling.CanvasSize = UDim2.new(0, 0, 0, 0)
+Scrolling.ScrollBarThickness = 0
+Scrolling.BackgroundTransparency = 1
+Scrolling.ClipsDescendants = true -- Motong isi yang keluar batas
+Scrolling.ZIndex = 1 
+
+local UIListLayout = Instance.new("UIListLayout")
+UIListLayout.Parent = Scrolling
+UIListLayout.Padding = UDim.new(0, 5)
+
+--// Songs List
 local Songs = {
     {Name = "Aishiteru", SoundId = "rbxassetid://129086133868696"},
     {Name = "Tor Monitor Ketua", SoundId = "rbxassetid://70633665224310"},
@@ -122,7 +157,7 @@ local Songs = {
 	{Name = "Kopi Lambada", SoundId = "rbxassetid://110949419969810"},
 	{Name = "Tabola bale", SoundId = "rbxassetid://104207837699519"},
 	{Name = "Dola Dola", SoundId = "rbxassetid://139590201617508"}, 
-   {Name = "Cikini", SoundId = "rbxassetid://122665842844850"},
+    {Name = "Cikini", SoundId = "rbxassetid://122665842844850"},
 	{Name = "Remix Party Malam", SoundId = "rbxassetid://88691296316236"},
 	{Name = "Suatu Sempurna", SoundId = "rbxassetid://102375459192743"},
 	{Name = "Emang Gua Pikirin", SoundId = "rbxassetid://110651286181267"},
@@ -154,13 +189,13 @@ local Songs = {
 	{Name = "Bangkit", SoundId = "rbxassetid://135825408597541"},
 	{Name = "Cinta Abadi", SoundId = "rbxassetid://96159173961268"},
 	{Name = "DJ Ayy", SoundId = "rbxassetid://90145710334449"},	
-   {Name = "DJ Aww", SoundId = "rbxassetid://118390472006859"},	
-   {Name = "Galau yaa", SoundId = "rbxassetid://125435502614158"},	
-   {Name = "Wake Up", SoundId = "rbxassetid://116358628732093"},	
-   {Name = "Drop no lie", SoundId = "rbxassetid://97212310868241"},	
-   {Name = "Drop Cing Cing", SoundId = "rbxassetid://82680101995105"},	
-   {Name = "Pergi Aja", SoundId = "rbxassetid://133150020025150"},	
-   {Name = "Lu aja", SoundId = "rbxassetid://90579963604706"},
+    {Name = "DJ Aww", SoundId = "rbxassetid://118390472006859"},	
+    {Name = "Galau yaa", SoundId = "rbxassetid://125435502614158"},	
+    {Name = "Wake Up", SoundId = "rbxassetid://116358628732093"},	
+    {Name = "Drop no lie", SoundId = "rbxassetid://97212310868241"},	
+    {Name = "Drop Cing Cing", SoundId = "rbxassetid://82680101995105"},	
+    {Name = "Pergi Aja", SoundId = "rbxassetid://133150020025150"},	
+    {Name = "Lu aja", SoundId = "rbxassetid://90579963604706"},
 	{Name = "BAD HAPPENING FUNK", SoundId = "rbxassetid://70661591361974"},	
     {Name = "strangers - Vnxious", SoundId = "rbxassetid://111068710944068"},
     {Name = "DJ SHAKER", SoundId = "rbxassetid://118390472006859"},
@@ -180,105 +215,143 @@ local Songs = {
 	{Name = "PHONK MUSIC #1", SoundId = "rbxassetid://131532804085254"},
 }
 
-local currentIndex = nil
-local currentSound = nil
-local selectedButton = nil
-local buttons = {}
-
---// Refresh List
-local function RefreshList(filter)
-	for _, child in pairs(Scrolling:GetChildren()) do
-		if child:IsA("TextButton") then child:Destroy() end
+--// Visual Loop
+task.spawn(function()
+	while task.wait() do
+		for i, btn in pairs(buttons) do
+			local vinyl = btn:FindFirstChild("VinylIcon")
+			local aura = btn:FindFirstChild("AuraEffect")
+			if isPlaying and i == currentIndex then
+				if vinyl then vinyl.Rotation = vinyl.Rotation + 4 end
+				if aura then
+					aura.Visible = true
+					local pulse = 1.3 + (math.sin(tick() * 7) * 0.2)
+					aura.Size = UDim2.new(0, 28 * pulse, 0, 28 * pulse)
+					aura.Position = UDim2.new(1, -40 - ((28*pulse-28)/2), 0.5, -(28*pulse)/2)
+					aura.ImageTransparency = 0.3 + (math.sin(tick() * 7) * 0.2)
+				end
+			else
+				if aura then aura.Visible = false end
+			end
+		end
 	end
+end)
+
+local function updateHighlighter()
+	for id, btn in pairs(buttons) do
+		local bar = btn:FindFirstChild("Indicator")
+		local vinyl = btn:FindFirstChild("VinylIcon")
+		if id == currentIndex then
+			btn.TextColor3 = Color3.fromRGB(0, 170, 255)
+			if bar then bar.Visible = true end
+			if vinyl then vinyl.ImageTransparency = 0 end
+		else
+			btn.TextColor3 = Color3.fromRGB(150, 150, 150)
+			if bar then bar.Visible = false end
+			if vinyl then vinyl.ImageTransparency = 0.6 end
+		end
+	end
+end
+
+local function RefreshList(filter)
+	for _, child in pairs(Scrolling:GetChildren()) do if child:IsA("TextButton") then child:Destroy() end end
 	buttons = {}
 	for i, song in ipairs(Songs) do
 		if not filter or string.find(string.lower(song.Name), string.lower(filter)) then
 			local btn = Instance.new("TextButton")
 			btn.Parent = Scrolling
-			btn.Size = UDim2.new(1, -6, 0, 30)
-			btn.BackgroundColor3 = Color3.fromRGB(40, 40, 40)
-			btn.TextColor3 = Color3.fromRGB(255, 255, 255)
-			btn.Font = Enum.Font.Gotham
-			btn.Text = song.Name
-			btn.TextSize = 14
+			btn.Size = UDim2.new(1, -6, 0, 35)
+			btn.BackgroundColor3 = Color3.fromRGB(15, 15, 15)
+			btn.TextColor3 = Color3.fromRGB(150, 150, 150)
+			btn.Font = Enum.Font.GothamSemibold
+			btn.Text = "      " .. song.Name
+			btn.TextSize = 11
+			btn.TextXAlignment = Enum.TextXAlignment.Left
+			btn.ZIndex = 2 -- Tombol lagu
 			Instance.new("UICorner", btn).CornerRadius = UDim.new(0, 6)
 
+			local bar = Instance.new("Frame", btn)
+			bar.Name = "Indicator"
+			bar.Size = UDim2.new(0, 4, 1, -12)
+			bar.Position = UDim2.new(0, 5, 0, 6)
+			bar.BackgroundColor3 = Color3.fromRGB(0, 170, 255)
+			bar.Visible = false
+			bar.ZIndex = 3
+			Instance.new("UICorner", bar).CornerRadius = UDim.new(0, 2)
+
+			local aura = Instance.new("ImageLabel", btn)
+			aura.Name = "AuraEffect"
+			aura.Size = UDim2.new(0, 28, 0, 28)
+			aura.Position = UDim2.new(1, -40, 0.5, -14)
+			aura.Image = "rbxassetid://6987871643"
+			aura.BackgroundTransparency = 1
+			aura.ImageColor3 = Color3.fromRGB(0, 170, 255)
+			aura.Visible = false
+			aura.ZIndex = 3 -- Di bawah piring
+
+			local vinyl = Instance.new("ImageLabel", btn)
+			vinyl.Name = "VinylIcon"
+			vinyl.Parent = btn
+			vinyl.Size = UDim2.new(0, 28, 0, 28)
+			vinyl.Position = UDim2.new(1, -40, 0.5, -14)
+			vinyl.Image = "rbxassetid://79012113611745"
+			vinyl.BackgroundTransparency = 1
+			vinyl.ImageTransparency = 0.6
+			vinyl.ZIndex = 4 -- Paling atas di dalem list
+			
 			buttons[i] = btn
-
 			btn.MouseButton1Click:Connect(function()
-				if selectedButton then
-					selectedButton.BackgroundColor3 = Color3.fromRGB(40, 40, 40)
-				end
-				selectedButton = btn
-				btn.BackgroundColor3 = Color3.fromRGB(80, 120, 255)
-
-				if currentSound then currentSound:Stop() end
+				if currentSound then currentSound:Destroy() currentSound = nil end
+				isPlaying = false
+				PlayPause.Image = "rbxassetid://127467405552658"
 				currentIndex = i
-				PlayPause.Text = "▶️"
+				updateHighlighter()
 			end)
 		end
 	end
+	updateHighlighter()
 end
 
-RefreshList()
-
--- Searchbar Filter
-Search:GetPropertyChangedSignal("Text"):Connect(function()
-	RefreshList(Search.Text)
+UIListLayout:GetPropertyChangedSignal("AbsoluteContentSize"):Connect(function()
+	Scrolling.CanvasSize = UDim2.new(0, 0, 0, UIListLayout.AbsoluteContentSize.Y + 10)
 end)
 
--- Highlight update helper
-local function updateHighlight()
-	for i, btn in pairs(buttons) do
-		if btn then
-			btn.BackgroundColor3 = (i == currentIndex) and Color3.fromRGB(80,120,255) or Color3.fromRGB(40,40,40)
-		end
-	end
-end
+RefreshList()
+Search:GetPropertyChangedSignal("Text"):Connect(function() RefreshList(Search.Text) end)
 
--- Play function
 local function playSong(index)
-	if not index then return end
-	local song = Songs[index]
-	if not song then return end
-
+	if not index or not Songs[index] then return end
 	if currentSound then currentSound:Destroy() end
-	currentSound = Instance.new("Sound")
-	currentSound.Parent = workspace
-	currentSound.SoundId = song.SoundId
+	currentSound = Instance.new("Sound", workspace)
+	currentSound.SoundId = Songs[index].SoundId
 	currentSound.Volume = 1
 	currentSound:Play()
-	PlayPause.Text = "⏸"
-	updateHighlight()
-
+	isPlaying = true
+	PlayPause.Image = "rbxassetid://99514193135085"
+	updateHighlighter()
 	currentSound.Ended:Connect(function()
-		currentIndex = currentIndex + 1
-		if currentIndex > #Songs then currentIndex = 1 end
+		currentIndex = (currentIndex % #Songs) + 1
 		playSong(currentIndex)
 	end)
 end
 
---// Play/Pause
+--// Events
 PlayPause.MouseButton1Click:Connect(function()
+	playClickAnim(PlayPause)
 	if not currentIndex then return end
-	if not currentSound or not currentSound.IsPlaying then
-		playSong(currentIndex)
-	else
-		currentSound:Pause()
-		PlayPause.Text = "▶️"
-	end
+	if not currentSound or not currentSound.IsPlaying then playSong(currentIndex) 
+	else currentSound:Pause() isPlaying = false PlayPause.Image = "rbxassetid://127467405552658" end
 end)
 
---// Next
 Next.MouseButton1Click:Connect(function()
-	if not currentIndex then currentIndex = 1 else currentIndex = currentIndex + 1 end
-	if currentIndex > #Songs then currentIndex = 1 end
+	playClickAnim(Next)
+	currentIndex = (currentIndex or 0) % #Songs + 1
 	playSong(currentIndex)
 end)
 
---// Prev
 Prev.MouseButton1Click:Connect(function()
-	if not currentIndex then currentIndex = 1 else currentIndex = currentIndex - 1 end
+	playClickAnim(Prev)
+	currentIndex = (currentIndex or 2) - 1
 	if currentIndex < 1 then currentIndex = #Songs end
 	playSong(currentIndex)
 end)
