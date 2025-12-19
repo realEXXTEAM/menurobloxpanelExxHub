@@ -25,7 +25,7 @@ local MainStroke = Instance.new("UIStroke", Main)
 MainStroke.Color = Color3.fromRGB(45, 45, 45)
 MainStroke.Thickness = 1.5
 
---// Header (KUNCI: ZIndex 10)
+--// Header
 local Header = Instance.new("Frame")
 Header.Parent = Main
 Header.Size = UDim2.new(1, 0, 0, 40)
@@ -150,13 +150,13 @@ UIListLayout.Padding = UDim.new(0, 5)
 --// Songs List
 local Songs = {
     {Name = "BABY SHARK", SoundId = "rbxassetid://131822907093877"},
-    {Name = "A Thousand Years", SoundId = "rbxassetid://94142287387850"}
+    {Name = "A Thousand Years", SoundId = "rbxassetid://94142287387850"},
     {Name = "DJ TABOLA BALE X CALON MANTU IDAMAN SLOW VIRAL", SoundId = "rbxassetid://98097323847866"},
-    {Name = "dj kun", SoundId = "rbxassetid://116647235474599"}
-    {Name = "mangsedih", SoundId = "rbxassetid://128259754377999"}
+    {Name = "dj kun", SoundId = "rbxassetid://116647235474599"},
+    {Name = "mangsedih", SoundId = "rbxassetid://128259754377999"},
     {Name = "FRIENDZONE - COVER HTS", SoundId = "rbxassetid://103160929669458"},
-    {Name = "galau brutal", SoundId = "rbxassetid://76769189002980"}
-    {Name = "sejuta kata hijau daun", SoundId = "rbxassetid://102375459192743"}
+    {Name = "galau brutal", SoundId = "rbxassetid://76769189002980"},
+    {Name = "sejuta kata hijau daun", SoundId = "rbxassetid://102375459192743"},
     {Name = "Tor Monitor Ketua", SoundId = "rbxassetid://70633665224310"},
 	{Name = "DJ CINNAMON GIRL", SoundId = "rbxassetid://135018311294635"},
 	{Name = "Kopi Lambada", SoundId = "rbxassetid://110949419969810"},
