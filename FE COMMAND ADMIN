@@ -638,7 +638,7 @@ LocalPlayer.Chatted:Connect(function(msg)
             emitter.Parent = particlePart
 
             char.HumanoidRootPart.CFrame = CFrame.new(centerPos + Vector3.new(0, 5, 0))
-            notify("Kamui", "Arena Generated (No Throne).")
+            notify("Kamui", "Arena Generated")
         end
 
     elseif cmd == prefix.."unkamui" then
