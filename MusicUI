@@ -9,7 +9,7 @@ MusicUI.DisplayOrder = 9999
 MusicUI.ResetOnSpawn = false
 MusicUI.ZIndexBehavior = Enum.ZIndexBehavior.Global -- Tetap Global
 MusicUI.IgnoreGuiInset = true
-MusicUI.Enabled = true
+MusicUI.Enabled = false
 MusicUI.Parent = Player:WaitForChild("PlayerGui")
 
 --// Main Frame
