@@ -153,7 +153,6 @@ local Songs = {
     {Name = "A Thousand Years", SoundId = "rbxassetid://94142287387850"},
     {Name = "dj kun", SoundId = "rbxassetid://116647235474599"},
     {Name = "mangsedih", SoundId = "rbxassetid://128259754377999"},
-    {Name = "FRIENDZONE - COVER HTS", SoundId = "rbxassetid://103160929669458"},
     {Name = "galau brutal", SoundId = "rbxassetid://76769189002980"},
     {Name = "sejuta kata hijau daun", SoundId = "rbxassetid://102375459192743"},
     {Name = "Tor Monitor Ketua", SoundId = "rbxassetid://70633665224310"},
