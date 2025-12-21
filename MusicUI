@@ -151,7 +151,6 @@ UIListLayout.Padding = UDim.new(0, 5)
 local Songs = {
     {Name = "BABY SHARK", SoundId = "rbxassetid://131822907093877"},
     {Name = "A Thousand Years", SoundId = "rbxassetid://94142287387850"},
-    {Name = "DJ TABOLA BALE X CALON MANTU IDAMAN SLOW VIRAL", SoundId = "rbxassetid://98097323847866"},
     {Name = "dj kun", SoundId = "rbxassetid://116647235474599"},
     {Name = "mangsedih", SoundId = "rbxassetid://128259754377999"},
     {Name = "FRIENDZONE - COVER HTS", SoundId = "rbxassetid://103160929669458"},
