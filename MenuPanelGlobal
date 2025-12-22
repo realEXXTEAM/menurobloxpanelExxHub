@@ -85,8 +85,6 @@ local menuItems = {
     {Text="ScriptBlox", Icon="rbxassetid://91251007612635"},
 	{Text="Script", Icon="rbxassetid://122385028196411"},
     {Text="SaveScript", Icon="rbxassetid://112238336567509"},
-	{Text="Settings", Icon="rbxassetid://6034509993"},
-	{Text="Donate", Icon="rbxassetid://6031097227"},
 	{Text="TPplayers", Icon="rbxassetid://80278360213440"},
     {Text="InfoServer", Icon="rbxassetid://18633720097"},
     {Text="AnimChanger", Icon="rbxassetid://115198205982652"},
@@ -203,5 +201,5 @@ for i, item in ipairs(menuItems) do
 	end)
 end
 
--- 🧠 Auto update CanvasSize biar scroll sesuai jumlah menu
+-- Auto update
 scroll.CanvasSize = UDim2.new(0, 0, 0, (#menuItems * itemHeight) + padding)
