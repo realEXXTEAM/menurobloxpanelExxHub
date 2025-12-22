@@ -304,6 +304,39 @@ local AnimPackList = {
         Climb = "rbxassetid://10921257536",
         Swim = "rbxassetid://10921264784",
         SwimIdle = "rbxassetid://10921265698"
+    },
+     ["Adidas Aura"] = {
+        Idle = "rbxassetid://110211186840347",
+        Idle2 = "rbxassetid://114191137265065",
+        Walk = "rbxassetid://83842218823011",
+        Run = "rbxassetid://118320322718866",
+        Jump = "rbxassetid://109996626521204",
+        Fall = "rbxassetid://95603166884636",
+        Climb = "rbxassetid://97824616490448",
+        Swim = "rbxassetid://134530128383903",
+        SwimIdle = "rbxassetid://94922130551805"
+    },
+    ["Mage"] = {
+        Idle = "rbxassetid://10921144709",
+        Idle2 = "rbxassetid://10921145797",
+        Walk = "rbxassetid://10921152678",
+        Run = "rbxassetid://10921148209",
+        Jump = "rbxassetid://10921149743",
+        Fall = "rbxassetid://10921148939",
+        Climb = "rbxassetid://10921143404",
+        Swim = "rbxassetid://10921150788",
+        SwimIdle = "rbxassetid://10921151661"
+    },
+    ["Vampire"] = {
+        Idle = "rbxassetid://10921314188",
+        Idle2 = "rbxassetid://10921315373",
+        Walk = "rbxassetid://10921326949",
+        Run = "rbxassetid://10921320299",
+        Jump = "rbxassetid://10921322186",
+        Fall = "rbxassetid://10921321317",
+        Climb = "rbxassetid://10921314188",
+        Swim = "rbxassetid://10921324408",
+        SwimIdle = "rbxassetid://10921325443"
     }
 }
 
