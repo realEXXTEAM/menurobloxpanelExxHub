@@ -206,7 +206,6 @@ local Songs = {
 	{Name = "Confess Your Love Funk", SoundId = "rbxassetid://85450110522462"},
 	{Name = "gl_zmax 0 h3H3h3 x_D", SoundId = "rbxassetid://109106564552843"},
 	{Name = "BATTLE OFE GYPT (jumpstyle)", SoundId = "rbxassetid://125880527383924"},
-	{Name = "PHONK MUSIC #1", SoundId = "rbxassetid://131532804085254"},
     {Name = "Drop Cing Cing", SoundId = "rbxassetid://82680101995105"},	
 }
 
