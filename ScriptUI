@@ -1,4 +1,5 @@
 local Players = game:GetService("Players")
+local TweenService = game:GetService("TweenService")
 local Player = Players.LocalPlayer
 
 --// ScreenGui Setup
@@ -11,7 +12,7 @@ ScriptUI.IgnoreGuiInset = true
 ScriptUI.Enabled = false
 ScriptUI.Parent = Player:WaitForChild("PlayerGui")
 
---// Main Frame (UKURAN DIPERKECIL)
+--// Main Frame
 local mainFrame = Instance.new("Frame")
 mainFrame.Size = UDim2.new(0, 420, 0, 280) -- Lebih kecil dari 520x320
 mainFrame.Position = UDim2.new(0.5, 0, 0.5, 0)
@@ -21,6 +22,8 @@ mainFrame.BackgroundTransparency = 0.2
 mainFrame.BorderSizePixel = 0
 mainFrame.Parent = ScriptUI
 mainFrame.ClipsDescendants = true
+mainFrame.Active = true
+mainFrame.Draggable = true -- Tambahan agar bisa digeser
 
 local mainCorner = Instance.new("UICorner")
 mainCorner.CornerRadius = UDim.new(0, 10)
@@ -33,28 +36,38 @@ closeBtn.Font = Enum.Font.GothamBold
 closeBtn.TextScaled = true
 closeBtn.TextColor3 = Color3.fromRGB(255, 255, 255)
 closeBtn.BackgroundTransparency = 1
-closeBtn.Size = UDim2.new(0, 25, 0, 25) -- Dikecilin dikit
+closeBtn.Size = UDim2.new(0, 25, 0, 25) 
 closeBtn.Position = UDim2.new(1, -30, 0, 5)
 closeBtn.ZIndex = 5
 closeBtn.Parent = mainFrame
 
 closeBtn.MouseButton1Click:Connect(function()
-	ScriptUI.Enabled = false
+    ScriptUI:Destroy()
 end)
 
---// Refresh Button (FIXED)
-local refreshBtn = Instance.new("ImageButton") -- Sudah ImageButton
-refreshBtn.Image = "rbxassetid://86084882582277" -- ID Gambar kamu
+--// Refresh Button
+local refreshBtn = Instance.new("ImageButton")
+refreshBtn.Image = "rbxassetid://86084882582277" 
 refreshBtn.BackgroundTransparency = 1
-refreshBtn.Size = UDim2.new(0, 25, 0, 25) -- Ukuran disesuaikan
-refreshBtn.Position = UDim2.new(1, -60, 0, 5) -- Posisi digeser dikit
+refreshBtn.Size = UDim2.new(0, 25, 0, 25)
+-- Posisi disesuaikan karena AnchorPoint berubah jadi 0.5 (biar muter di tengah)
+refreshBtn.Position = UDim2.new(1, -48, 0, 18) 
+refreshBtn.AnchorPoint = Vector2.new(0.5, 0.5) 
 refreshBtn.ZIndex = 5
 refreshBtn.Parent = mainFrame
 
+-- Setup Tween Rotasi
+local tweenInfo = TweenInfo.new(0.5, Enum.EasingStyle.Linear, Enum.EasingDirection.InOut, -1) -- -1 artinya loop infinity
+local rotateTween = TweenService:Create(refreshBtn, tweenInfo, {Rotation = 360})
+
 refreshBtn.MouseButton1Click:Connect(function()
+    rotateTween:Play() -- Mulai animasi putar
+    task.wait(0.5) -- Tunggu sebentar biar kelihatan muternya
+    
     if Player.PlayerGui:FindFirstChild("ScriptUI") then
         Player.PlayerGui.ScriptUI:Destroy()
     end
+    -- Load ulang script
     loadstring(game:HttpGet("https://raw.githubusercontent.com/realEXXTEAM/panelmenuuniversal/refs/heads/main/FITUR%20REFRESH%20SCRIPTUI"))()
 end)
 
@@ -62,8 +75,8 @@ end)
 local searchBox = Instance.new("TextBox")
 searchBox.PlaceholderText = "Search..."
 searchBox.Text = ""
-searchBox.Size = UDim2.new(0, 180, 0, 28) -- Dikecilin dikit
-searchBox.Position = UDim2.new(0.5, 0, 0, 12) -- Center
+searchBox.Size = UDim2.new(0, 180, 0, 28)
+searchBox.Position = UDim2.new(0.5, 0, 0, 12) 
 searchBox.AnchorPoint = Vector2.new(0.5, 0)
 searchBox.Font = Enum.Font.Gotham
 searchBox.TextSize = 14
@@ -78,7 +91,7 @@ searchCorner.Parent = searchBox
 
 --// ScrollingFrame
 local listFrame = Instance.new("ScrollingFrame")
-listFrame.Size = UDim2.new(1, -14, 1, -55) -- Disesuaikan dengan frame kecil
+listFrame.Size = UDim2.new(1, -14, 1, -55) 
 listFrame.Position = UDim2.new(0, 7, 0, 50)
 listFrame.BackgroundTransparency = 1
 listFrame.CanvasSize = UDim2.new(0, 0, 0, 0)
@@ -88,7 +101,7 @@ listFrame.AutomaticCanvasSize = Enum.AutomaticSize.Y
 listFrame.Parent = mainFrame
 
 local uiGrid = Instance.new("UIGridLayout")
-uiGrid.CellSize = UDim2.new(0, 125, 0, 110) -- Kartu script DIKECILIN biar muat banyak
+uiGrid.CellSize = UDim2.new(0, 125, 0, 110) 
 uiGrid.CellPadding = UDim2.new(0, 8, 0, 8)
 uiGrid.SortOrder = Enum.SortOrder.LayoutOrder
 uiGrid.FillDirection = Enum.FillDirection.Horizontal
@@ -124,76 +137,75 @@ local scripts = {
     {title = "Copy Avatar FE", image = "rbxassetid://102002093572733", text = "loadstring(game:HttpGet('https://raw.githubusercontent.com/GhostPlayer352/Test4/refs/heads/main/Copy%20Avatar'))()"},
     {title = "OK HUB – Blox Fruits Script", image = "rbxassetid://124015766651987", text = "loadstring(game:HttpGet('https://raw.githubusercontent.com/fakekuri/Okhubhere/refs/heads/main/MainBloxFruit.lua'))()"},
     {title = "Gravity Hub – Blox Fruits Script", image = "rbxassetid://124015766651987", text = "loadstring(game:HttpGet('https://raw.githubusercontent.com/Dev-GravityHub/BloxFruit/refs/heads/main/Main.lua'))()"},
-	{title = "Teddy Hub - Blox Fruit's Script", image = "rbxassetid://124015766651987", text = "loadstring(game:HttpGet('https://pastefy.app/FnTSKXtt/raw'))()"},
-	{title = "Quantum Hub - Blox Fruit's Script", image = "rbxassetid://124015766651987", text = "loadstring(game:HttpGet('https://raw.githubusercontent.com/flazhy/QuantumOnyx/refs/heads/main/QuantumOnyx.lua'))()"},
-	{title = "Ego Hub - Blox Fruit's Script", image = "rbxassetid://124015766651987", text = "loadstring(game:HttpGet('https://pastefy.app/gU8wlEbc/raw'))()"},
+    {title = "Teddy Hub - Blox Fruit's Script", image = "rbxassetid://124015766651987", text = "loadstring(game:HttpGet('https://pastefy.app/FnTSKXtt/raw'))()"},
+    {title = "Quantum Hub - Blox Fruit's Script", image = "rbxassetid://124015766651987", text = "loadstring(game:HttpGet('https://raw.githubusercontent.com/flazhy/QuantumOnyx/refs/heads/main/QuantumOnyx.lua'))()"},
+    {title = "Ego Hub - Blox Fruit's Script", image = "rbxassetid://124015766651987", text = "loadstring(game:HttpGet('https://pastefy.app/gU8wlEbc/raw'))()"},
 }
-
 
 --// Function to Create Card
 local function createScriptCard(data)
-	local card = Instance.new("Frame")
-	card.BackgroundColor3 = Color3.fromRGB(20, 20, 20)
-	card.BackgroundTransparency = 0.2
-	card.Size = UDim2.new(0, 125, 0, 110) -- Ukuran Card disesuaikan
-	card.Parent = listFrame
+    local card = Instance.new("Frame")
+    card.BackgroundColor3 = Color3.fromRGB(20, 20, 20)
+    card.BackgroundTransparency = 0.2
+    card.Size = UDim2.new(0, 125, 0, 110)
+    card.Parent = listFrame
 
-	local corner = Instance.new("UICorner")
-	corner.CornerRadius = UDim.new(0, 8)
-	corner.Parent = card
+    local corner = Instance.new("UICorner")
+    corner.CornerRadius = UDim.new(0, 8)
+    corner.Parent = card
 
-	local img = Instance.new("ImageLabel")
-	img.Image = data.image
-	img.Size = UDim2.new(1, -10, 0, 60) -- Gambar disesuaikan
-	img.Position = UDim2.new(0, 5, 0, 5)
-	img.BackgroundTransparency = 1
-	img.Parent = card
+    local img = Instance.new("ImageLabel")
+    img.Image = data.image
+    img.Size = UDim2.new(1, -10, 0, 60)
+    img.Position = UDim2.new(0, 5, 0, 5)
+    img.BackgroundTransparency = 1
+    img.Parent = card
 
-	local title = Instance.new("TextLabel")
-	title.Text = data.title
-	title.Font = Enum.Font.GothamBold
-	title.TextScaled = true
-	title.TextColor3 = Color3.fromRGB(255, 255, 255)
-	title.BackgroundTransparency = 1
-	title.Size = UDim2.new(1, -10, 0, 20)
-	title.Position = UDim2.new(0, 5, 0, 68)
-	title.Parent = card
+    local title = Instance.new("TextLabel")
+    title.Text = data.title
+    title.Font = Enum.Font.GothamBold
+    title.TextScaled = true
+    title.TextColor3 = Color3.fromRGB(255, 255, 255)
+    title.BackgroundTransparency = 1
+    title.Size = UDim2.new(1, -10, 0, 20)
+    title.Position = UDim2.new(0, 5, 0, 68)
+    title.Parent = card
 
-	local copyBtn = Instance.new("TextButton")
-	copyBtn.Text = "Copy"
-	copyBtn.Font = Enum.Font.Gotham
-	copyBtn.TextSize = 11
-	copyBtn.TextColor3 = Color3.fromRGB(255, 255, 255)
-	copyBtn.BackgroundColor3 = Color3.fromRGB(40, 40, 40)
-	copyBtn.Size = UDim2.new(0.9, 0, 0, 18) -- Tombol copy disesuaikan
-	copyBtn.Position = UDim2.new(0.05, 0, 1, -22)
-	copyBtn.Parent = card
+    local copyBtn = Instance.new("TextButton")
+    copyBtn.Text = "Copy"
+    copyBtn.Font = Enum.Font.Gotham
+    copyBtn.TextSize = 11
+    copyBtn.TextColor3 = Color3.fromRGB(255, 255, 255)
+    copyBtn.BackgroundColor3 = Color3.fromRGB(40, 40, 40)
+    copyBtn.Size = UDim2.new(0.9, 0, 0, 18)
+    copyBtn.Position = UDim2.new(0.05, 0, 1, -22)
+    copyBtn.Parent = card
 
-	local copyCorner = Instance.new("UICorner")
-	copyCorner.CornerRadius = UDim.new(0, 4)
-	copyCorner.Parent = copyBtn
+    local copyCorner = Instance.new("UICorner")
+    copyCorner.CornerRadius = UDim.new(0, 4)
+    copyCorner.Parent = copyBtn
 
-	copyBtn.MouseButton1Click:Connect(function()
-		setclipboard(data.text)
-	end)
+    copyBtn.MouseButton1Click:Connect(function()
+        setclipboard(data.text)
+    end)
 end
 
 --// Generate Cards
 for _, scriptData in ipairs(scripts) do
-	createScriptCard(scriptData)
+    createScriptCard(scriptData)
 end
 
 --// Search Filter
 searchBox:GetPropertyChangedSignal("Text"):Connect(function()
-	local search = string.lower(searchBox.Text)
-	for _, card in ipairs(listFrame:GetChildren()) do
-		if card:IsA("Frame") then
-			local title = card:FindFirstChildOfClass("TextLabel")
-			if title and string.find(string.lower(title.Text), search) then
-				card.Visible = true
-			else
-				card.Visible = false
-			end
-		end
-	end
+    local search = string.lower(searchBox.Text)
+    for _, card in ipairs(listFrame:GetChildren()) do
+        if card:IsA("Frame") then
+            local title = card:FindFirstChildOfClass("TextLabel")
+            if title and string.find(string.lower(title.Text), search) then
+                card.Visible = true
+            else
+                card.Visible = false
+            end
+        end
+    end
 end)
