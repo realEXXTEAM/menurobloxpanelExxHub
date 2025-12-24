@@ -115,6 +115,7 @@ uiPadding.Parent = listFrame
 
 --// Example Data
 local scripts = {
+    {title = "Blue X Hub – Blox Fruits Script (No Key)", image = "rbxassetid://130138407109522", text = "loadstring(game:HttpGet('https://raw.githubusercontent.com/Dev-BlueX/BlueX-Hub/refs/heads/main/Main.lua'))()"},
     {title = "Night Hub – Blox Fruits Script (No Key)", image = "rbxassetid://101759043389443", text = "loadstring(game:HttpGet('https://raw.githubusercontent.com/WhiteX1208/Scripts/refs/heads/main/Trial.luau'))()"},
     {title = "Redz Hub | OLD - Blox Fruits (OMG HUB)", image = "rbxassetid://124015766651987", text = "loadstring(game:HttpGet('https://api.luarmor.net/files/v3/loaders/20f318386e3fbf069ee3fa797cfc9f34.lua'))()"},
     {title = "(ComingSoon)Fling Player | Script", image = "rbxassetid://102002093572733", text = ""},
