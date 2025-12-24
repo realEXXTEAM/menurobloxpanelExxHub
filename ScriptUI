@@ -117,13 +117,7 @@ uiPadding.Parent = listFrame
 local scripts = {
     {title = "Blue X Hub – Blox Fruits Script (No Key)", image = "rbxassetid://130138407109522", text = "loadstring(game:HttpGet('https://raw.githubusercontent.com/Dev-BlueX/BlueX-Hub/refs/heads/main/Main.lua'))()"},
     {title = "Night Hub – Blox Fruits Script (No Key)", image = "rbxassetid://101759043389443", text = "loadstring(game:HttpGet('https://raw.githubusercontent.com/WhiteX1208/Scripts/refs/heads/main/Trial.luau'))()"},
-    {title = "Teddy Hub - Blox Fruit's Script", image = "rbxassetid://124015766651987", text = "loadstring(game:HttpGet('https://pastefy.app/FnTSKXtt/raw'))()"},
-    {title = "Redz Hub | OLD - Blox Fruits (OMG HUB)", image = "rbxassetid://124015766651987", text = "loadstring(game:HttpGet('https://api.luarmor.net/files/v3/loaders/20f318386e3fbf069ee3fa797cfc9f34.lua'))()"},
-    {title = "OK HUB – Blox Fruits Script", image = "rbxassetid://124015766651987", text = "loadstring(game:HttpGet('https://raw.githubusercontent.com/fakekuri/Okhubhere/refs/heads/main/MainBloxFruit.lua'))()"},
-    {title = "Gravity Hub – Blox Fruits Script", image = "rbxassetid://124015766651987", text = "loadstring(game:HttpGet('https://raw.githubusercontent.com/Dev-GravityHub/BloxFruit/refs/heads/main/Main.lua'))()"},
-    {title = "Quantum Hub - Blox Fruit's Script", image = "rbxassetid://124015766651987", text = "loadstring(game:HttpGet('https://raw.githubusercontent.com/flazhy/QuantumOnyx/refs/heads/main/QuantumOnyx.lua'))()"},
-    {title = "Ego Hub - Blox Fruit's Script", image = "rbxassetid://124015766651987", text = "loadstring(game:HttpGet('https://pastefy.app/gU8wlEbc/raw'))()"},
-    {title = "BLOX FRUITS Script No Key AUTO FARM", image = "rbxassetid://85953977761529", text = "loadstring(game:HttpGet('https://pastebin.com/raw/zfeGSTdE'))()"},
+    {title = "Teddy Hub - Blox Fruit's Script", image = "rbxassetid://96340556288683", text = "loadstring(game:HttpGet('https://pastefy.app/FnTSKXtt/raw'))()"},
     {title = "Script 99 Night In The Forest (NO KEY)", image = "rbxassetid://114848323624473", text = "loadstring(game:HttpGet('https://raw.githubusercontent.com/Devvzn/DevWare/refs/heads/main/DevMain'))()"},
     {title = "Mscuaz | Universal Animation", image = "rbxassetid://102002093572733", text = "loadstring(game:HttpGet('https://raw.githubusercontent.com/gwnrdt/gwnrdt/refs/heads/main/Animation.lua'))()"},
     {title = "Script FE Brookhaven RP SkyBox", image = "rbxassetid://119474295606519", text = "loadstring(game:HttpGet('https://rawscripts.net/raw/Brookhaven-RP-Skybox-Brookhaven-61921'))()"},
@@ -137,8 +131,14 @@ local scripts = {
     {title = "Stree Hub - Fish It (Instant Fish)", image = "rbxassetid://125872787106802", text = "loadstring(game:HttpGet('https://pandadevelopment.net/virtual/file/ecd9069dab3d2aa3'))()"},
     {title = "Vora Hub - Fish It (Instant Fish)", image = "rbxassetid://125872787106802", text = "loadstring(game:HttpGet('https://pandadevelopment.net/virtual/file/b5652e722eb30b13'))()"},
     {title = "Mirage Hub - Hunty Zombies", image = "rbxassetid://76094756361741", text = "loadstring(game:HttpGet('https://pastefy.app/ULaWpxKm/raw'))()"},
-    {title = "HoHo Hub v4", image = "rbxassetid://124015766651987", text = "loadstring(game:HttpGet('https://raw.githubusercontent.com/acsu123/HOHO_H/main/Loading_UI'))()"},
     {title = "Copy Avatar FE", image = "rbxassetid://102002093572733", text = "loadstring(game:HttpGet('https://raw.githubusercontent.com/GhostPlayer352/Test4/refs/heads/main/Copy%20Avatar'))()"},
+    {title = "HoHo Hub v4", image = "rbxassetid://124015766651987", text = "loadstring(game:HttpGet('https://raw.githubusercontent.com/acsu123/HOHO_H/main/Loading_UI'))()"},
+    {title = "Redz Hub | OLD - Blox Fruits (OMG HUB)", image = "rbxassetid://124015766651987", text = "loadstring(game:HttpGet('https://api.luarmor.net/files/v3/loaders/20f318386e3fbf069ee3fa797cfc9f34.lua'))()"},
+    {title = "OK HUB – Blox Fruits Script", image = "rbxassetid://124015766651987", text = "loadstring(game:HttpGet('https://raw.githubusercontent.com/fakekuri/Okhubhere/refs/heads/main/MainBloxFruit.lua'))()"},
+    {title = "Gravity Hub – Blox Fruits Script", image = "rbxassetid://124015766651987", text = "loadstring(game:HttpGet('https://raw.githubusercontent.com/Dev-GravityHub/BloxFruit/refs/heads/main/Main.lua'))()"},
+    {title = "Quantum Hub - Blox Fruit's Script", image = "rbxassetid://124015766651987", text = "loadstring(game:HttpGet('https://raw.githubusercontent.com/flazhy/QuantumOnyx/refs/heads/main/QuantumOnyx.lua'))()"},
+    {title = "Ego Hub - Blox Fruit's Script", image = "rbxassetid://124015766651987", text = "loadstring(game:HttpGet('https://pastefy.app/gU8wlEbc/raw'))()"},
+    {title = "BLOX FRUITS Script No Key AUTO FARM", image = "rbxassetid://85953977761529", text = "loadstring(game:HttpGet('https://pastebin.com/raw/zfeGSTdE'))()"},
 }
 
 --// Function to Create Card
