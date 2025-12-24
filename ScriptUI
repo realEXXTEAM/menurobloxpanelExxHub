@@ -42,7 +42,7 @@ closeBtn.ZIndex = 5
 closeBtn.Parent = mainFrame
 
 closeBtn.MouseButton1Click:Connect(function()
-    ScriptUI:Destroy()
+    ScriptUI.Enabled = false
 end)
 
 --// Refresh Button
