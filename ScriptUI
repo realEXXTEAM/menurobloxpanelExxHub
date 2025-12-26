@@ -58,7 +58,7 @@ refreshBtn.Parent = mainFrame
 
 -- Setup Tween Rotasi
 local tweenInfo = TweenInfo.new(0.5, Enum.EasingStyle.Linear, Enum.EasingDirection.InOut, -1) -- -1 artinya loop infinity
-local rotateTween = TweenService:Create(refreshBtn, tweenInfo, {Rotation = 360})
+local rotateTween = TweenService:Create(refreshBtn, tweenInfo, {Rotation = -360})
 
 refreshBtn.MouseButton1Click:Connect(function()
     rotateTween:Play() -- Mulai animasi putar
