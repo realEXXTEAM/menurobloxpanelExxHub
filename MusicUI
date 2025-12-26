@@ -97,7 +97,7 @@ refreshBtn.ZIndex = 11 -- Di atas Header
 
 refreshBtn.MouseButton1Click:Connect(function()
 	local tweenInfo = TweenInfo.new(0.6, Enum.EasingStyle.Quart, Enum.EasingDirection.Out)
-	TweenService:Create(refreshBtn, tweenInfo, {Rotation = refreshBtn.Rotation + 360}):Play()
+	TweenService:Create(refreshBtn, tweenInfo, {Rotation = refreshBtn.Rotation - 360}):Play()
 	if currentSound then currentSound:Destroy() currentSound = nil end
 	isPlaying = false
 	PlayPause.Image = "rbxassetid://127467405552658"
