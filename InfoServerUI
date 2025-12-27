@@ -13,7 +13,7 @@ if Player:WaitForChild("PlayerGui"):FindFirstChild("STSServerUI") then
 end
 
 -- == 2. GUI SETUP ==
-local Info ServerUI = Instance.new("ScreenGui")
+local InfoServerUI = Instance.new("ScreenGui")
 STSServerUI.Name = "Info ServerUI"
 STSServerUI.DisplayOrder = 9999
 STSServerUI.ResetOnSpawn = false
