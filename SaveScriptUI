@@ -15,8 +15,8 @@ if Player:WaitForChild("PlayerGui"):FindFirstChild("SaveScriptUI") then
 end
 
 -- // --- SETUP SCREENGUI ---
-local SaveScriptUI = Instance.new("ScreenGui")
-SaveScriptUI.Name = "SaveScriptUI"
+local Save ScriptUI = Instance.new("ScreenGui")
+SaveScriptUI.Name = "Save ScriptUI"
 SaveScriptUI.DisplayOrder = 9999
 SaveScriptUI.ResetOnSpawn = false
 SaveScriptUI.ZIndexBehavior = Enum.ZIndexBehavior.Global
