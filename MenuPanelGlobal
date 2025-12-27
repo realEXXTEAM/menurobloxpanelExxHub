@@ -88,7 +88,7 @@ local menuItems = {
 	{Text="TPplayers", Icon="rbxassetid://80278360213440"},
     {Text="AnimChanger", Icon="rbxassetid://115198205982652"},
     {Text="InfoServer", Icon="rbxassetid://18633720097"},
-    {Text="Reddem", Icon="rbxassetid://11332562153"},
+    {Text="", Icon="rbxassetid://0"},
 }
 
 local opened = false
