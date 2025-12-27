@@ -5,20 +5,20 @@ local Player = Players.LocalPlayer
 local PlayerGui = Player:WaitForChild("PlayerGui")
 
 --// ScreenGui Setup
-local GotoPlayersUI = Instance.new("ScreenGui")
-GotoPlayersUI.Name = "Goto PlayersUI"
-GotoPlayersUI.DisplayOrder = 9999
-GotoPlayersUI.ResetOnSpawn = false
-GotoPlayersUI.ZIndexBehavior = Enum.ZIndexBehavior.Global
-GotoPlayersUI.IgnoreGuiInset = true
-GotoPlayersUI.Enabled = false
-GotoPlayersUI.Parent = PlayerGui
+local TPplayersUI = Instance.new("ScreenGui")
+TPplayersUI.Name = "Goto PlayersUI"
+TPplayersUI.DisplayOrder = 9999
+TPplayersUI.ResetOnSpawn = false
+TPplayersUI.ZIndexBehavior = Enum.ZIndexBehavior.Sibling
+TPplayersUI.IgnoreGuiInset = true
+TPplayersUI.Parent = PlayerGui
 
 --// Main Frame
 local mainFrame = Instance.new("Frame")
-mainFrame.Size = UDim2.new(0, 280, 0, 320)
-mainFrame.Position = UDim2.new(0.5, -140, 0.5, -160)
-mainFrame.BackgroundColor3 = Color3.fromRGB(25, 25, 25)
+mainFrame.Name = "MainFrame"
+mainFrame.Size = UDim2.new(0, 300, 0, 320)
+mainFrame.Position = UDim2.new(0.5, -150, 0.5, -160)
+mainFrame.BackgroundColor3 = Color3.fromRGB(0, 0, 0)
 mainFrame.BackgroundTransparency = 0.1
 mainFrame.Parent = TPplayersUI
 
@@ -26,57 +26,68 @@ local uiCorner = Instance.new("UICorner")
 uiCorner.CornerRadius = UDim.new(0, 10)
 uiCorner.Parent = mainFrame
 
---// Close Button (Text Only)
+--// Close Button
 local closeBtn = Instance.new("TextButton")
-closeBtn.Size = UDim2.new(0, 25, 0, 25)
-closeBtn.Position = UDim2.new(1, -28, 0, 5)
+closeBtn.Name = "CloseButton"
+closeBtn.Size = UDim2.new(0, 30, 0, 30)
+closeBtn.Position = UDim2.new(1, -35, 0, 5)
 closeBtn.BackgroundTransparency = 1
 closeBtn.Text = "X"
 closeBtn.TextColor3 = Color3.new(1, 1, 1)
 closeBtn.Font = Enum.Font.GothamBold
-closeBtn.TextSize = 16
+closeBtn.TextSize = 18
+closeBtn.ZIndex = 10
 closeBtn.Parent = mainFrame
 
 closeBtn.MouseButton1Click:Connect(function()
 	TPplayersUI.Enabled = false
 end)
 
---// Title (PANEL TELEPORT)
+--// Title
 local title = Instance.new("TextLabel")
+title.Name = "TitleLabel"
 title.Text = "PANEL TELEPORT"
-title.Size = UDim2.new(1, -20, 0, 25)
-title.Position = UDim2.new(0, 10, 0, 10)
+title.Size = UDim2.new(1, -70, 0, 30)
+title.Position = UDim2.new(0, 10, 0, 5)
 title.BackgroundTransparency = 1
 title.TextColor3 = Color3.new(1, 1, 1)
 title.Font = Enum.Font.GothamBold
-title.TextSize = 16
+title.TextSize = 15
 title.TextXAlignment = Enum.TextXAlignment.Left
 title.Parent = mainFrame
 
---// Search Box
+--// Refresh Button
+local refreshBtn = Instance.new("ImageButton")
+refreshBtn.Name = "RefreshButton"
+refreshBtn.Image = "rbxassetid://86084882582277"
+refreshBtn.Size = UDim2.new(0, 22, 0, 22)
+refreshBtn.Position = UDim2.new(1, -65, 0, 8)
+refreshBtn.BackgroundTransparency = 1
+refreshBtn.ZIndex = 10
+refreshBtn.Parent = mainFrame
+
+--// Search Box (FIXED: Text bener-bener kosong)
 local searchBox = Instance.new("TextBox")
-searchBox.PlaceholderText = "Search..."
-searchBox.Text = ""
-searchBox.Size = UDim2.new(1, -20, 0, 26)
+searchBox.Name = "SearchBox"
+searchBox.PlaceholderText = "Search players..."
+searchBox.Text = "" -- INI SUDAH KOSONG BRO, GA AKAN ADA TULISAN LAGI
+searchBox.Size = UDim2.new(1, -20, 0, 30)
 searchBox.Position = UDim2.new(0, 10, 0, 40)
-searchBox.BackgroundColor3 = Color3.fromRGB(40, 40, 40)
+searchBox.BackgroundColor3 = Color3.fromRGB(30, 30, 30)
 searchBox.TextColor3 = Color3.new(1, 1, 1)
-searchBox.ClearTextOnFocus = false
 searchBox.Font = Enum.Font.Gotham
-searchBox.TextSize = 14
+searchBox.TextSize = 13
+searchBox.ClearTextOnFocus = false
 searchBox.Parent = mainFrame
+Instance.new("UICorner", searchBox).CornerRadius = UDim.new(0, 6)
 
-local searchCorner = Instance.new("UICorner")
-searchCorner.CornerRadius = UDim.new(0, 6)
-searchCorner.Parent = searchBox
-
---// Scroll Player List
+--// Scroll List
 local scroll = Instance.new("ScrollingFrame")
-scroll.Size = UDim2.new(1, -20, 1, -85)
-scroll.Position = UDim2.new(0, 10, 0, 75)
+scroll.Name = "PlayerScroll"
+scroll.Size = UDim2.new(1, -20, 1, -95)
+scroll.Position = UDim2.new(0, 10, 0, 80)
 scroll.BackgroundTransparency = 1
-scroll.CanvasSize = UDim2.new(0, 0, 0, 0)
-scroll.ScrollBarThickness = 6
+scroll.ScrollBarThickness = 4
 scroll.Parent = mainFrame
 
 local listLayout = Instance.new("UIListLayout")
@@ -84,164 +95,168 @@ listLayout.Padding = UDim.new(0, 5)
 listLayout.SortOrder = Enum.SortOrder.LayoutOrder
 listLayout.Parent = scroll
 
---// Camera Default
+--// Variables
 local cam = workspace.CurrentCamera
-local defaultSubject = cam.CameraSubject
-
---// Cache Card Player
 local playerCards = {}
+local currentWatchTarget = nil
+local globalWatchBtn = nil
+local diedConn = nil
+local activeTween = nil
 
---// Function Create Player Card
+local function resetGlobalWatch()
+    if Player.Character and Player.Character:FindFirstChild("Humanoid") then
+        cam.CameraSubject = Player.Character.Humanoid
+    end
+    if globalWatchBtn then globalWatchBtn.Text = "👀" end
+    if diedConn then diedConn:Disconnect() diedConn = nil end
+    currentWatchTarget = nil
+    globalWatchBtn = nil
+end
+
+--// Function Create Card
 local function createPlayerCard(plr)
-	local card = Instance.new("Frame")
-	card.Size = UDim2.new(1, 0, 0, 50)
-	card.BackgroundColor3 = Color3.fromRGB(35, 35, 35)
-	card.Parent = scroll
+    if not plr or plr == Player or playerCards[plr] then return end
+    
+    local card = Instance.new("Frame")
+    card.Name = plr.Name
+    card.Size = UDim2.new(1, -5, 0, 50)
+    card.BackgroundColor3 = Color3.fromRGB(25, 25, 25)
+    card.Parent = scroll
+    Instance.new("UICorner", card).CornerRadius = UDim.new(0, 8)
 
-	local cardCorner = Instance.new("UICorner")
-	cardCorner.CornerRadius = UDim.new(0, 8)
-	cardCorner.Parent = card
+    local thumb = Instance.new("ImageLabel")
+    thumb.Name = "AvatarThumbnail"
+    thumb.Size = UDim2.new(0, 38, 0, 38)
+    thumb.Position = UDim2.new(0, 6, 0.5, 0)
+    thumb.AnchorPoint = Vector2.new(0, 0.5)
+    thumb.BackgroundTransparency = 1
+    pcall(function()
+        thumb.Image = Players:GetUserThumbnailAsync(plr.UserId, Enum.ThumbnailType.HeadShot, Enum.ThumbnailSize.Size48x48)
+    end)
+    thumb.Parent = card
 
-	local thumb = Instance.new("ImageLabel")
-	thumb.Size = UDim2.new(0, 40, 0, 40)
-	thumb.Position = UDim2.new(0, 5, 0.5, 0)
-	thumb.AnchorPoint = Vector2.new(0, 0.5)
-	thumb.BackgroundTransparency = 1
-	thumb.Image = Players:GetUserThumbnailAsync(plr.UserId, Enum.ThumbnailType.HeadShot, Enum.ThumbnailSize.Size60x60)
-	thumb.Parent = card
+    local nameLabel = Instance.new("TextLabel")
+    nameLabel.Name = "NameLabel"
+    nameLabel.Text = "<b>" .. plr.DisplayName .. "</b>\n<font color='#AAAAAA'>@" .. plr.Name .. "</font>"
+    nameLabel.RichText = true
+    nameLabel.TextXAlignment = Enum.TextXAlignment.Left
+    nameLabel.Size = UDim2.new(1, -165, 1, 0)
+    nameLabel.Position = UDim2.new(0, 50, 0, 0)
+    nameLabel.Font = Enum.Font.Gotham
+    nameLabel.TextColor3 = Color3.new(1, 1, 1)
+    nameLabel.TextSize = 10
+    nameLabel.BackgroundTransparency = 1
+    nameLabel.Parent = card
 
-	local nameLabel = Instance.new("TextLabel")
-	nameLabel.Text = plr.DisplayName .. "\n@" .. plr.Name
-	nameLabel.TextXAlignment = Enum.TextXAlignment.Left
-	nameLabel.Size = UDim2.new(1, -120, 1, 0)
-	nameLabel.Position = UDim2.new(0, 50, 0, 0)
-	nameLabel.Font = Enum.Font.GothamBold
-	nameLabel.TextColor3 = Color3.fromRGB(255, 255, 255)
-	nameLabel.TextScaled = true
-	nameLabel.BackgroundTransparency = 1
-	nameLabel.Parent = card
+    -- TP Button
+    local tpBtn = Instance.new("TextButton")
+    tpBtn.Name = "TeleportButton"
+    tpBtn.Size = UDim2.new(0, 35, 0, 22)
+    tpBtn.Position = UDim2.new(1, -125, 0.5, -11)
+    tpBtn.Text = "TP"
+    tpBtn.BackgroundColor3 = Color3.fromRGB(40, 100, 40)
+    tpBtn.TextColor3 = Color3.new(1, 1, 1)
+    tpBtn.Font = Enum.Font.GothamBold
+    tpBtn.TextSize = 10
+    tpBtn.Parent = card
+    Instance.new("UICorner", tpBtn).CornerRadius = UDim.new(0, 5)
 
-	--// TP Button
-	local tpBtn = Instance.new("TextButton")
-	tpBtn.Size = UDim2.new(0, 45, 0, 22)
-	tpBtn.Position = UDim2.new(1, -90, 0.5, -11)
-	tpBtn.Text = "TP"
-	tpBtn.TextColor3 = Color3.new(1, 1, 1)
-	tpBtn.BackgroundColor3 = Color3.fromRGB(50, 50, 50)
-	tpBtn.Font = Enum.Font.GothamBold
-	tpBtn.TextSize = 14
-	tpBtn.Parent = card
+    tpBtn.MouseButton1Click:Connect(function()
+        if plr.Character and plr.Character:FindFirstChild("HumanoidRootPart") then
+            if activeTween then activeTween:Cancel() end
+            Player.Character:PivotTo(plr.Character.HumanoidRootPart.CFrame * CFrame.new(0, 3, 0))
+            TPplayersUI.Enabled = false
+        end
+    end)
 
-	local corner1 = Instance.new("UICorner")
-	corner1.CornerRadius = UDim.new(0, 5)
-	corner1.Parent = tpBtn
+    -- TW Button
+    local twBtn = Instance.new("TextButton")
+    twBtn.Name = "TweenButton"
+    twBtn.Size = UDim2.new(0, 35, 0, 22)
+    twBtn.Position = UDim2.new(1, -85, 0.5, -11)
+    twBtn.Text = "TW"
+    twBtn.BackgroundColor3 = Color3.fromRGB(100, 80, 0)
+    twBtn.TextColor3 = Color3.new(1, 1, 1)
+    twBtn.Font = Enum.Font.GothamBold
+    twBtn.TextSize = 10
+    twBtn.Parent = card
+    Instance.new("UICorner", twBtn).CornerRadius = UDim.new(0, 5)
 
-	tpBtn.MouseButton1Click:Connect(function()
-		if plr.Character and plr.Character:FindFirstChild("HumanoidRootPart") then
-			Player.Character:MoveTo(plr.Character.HumanoidRootPart.Position + Vector3.new(2, 0, 2))
-			TPplayersUI.Enabled = false -- auto close
-		end
-	end)
+    twBtn.MouseButton1Click:Connect(function()
+        if plr.Character and plr.Character:FindFirstChild("HumanoidRootPart") then
+            TPplayersUI.Enabled = false
+            local hrp = Player.Character.HumanoidRootPart
+            local dist = (hrp.Position - plr.Character.HumanoidRootPart.Position).Magnitude
+            activeTween = TweenService:Create(hrp, TweenInfo.new(dist/150, Enum.EasingStyle.Linear), {CFrame = plr.Character.HumanoidRootPart.CFrame * CFrame.new(0, 3, 0)})
+            activeTween:Play()
+        end
+    end)
 
-	--// Watch Button
-local watchBtn = Instance.new("TextButton")
-watchBtn.Size = UDim2.new(0, 45, 0, 22)
-watchBtn.Position = UDim2.new(1, -45, 0.5, -11)
-watchBtn.Text = "👀"
-watchBtn.TextColor3 = Color3.new(1, 1, 1)
-watchBtn.BackgroundColor3 = Color3.fromRGB(50, 50, 50)
-watchBtn.Font = Enum.Font.GothamBold
-watchBtn.TextSize = 14
-watchBtn.Parent = card
+    -- Watch Button
+    local watchBtn = Instance.new("TextButton")
+    watchBtn.Name = "WatchButton"
+    watchBtn.Size = UDim2.new(0, 35, 0, 22)
+    watchBtn.Position = UDim2.new(1, -45, 0.5, -11)
+    watchBtn.Text = "👀"
+    watchBtn.BackgroundColor3 = Color3.fromRGB(50, 50, 100)
+    watchBtn.TextColor3 = Color3.new(1, 1, 1)
+    watchBtn.Font = Enum.Font.GothamBold
+    watchBtn.TextSize = 10
+    watchBtn.Parent = card
+    Instance.new("UICorner", watchBtn).CornerRadius = UDim.new(0, 5)
 
-local corner2 = Instance.new("UICorner")
-corner2.CornerRadius = UDim.new(0, 5)
-corner2.Parent = watchBtn
+    watchBtn.MouseButton1Click:Connect(function()
+        if currentWatchTarget == plr then resetGlobalWatch()
+        else
+            if currentWatchTarget ~= nil then resetGlobalWatch() end
+            if plr.Character and plr.Character:FindFirstChild("Humanoid") then
+                cam.CameraSubject = plr.Character.Humanoid
+                currentWatchTarget = plr
+                globalWatchBtn = watchBtn
+                watchBtn.Text = "⛔"
+                diedConn = plr.Character.Humanoid.Died:Connect(resetGlobalWatch)
+            end
+        end
+    end)
 
-local watching = false
-local currentTarget = nil
-local diedConnection
-
-local function resetWatch()
-	-- Putar kamera balik ke karakter sendiri
-	local myChar = Player.Character or Player.CharacterAdded:Wait()
-	local myHum = myChar:WaitForChild("Humanoid")
-	cam.CameraSubject = myHum
-
-	-- Reset semua status
-	watching = false
-	currentTarget = nil
-	if diedConnection then
-		diedConnection:Disconnect()
-		diedConnection = nil
-	end
-	watchBtn.Text = "👀"
+    playerCards[plr] = card
 end
 
-watchBtn.MouseButton1Click:Connect(function()
-	if not watching then
-		if plr.Character and plr.Character:FindFirstChild("Humanoid") then
-			cam.CameraSubject = plr.Character:FindFirstChild("Humanoid")
-			watchBtn.Text = "⛔"
-			watching = true
-			currentTarget = plr
+--// Update Logic
+local function updateList()
+    for plr, card in pairs(playerCards) do
+        if not Players:FindFirstChild(plr.Name) then
+            if currentWatchTarget == plr then resetGlobalWatch() end
+            card:Destroy()
+            playerCards[plr] = nil
+        end
+    end
+    for _, plr in ipairs(Players:GetPlayers()) do
+        createPlayerCard(plr)
+    end
+    scroll.CanvasSize = UDim2.new(0,0,0, listLayout.AbsoluteContentSize.Y)
+end
 
-			-- Kalau player target mati, kamera auto balik
-			diedConnection = plr.Character:FindFirstChild("Humanoid").Died:Connect(function()
-				resetWatch()
-			end)
-		end
-	else
-		resetWatch()
-	end
+refreshBtn.MouseButton1Click:Connect(function()
+    TweenService:Create(refreshBtn, TweenInfo.new(0.5), {Rotation = refreshBtn.Rotation - 360}):Play()
+    resetGlobalWatch()
+    for _, c in pairs(playerCards) do c:Destroy() end
+    playerCards = {}
+    task.wait(0.1)
+    updateList()
 end)
 
--- Tambahan: kalau karakter kita mati, auto reset juga
-Player.CharacterAdded:Connect(function()
-	if watching then
-		resetWatch()
-	end
-end)
-
-	playerCards[plr] = card
-end
-
---// Smart Refresh System
-local function updatePlayers()
-	for plr, card in pairs(playerCards) do
-		if not Players:FindFirstChild(plr.Name) then
-			card:Destroy()
-			playerCards[plr] = nil
-		end
-	end
-
-	for _, plr in ipairs(Players:GetPlayers()) do
-		if not playerCards[plr] then
-			createPlayerCard(plr)
-		end
-	end
-
-	scroll.CanvasSize = UDim2.new(0, 0, 0, listLayout.AbsoluteContentSize.Y)
-end
-
-Players.PlayerAdded:Connect(updatePlayers)
-Players.PlayerRemoving:Connect(updatePlayers)
 searchBox:GetPropertyChangedSignal("Text"):Connect(function()
-	for plr, card in pairs(playerCards) do
-		if string.find(plr.Name:lower(), searchBox.Text:lower()) or string.find(plr.DisplayName:lower(), searchBox.Text:lower()) or searchBox.Text == "" then
-			card.Visible = true
-		else
-			card.Visible = false
-		end
-	end
+    local t = searchBox.Text:lower()
+    for plr, card in pairs(playerCards) do
+        card.Visible = (plr.Name:lower():find(t) or plr.DisplayName:lower():find(t) or t == "")
+    end
 end)
 
-updatePlayers()
-
---// Toggle pakai tombol "P"
-UserInputService.InputBegan:Connect(function(input, processed)
-	if processed then return end
-	if input.KeyCode == Enum.KeyCode.P then
-		TPplayersUI.Enabled = not TPplayersUI.Enabled
-	end
+UserInputService.InputBegan:Connect(function(i, p)
+    if not p and i.KeyCode == Enum.KeyCode.P then TPplayersUI.Enabled = not TPplayersUI.Enabled end
 end)
+
+Players.PlayerAdded:Connect(updateList)
+Players.PlayerRemoving:Connect(updateList)
+updateList()
