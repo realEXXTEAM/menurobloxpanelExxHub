@@ -11,6 +11,7 @@ TPplayersUI.DisplayOrder = 9999
 TPplayersUI.ResetOnSpawn = false
 TPplayersUI.ZIndexBehavior = Enum.ZIndexBehavior.Sibling
 TPplayersUI.IgnoreGuiInset = true
+TPplayersUI.Enabled = false
 TPplayersUI.Parent = PlayerGui
 
 --// Main Frame
