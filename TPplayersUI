@@ -5,7 +5,7 @@ local Player = Players.LocalPlayer
 local PlayerGui = Player:WaitForChild("PlayerGui")
 
 --// ScreenGui Setup
-local TPplayersUI = Instance.new("ScreenGui")
+local GotoPlayersUI = Instance.new("ScreenGui")
 TPplayersUI.Name = "Goto PlayersUI"
 TPplayersUI.DisplayOrder = 9999
 TPplayersUI.ResetOnSpawn = false
