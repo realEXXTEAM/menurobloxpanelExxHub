@@ -66,18 +66,17 @@ refreshBtn.BackgroundTransparency = 1
 refreshBtn.ZIndex = 10
 refreshBtn.Parent = mainFrame
 
---// Search Box (FIXED: Text bener-bener kosong)
+--// Search Box
 local searchBox = Instance.new("TextBox")
 searchBox.Name = "SearchBox"
 searchBox.PlaceholderText = "Search players..."
-searchBox.Text = "" -- INI SUDAH KOSONG BRO, GA AKAN ADA TULISAN LAGI
+searchBox.Text = "" 
 searchBox.Size = UDim2.new(1, -20, 0, 30)
 searchBox.Position = UDim2.new(0, 10, 0, 40)
 searchBox.BackgroundColor3 = Color3.fromRGB(30, 30, 30)
 searchBox.TextColor3 = Color3.new(1, 1, 1)
 searchBox.Font = Enum.Font.Gotham
 searchBox.TextSize = 13
-searchBox.ClearTextOnFocus = false
 searchBox.Parent = mainFrame
 Instance.new("UICorner", searchBox).CornerRadius = UDim.new(0, 6)
 
@@ -148,7 +147,7 @@ local function createPlayerCard(plr)
     nameLabel.BackgroundTransparency = 1
     nameLabel.Parent = card
 
-    -- TP Button
+    -- Buttons (TP, TW, Watch)
     local tpBtn = Instance.new("TextButton")
     tpBtn.Name = "TeleportButton"
     tpBtn.Size = UDim2.new(0, 35, 0, 22)
@@ -169,7 +168,6 @@ local function createPlayerCard(plr)
         end
     end)
 
-    -- TW Button
     local twBtn = Instance.new("TextButton")
     twBtn.Name = "TweenButton"
     twBtn.Size = UDim2.new(0, 35, 0, 22)
@@ -192,7 +190,6 @@ local function createPlayerCard(plr)
         end
     end)
 
-    -- Watch Button
     local watchBtn = Instance.new("TextButton")
     watchBtn.Name = "WatchButton"
     watchBtn.Size = UDim2.new(0, 35, 0, 22)
@@ -222,8 +219,9 @@ local function createPlayerCard(plr)
     playerCards[plr] = card
 end
 
---// Update Logic
+--// Update Logic (FIXED HAPUS LIST)
 local function updateList()
+    -- Scan semua kartu, hapus yang playernya udah ga ada di server
     for plr, card in pairs(playerCards) do
         if not Players:FindFirstChild(plr.Name) then
             if currentWatchTarget == plr then resetGlobalWatch() end
@@ -231,11 +229,28 @@ local function updateList()
             playerCards[plr] = nil
         end
     end
+    -- Scan semua player di server, bikin kartu kalau belum punya
     for _, plr in ipairs(Players:GetPlayers()) do
         createPlayerCard(plr)
     end
     scroll.CanvasSize = UDim2.new(0,0,0, listLayout.AbsoluteContentSize.Y)
 end
+
+--// Event Player Keluar (FIXED: Langsung hapus kartu spesifik)
+Players.PlayerRemoving:Connect(function(plr)
+    if playerCards[plr] then
+        if currentWatchTarget == plr then resetGlobalWatch() end
+        playerCards[plr]:Destroy()
+        playerCards[plr] = nil
+    end
+    task.wait(0.1)
+    updateList() -- Pastikan canvas size refresh
+end)
+
+Players.PlayerAdded:Connect(function()
+    task.wait(0.5) -- Tunggu bentar biar data player beneran masuk
+    updateList()
+end)
 
 refreshBtn.MouseButton1Click:Connect(function()
     TweenService:Create(refreshBtn, TweenInfo.new(0.5), {Rotation = refreshBtn.Rotation - 360}):Play()
@@ -257,6 +272,4 @@ UserInputService.InputBegan:Connect(function(i, p)
     if not p and i.KeyCode == Enum.KeyCode.P then TPplayersUI.Enabled = not TPplayersUI.Enabled end
 end)
 
-Players.PlayerAdded:Connect(updateList)
-Players.PlayerRemoving:Connect(updateList)
 updateList()
