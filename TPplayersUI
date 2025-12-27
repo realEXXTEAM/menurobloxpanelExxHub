@@ -6,13 +6,13 @@ local PlayerGui = Player:WaitForChild("PlayerGui")
 
 --// ScreenGui Setup
 local GotoPlayersUI = Instance.new("ScreenGui")
-TPplayersUI.Name = "Goto PlayersUI"
-TPplayersUI.DisplayOrder = 9999
-TPplayersUI.ResetOnSpawn = false
-TPplayersUI.ZIndexBehavior = Enum.ZIndexBehavior.Global
-TPplayersUI.IgnoreGuiInset = true
-TPplayersUI.Enabled = false
-TPplayersUI.Parent = PlayerGui
+GotoPlayersUI.Name = "Goto PlayersUI"
+GotoPlayersUI.DisplayOrder = 9999
+GotoPlayersUI.ResetOnSpawn = false
+GotoPlayersUI.ZIndexBehavior = Enum.ZIndexBehavior.Global
+GotoPlayersUI.IgnoreGuiInset = true
+GotoPlayersUI.Enabled = false
+GotoPlayersUI.Parent = PlayerGui
 
 --// Main Frame
 local mainFrame = Instance.new("Frame")
