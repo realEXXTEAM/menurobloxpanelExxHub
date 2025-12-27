@@ -86,9 +86,9 @@ local menuItems = {
     {Text="Script", Icon="rbxassetid://122385028196411"},
     {Text="Save Script", Icon="rbxassetid://112238336567509"},
 	{Text="Music", Icon="rbxassetid://95034182657328"},
-	{Text="Teleport players", Icon="rbxassetid://80278360213440"},
-    {Text="Animation Changer", Icon="rbxassetid://115198205982652"},
-	{Text="Info Server", Icon="rbxassetid://18633720097"},
+	{Text="Goto Players", Icon="rbxassetid://80278360213440"},
+    {Text="AnimChanger", Icon="rbxassetid://115198205982652"},
+	{Text="𝗜𝗻𝗳𝗼 𝗦𝗲𝗿𝘃𝗲𝗿", Icon="rbxassetid://18633720097"},
     {Text="", Icon="rbxassetid://0"},
 }
 
