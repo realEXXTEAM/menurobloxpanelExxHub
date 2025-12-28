@@ -29,7 +29,7 @@ MainFrame.Position = UDim2.new(0.5, -160, 0.5, -150)
 MainFrame.BackgroundColor3 = Color3.fromRGB(0, 0, 0)
 MainFrame.BackgroundTransparency = 0.2
 MainFrame.Active = true
-MainFrame.Draggable = true
+MainFrame.Draggable = false
 Instance.new("UICorner", MainFrame).CornerRadius = UDim.new(0, 10)
 
 local Title = Instance.new("TextLabel", MainFrame)
@@ -175,7 +175,7 @@ ColorBtn.BackgroundColor3 = Color3.fromRGB(45, 45, 45)
 ColorBtn.TextColor3 = Color3.fromRGB(255, 255, 255)
 Instance.new("UICorner", ColorBtn)
 
-local ColorPalette = Instance.new("Frame", SettingsUI)
+local ColorPalette = Instance.new("Frame", ESPSettingsUI)
 ColorPalette.Size = UDim2.new(0, 160, 0, 250)
 ColorPalette.Position = UDim2.new(0.5, 170, 0.5, -125)
 ColorPalette.BackgroundColor3 = Color3.fromRGB(15, 15, 15)
