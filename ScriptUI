@@ -114,6 +114,7 @@ uiPadding.Parent = listFrame
 
 --// Example Data
 local scripts = {
+    {title = "The Forge Script – Catraz Hub", image = "rbxassetid://128465030736317", text = "loadstring(game:HttpGet('https://raw.githubusercontent.com/nurvian/Catraz-HUB/refs/heads/main/Catraz/main.lua'))()"},
     {title = "Redz Hub | OLD - Blox Fruits (OMG HUB)", image = "rbxassetid://131232348918748", text = "loadstring(game:HttpGet('https://api.luarmor.net/files/v3/loaders/20f318386e3fbf069ee3fa797cfc9f34.lua'))()"},
     {title = "Teddy Hub - Blox Fruit's Script (No Key)", image = "rbxassetid://96340556288683", text = "loadstring(game:HttpGet('https://pastefy.app/FnTSKXtt/raw'))()"},
     {title = "Blue X Hub – Blox Fruits Script (No Key)", image = "rbxassetid://130138407109522", text = "loadstring(game:HttpGet('https://raw.githubusercontent.com/Dev-BlueX/BlueX-Hub/refs/heads/main/Main.lua'))()"},
