@@ -60,7 +60,7 @@ ScrollFrame.ScrollBarThickness = 2
 local UIList = Instance.new("UIListLayout", ScrollFrame)
 UIList.Padding = UDim.new(0, 6)
 
---// Fungsi Toggle (Benerin Visibility Langsung)
+--// Fungsi Toggle 
 local function CreateToggle(name, configKey)
     local Item = Instance.new("Frame", ScrollFrame)
     Item.Size = UDim2.new(1, 0, 0, 40)
@@ -79,8 +79,8 @@ local function CreateToggle(name, configKey)
     Label.TextXAlignment = Enum.TextXAlignment.Left
 
     local Btn = Instance.new("ImageButton", Item)
-    Btn.Size = UDim2.new(0, 65, 0, 32) -- MAKIN GEDE BRO
-    Btn.Position = UDim2.new(1, -70, 0.5, -16)
+    Btn.Size = UDim2.new(0, 65, 0, 32)
+    Btn.Position = UDim2.new(1, -60, 0.5, -16)
     Btn.BackgroundTransparency = 1
     Btn.Image = getgenv().ESP_Config[configKey] and TX_ON or TX_OFF
     Btn.ScaleType = Enum.ScaleType.Fit
