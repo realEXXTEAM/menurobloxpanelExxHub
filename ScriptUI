@@ -14,7 +14,7 @@ ScriptUI.Parent = Player:WaitForChild("PlayerGui")
 
 --// Main Frame
 local mainFrame = Instance.new("Frame")
-mainFrame.Size = UDim2.new(0, 420, 0, 280) -- Lebih kecil dari 520x320
+mainFrame.Size = UDim2.new(0, 420, 0, 280)
 mainFrame.Position = UDim2.new(0.5, 0, 0.5, 0)
 mainFrame.AnchorPoint = Vector2.new(0.5, 0.5)
 mainFrame.BackgroundColor3 = Color3.fromRGB(0, 0, 0)
@@ -23,7 +23,7 @@ mainFrame.BorderSizePixel = 0
 mainFrame.Parent = ScriptUI
 mainFrame.ClipsDescendants = true
 mainFrame.Active = true
-mainFrame.Draggable = true -- Tambahan agar bisa digeser
+mainFrame.Draggable = false
 
 local mainCorner = Instance.new("UICorner")
 mainCorner.CornerRadius = UDim.new(0, 10)
