@@ -1,0 +1,233 @@
+local Players = game:GetService("Players")
+local RunService = game:GetService("RunService")
+local TweenService = game:GetService("TweenService")
+local Camera = workspace.CurrentCamera
+local LocalPlayer = Players.LocalPlayer
+
+--// Konfigurasi Global
+getgenv().ESP_Config = {
+    Outline = false,
+    Box = false,
+    Antena = false,
+    Names = false,
+    Color = Color3.fromRGB(255, 255, 255)
+}
+
+--// UI Textures
+local TX_OFF = "rbxassetid://6031068420"
+local TX_ON = "rbxassetid://6031068421"
+
+--// UI Setup
+local SettingsUI = Instance.new("ScreenGui", LocalPlayer:WaitForChild("PlayerGui"))
+SettingsUI.Name = "ESPSystem"
+SettingsUI.ResetOnSpawn = false
+
+local MainFrame = Instance.new("Frame", SettingsUI)
+MainFrame.Size = UDim2.new(0, 320, 0, 300)
+MainFrame.Position = UDim2.new(0.5, -160, 0.5, -150)
+MainFrame.BackgroundColor3 = Color3.fromRGB(0, 0, 0)
+MainFrame.BackgroundTransparency = 0.2
+MainFrame.Active = true
+MainFrame.Draggable = true
+Instance.new("UICorner", MainFrame).CornerRadius = UDim.new(0, 10)
+
+local Title = Instance.new("TextLabel", MainFrame)
+Title.Size = UDim2.new(1, -40, 0, 35)
+Title.Position = UDim2.new(0, 10, 0, 5)
+Title.Text = "⚙️ ESP SETTINGS"
+Title.TextColor3 = Color3.fromRGB(255, 255, 255)
+Title.BackgroundTransparency = 1
+Title.Font = Enum.Font.GothamBold
+Title.TextSize = 16
+Title.TextXAlignment = Enum.TextXAlignment.Left
+
+local CloseBtn = Instance.new("TextButton", MainFrame)
+CloseBtn.Size = UDim2.new(0, 30, 0, 30)
+CloseBtn.Position = UDim2.new(1, -35, 0, 5)
+CloseBtn.BackgroundTransparency = 1
+CloseBtn.Text = "X"
+CloseBtn.TextColor3 = Color3.fromRGB(255, 255, 255)
+CloseBtn.TextSize = 18
+CloseBtn.Font = Enum.Font.GothamBold
+CloseBtn.MouseButton1Click:Connect(function() SettingsUI.Enabled = false end)
+
+local ScrollFrame = Instance.new("ScrollingFrame", MainFrame)
+ScrollFrame.Size = UDim2.new(1, -20, 1, -55)
+ScrollFrame.Position = UDim2.new(0, 10, 0, 45)
+ScrollFrame.BackgroundTransparency = 1
+ScrollFrame.ScrollBarThickness = 2
+local UIList = Instance.new("UIListLayout", ScrollFrame)
+UIList.Padding = UDim.new(0, 6)
+
+--// Fungsi Toggle (Benerin Visibility Langsung)
+local function CreateToggle(name, configKey)
+    local Item = Instance.new("Frame", ScrollFrame)
+    Item.Size = UDim2.new(1, 0, 0, 40)
+    Item.BackgroundColor3 = Color3.fromRGB(30, 30, 30)
+    Item.BackgroundTransparency = 0.5
+    Instance.new("UICorner", Item).CornerRadius = UDim.new(0, 6)
+
+    local Label = Instance.new("TextLabel", Item)
+    Label.Size = UDim2.new(1, -75, 1, 0)
+    Label.Position = UDim2.new(0, 10, 0, 0)
+    Label.Text = name
+    Label.TextColor3 = Color3.fromRGB(255, 255, 255)
+    Label.BackgroundTransparency = 1
+    Label.Font = Enum.Font.Gotham
+    Label.TextSize = 13
+    Label.TextXAlignment = Enum.TextXAlignment.Left
+
+    local Btn = Instance.new("ImageButton", Item)
+    Btn.Size = UDim2.new(0, 65, 0, 32) -- MAKIN GEDE BRO
+    Btn.Position = UDim2.new(1, -70, 0.5, -16)
+    Btn.BackgroundTransparency = 1
+    Btn.Image = getgenv().ESP_Config[configKey] and TX_ON or TX_OFF
+    Btn.ScaleType = Enum.ScaleType.Fit
+
+    Btn.MouseButton1Click:Connect(function()
+        getgenv().ESP_Config[configKey] = not getgenv().ESP_Config[configKey]
+        Btn.Image = getgenv().ESP_Config[configKey] and TX_ON or TX_OFF
+    end)
+end
+
+--// Logic ESP (RE-CHECK & RE-RENDER FORCE)
+local function AddESP(plr)
+    local BoxOutline = Drawing.new("Square")
+    BoxOutline.Visible = false
+    BoxOutline.Thickness = 3
+    BoxOutline.Color = Color3.new(0,0,0)
+    BoxOutline.Filled = false
+
+    local Box = Drawing.new("Square")
+    Box.Visible = false
+    Box.Thickness = 1
+    Box.Filled = false
+
+    local Line = Drawing.new("Line")
+    local Text = Drawing.new("Text")
+
+    RunService.RenderStepped:Connect(function()
+        if plr.Character and plr.Character:FindFirstChild("HumanoidRootPart") and plr ~= LocalPlayer then
+            local Root = plr.Character.HumanoidRootPart
+            local Pos, OnScreen = Camera:WorldToViewportPoint(Root.Position)
+
+            if OnScreen then
+                local SizeX = 2200 / Pos.Z
+                local SizeY = 2800 / Pos.Z
+                local BoxPos = Vector2.new(Pos.X - SizeX / 2, Pos.Y - SizeY / 2)
+
+                -- Paksa Update Visibility berdasarkan config
+                BoxOutline.Visible = getgenv().ESP_Config.Box
+                BoxOutline.Size = Vector2.new(SizeX, SizeY)
+                BoxOutline.Position = BoxPos
+
+                Box.Visible = getgenv().ESP_Config.Box
+                Box.Size = BoxOutline.Size
+                Box.Position = BoxPos
+                Box.Color = getgenv().ESP_Config.Color
+
+                Line.Visible = getgenv().ESP_Config.Antena
+                Line.From = Vector2.new(Camera.ViewportSize.X / 2, Camera.ViewportSize.Y)
+                Line.To = Vector2.new(Pos.X, Pos.Y)
+                Line.Color = getgenv().ESP_Config.Color
+
+                Text.Visible = getgenv().ESP_Config.Names
+                local dist = math.floor((Root.Position - LocalPlayer.Character.HumanoidRootPart.Position).Magnitude)
+                Text.Text = plr.Name .. " [" .. tostring(dist) .. "m]"
+                Text.Position = Vector2.new(Pos.X, Pos.Y - (SizeY / 2) - 15)
+                Text.Color = getgenv().ESP_Config.Color
+                Text.Center = true
+                Text.Outline = true
+                
+                -- Highlight logic
+                local hl = plr.Character:FindFirstChild("ESP_Highlight")
+                if getgenv().ESP_Config.Outline then
+                    if not hl then
+                        hl = Instance.new("Highlight", plr.Character)
+                        hl.Name = "ESP_Highlight"
+                    end
+                    hl.OutlineColor = getgenv().ESP_Config.Color
+                elseif hl then hl:Destroy() end
+            else
+                BoxOutline.Visible = false; Box.Visible = false; Line.Visible = false; Text.Visible = false
+            end
+        else
+            BoxOutline.Visible = false; Box.Visible = false; Line.Visible = false; Text.Visible = false
+        end
+    end)
+end
+
+-- Start
+for _, p in pairs(Players:GetPlayers()) do AddESP(p) end
+Players.PlayerAdded:Connect(AddESP)
+
+CreateToggle("Outline Player", "Outline")
+CreateToggle("Box ESP", "Box")
+CreateToggle("Antena (Tracers)", "Antena")
+CreateToggle("Name | Studs", "Names")
+
+--// Panel Warna (Logic Selected Tetap Ada)
+local ColorBtn = Instance.new("TextButton", ScrollFrame)
+ColorBtn.Size = UDim2.new(1, 0, 0, 35)
+ColorBtn.Text = "🎨 Ganti Warna"
+ColorBtn.BackgroundColor3 = Color3.fromRGB(45, 45, 45)
+ColorBtn.TextColor3 = Color3.fromRGB(255, 255, 255)
+Instance.new("UICorner", ColorBtn)
+
+local ColorPalette = Instance.new("Frame", SettingsUI)
+ColorPalette.Size = UDim2.new(0, 160, 0, 250)
+ColorPalette.Position = UDim2.new(0.5, 170, 0.5, -125)
+ColorPalette.BackgroundColor3 = Color3.fromRGB(15, 15, 15)
+ColorPalette.Visible = false
+Instance.new("UICorner", ColorPalette)
+
+local ColorList = Instance.new("ScrollingFrame", ColorPalette)
+ColorList.Size = UDim2.new(1, -10, 1, -10)
+ColorList.Position = UDim2.new(0, 5, 0, 5)
+ColorList.BackgroundTransparency = 1
+ColorList.ScrollBarThickness = 2
+Instance.new("UIListLayout", ColorList).Padding = UDim.new(0, 5)
+
+local colors = {
+    {c = Color3.fromRGB(255, 255, 255), n = "Selected (Default)"},
+    {c = Color3.fromRGB(255, 0, 0), n = "Selected"},
+    {c = Color3.fromRGB(0, 255, 0), n = "Selected"},
+    {c = Color3.fromRGB(0, 170, 255), n = "Selected"},
+    {c = Color3.fromRGB(255, 255,  yellow), n = "Selected"},
+    {c = Color3.fromRGB(255, 0, 255), n = "Selected"}
+}
+
+local colorButtons = {}
+local function UpdatePaletteText()
+    for _, b in ipairs(colorButtons) do
+        b.Button.Text = (getgenv().ESP_Config.Color == b.ColorVal) and b.Txt or ""
+    end
+end
+
+for _, d in ipairs(colors) do
+    local ColBtn = Instance.new("TextButton", ColorList)
+    ColBtn.Size = UDim2.new(1, 0, 0, 35)
+    ColBtn.BackgroundColor3 = d.c
+    ColBtn.TextColor3 = Color3.new(1,1,1)
+    ColBtn.TextStrokeTransparency = 0
+    ColBtn.Font = Enum.Font.GothamBold
+    ColBtn.TextSize = 11
+    Instance.new("UICorner", ColBtn)
+    
+    table.insert(colorButtons, {Button = ColBtn, ColorVal = d.c, Txt = d.n})
+    ColBtn.MouseButton1Click:Connect(function()
+        getgenv().ESP_Config.Color = d.c
+        UpdatePaletteText()
+    end)
+end
+UpdatePaletteText()
+
+local pOpen = false
+ColorBtn.MouseButton1Click:Connect(function()
+    pOpen = not pOpen
+    ColorPalette.Visible = pOpen
+    if pOpen then
+        ColorPalette.Position = UDim2.new(0.5, 120, 0.5, -125)
+        TweenService:Create(ColorPalette, TweenInfo.new(0.3), {Position = UDim2.new(0.5, 170, 0.5, -125)}):Play()
+    end
+end)
