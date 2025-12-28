@@ -115,7 +115,7 @@ end
 
 --// Function Create Card
 local function createPlayerCard(plr)
-    if not plr or plr == Player or playerCards[plr] then return end
+    if not plr or playerCards[plr] then return end
     
     local card = Instance.new("Frame")
     card.Name = plr.Name
@@ -123,6 +123,17 @@ local function createPlayerCard(plr)
     card.BackgroundColor3 = Color3.fromRGB(25, 25, 25)
     card.Parent = scroll
     Instance.new("UICorner", card).CornerRadius = UDim.new(0, 8)
+
+    -- Sorting Logic
+    local isFriend = false
+    if plr == Player then
+        card.LayoutOrder = -2
+    elseif Player:IsFriendsWith(plr.UserId) then
+        card.LayoutOrder = -1
+        isFriend = true
+    else
+        card.LayoutOrder = 0
+    end
 
     local thumb = Instance.new("ImageLabel")
     thumb.Name = "AvatarThumbnail"
@@ -135,9 +146,23 @@ local function createPlayerCard(plr)
     end)
     thumb.Parent = card
 
+    -- Badge Icon (Detect Friend Only)
+    if isFriend then
+        local badge = Instance.new("ImageLabel")
+        badge.Name = "BadgeIcon"
+        badge.Size = UDim2.new(0, 14, 0, 14)
+        badge.Position = UDim2.new(1, 0, 1, 0)
+        badge.AnchorPoint = Vector2.new(1, 1)
+        badge.BackgroundTransparency = 1
+        badge.Image = "rbxassetid://101269177900865"
+        badge.ZIndex = 5
+        badge.Parent = thumb
+    end
+
     local nameLabel = Instance.new("TextLabel")
     nameLabel.Name = "NameLabel"
-    nameLabel.Text = "<b>" .. plr.DisplayName .. "</b>\n<font color='#AAAAAA'>@" .. plr.Name .. "</font>"
+    local nameColor = (plr == Player) and "#55FFFF" or "#FFFFFF"
+    nameLabel.Text = "<b><font color='"..nameColor.."'>" .. plr.DisplayName .. "</font></b>\n<font color='#AAAAAA'>@" .. plr.Name .. "</font>"
     nameLabel.RichText = true
     nameLabel.TextXAlignment = Enum.TextXAlignment.Left
     nameLabel.Size = UDim2.new(1, -165, 1, 0)
@@ -216,13 +241,19 @@ local function createPlayerCard(plr)
             end
         end
     end)
+    
+    if plr == Player then
+        tpBtn.Visible = false
+        twBtn.Visible = false
+        watchBtn.Visible = false
+    end
 
     playerCards[plr] = card
 end
 
---// Update Logic (FIXED HAPUS LIST)
+--// Update Logic (Fix Double & Blank Refresh)
 local function updateList()
-    -- Scan semua kartu, hapus yang playernya udah ga ada di server
+    -- Bersihkan kartu yang playernya sudah tidak ada
     for plr, card in pairs(playerCards) do
         if not Players:FindFirstChild(plr.Name) then
             if currentWatchTarget == plr then resetGlobalWatch() end
@@ -230,32 +261,34 @@ local function updateList()
             playerCards[plr] = nil
         end
     end
-    -- Scan semua player di server, bikin kartu kalau belum punya
+    -- Tambah kartu player baru
     for _, plr in ipairs(Players:GetPlayers()) do
-        createPlayerCard(plr)
+        if not playerCards[plr] then
+            createPlayerCard(plr)
+        end
     end
     scroll.CanvasSize = UDim2.new(0,0,0, listLayout.AbsoluteContentSize.Y)
 end
 
---// Event Player Keluar (FIXED: Langsung hapus kartu spesifik)
+--// Events
 Players.PlayerRemoving:Connect(function(plr)
     if playerCards[plr] then
         if currentWatchTarget == plr then resetGlobalWatch() end
         playerCards[plr]:Destroy()
         playerCards[plr] = nil
     end
-    task.wait(0.1)
-    updateList() -- Pastikan canvas size refresh
+    updateList()
 end)
 
 Players.PlayerAdded:Connect(function()
-    task.wait(0.5) -- Tunggu bentar biar data player beneran masuk
+    task.wait(0.5)
     updateList()
 end)
 
 refreshBtn.MouseButton1Click:Connect(function()
-    TweenService:Create(refreshBtn, TweenInfo.new(0.5), {Rotation = refreshBtn.Rotation - 360}):Play()
+    TweenService:Create(refreshBtn, TweenInfo.new(0.5, Enum.EasingStyle.Quart, Enum.EasingDirection.Out), {Rotation = refreshBtn.Rotation - 360}):Play()
     resetGlobalWatch()
+    -- Wipe total biar kaga double/bug
     for _, c in pairs(playerCards) do c:Destroy() end
     playerCards = {}
     task.wait(0.1)
