@@ -18,11 +18,11 @@ local TX_OFF = "rbxassetid://6031068420"
 local TX_ON = "rbxassetid://6031068421"
 
 --// UI Setup
-local SettingsUI = Instance.new("ScreenGui", LocalPlayer:WaitForChild("PlayerGui"))
-SettingsUI.Name = "ESPSystem"
-SettingsUI.ResetOnSpawn = false
+local ESPSettingsUI = Instance.new("ScreenGui", LocalPlayer:WaitForChild("PlayerGui"))
+ESPSettingsUI.Name = "ESPSystem"
+ESPSettingsUI.ResetOnSpawn = false
 
-local MainFrame = Instance.new("Frame", SettingsUI)
+local MainFrame = Instance.new("Frame", ESPSettingsUI)
 MainFrame.Size = UDim2.new(0, 320, 0, 300)
 MainFrame.Position = UDim2.new(0.5, -160, 0.5, -150)
 MainFrame.BackgroundColor3 = Color3.fromRGB(0, 0, 0)
