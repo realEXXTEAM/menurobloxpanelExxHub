@@ -50,7 +50,7 @@ CloseBtn.Text = "X"
 CloseBtn.TextColor3 = Color3.fromRGB(255, 255, 255)
 CloseBtn.TextSize = 18
 CloseBtn.Font = Enum.Font.GothamBold
-CloseBtn.MouseButton1Click:Connect(function() SettingsUI.Enabled = false end)
+CloseBtn.MouseButton1Click:Connect(function() ESPSettingsUI.Enabled = false end)
 
 local ScrollFrame = Instance.new("ScrollingFrame", MainFrame)
 ScrollFrame.Size = UDim2.new(1, -20, 1, -55)
@@ -170,7 +170,7 @@ CreateToggle("Name | Studs", "Names")
 --// Panel Warna (Logic Selected Tetap Ada)
 local ColorBtn = Instance.new("TextButton", ScrollFrame)
 ColorBtn.Size = UDim2.new(1, 0, 0, 35)
-ColorBtn.Text = "🎨 Ganti Warna"
+ColorBtn.Text = "[🎨] Switch Collor"
 ColorBtn.BackgroundColor3 = Color3.fromRGB(45, 45, 45)
 ColorBtn.TextColor3 = Color3.fromRGB(255, 255, 255)
 Instance.new("UICorner", ColorBtn)
