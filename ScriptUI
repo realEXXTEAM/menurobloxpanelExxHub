@@ -61,8 +61,8 @@ local tweenInfo = TweenInfo.new(0.5, Enum.EasingStyle.Linear, Enum.EasingDirecti
 local rotateTween = TweenService:Create(refreshBtn, tweenInfo, {Rotation = -360})
 
 refreshBtn.MouseButton1Click:Connect(function()
-    rotateTween:Play() -- Mulai animasi putar
-    task.wait(0.5) -- Tunggu sebentar biar kelihatan muternya
+    rotateTween:Play()
+    task.wait(0.5)
     
     if Player.PlayerGui:FindFirstChild("ScriptUI") then
         Player.PlayerGui.ScriptUI:Destroy()
