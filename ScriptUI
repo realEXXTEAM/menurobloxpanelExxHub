@@ -115,6 +115,7 @@ uiPadding.Parent = listFrame
 --// Example Data
 local scripts = {
     {title = "The Forge Script – Catraz Hub", image = "rbxassetid://128465030736317", text = "loadstring(game:HttpGet('https://raw.githubusercontent.com/nurvian/Catraz-HUB/refs/heads/main/Catraz/main.lua'))()"},
+    {title = "Gravity Hub – Blox Fruits Script", image = "rbxassetid://124015766651987", text = "loadstring(game:HttpGet('https://raw.githubusercontent.com/Dev-GravityHub/BloxFruit/refs/heads/main/Main.lua'))()"},
     {title = "Redz Hub | OLD - Blox Fruits (OMG HUB)", image = "rbxassetid://131232348918748", text = "loadstring(game:HttpGet('https://api.luarmor.net/files/v3/loaders/20f318386e3fbf069ee3fa797cfc9f34.lua'))()"},
     {title = "Teddy Hub - Blox Fruit's Script (No Key)", image = "rbxassetid://96340556288683", text = "loadstring(game:HttpGet('https://pastefy.app/FnTSKXtt/raw'))()"},
     {title = "Blue X Hub – Blox Fruits Script (No Key)", image = "rbxassetid://130138407109522", text = "loadstring(game:HttpGet('https://raw.githubusercontent.com/Dev-BlueX/BlueX-Hub/refs/heads/main/Main.lua'))()"},
@@ -135,7 +136,6 @@ local scripts = {
     {title = "Copy Avatar FE", image = "rbxassetid://102002093572733", text = "loadstring(game:HttpGet('https://raw.githubusercontent.com/GhostPlayer352/Test4/refs/heads/main/Copy%20Avatar'))()"},
     {title = "HoHo Hub v4", image = "rbxassetid://124015766651987", text = "loadstring(game:HttpGet('https://raw.githubusercontent.com/acsu123/HOHO_H/main/Loading_UI'))()"},
     {title = "OK HUB – Blox Fruits Script", image = "rbxassetid://124015766651987", text = "loadstring(game:HttpGet('https://raw.githubusercontent.com/fakekuri/Okhubhere/refs/heads/main/MainBloxFruit.lua'))()"},
-    {title = "Gravity Hub – Blox Fruits Script", image = "rbxassetid://124015766651987", text = "loadstring(game:HttpGet('https://raw.githubusercontent.com/Dev-GravityHub/BloxFruit/refs/heads/main/Main.lua'))()"},
     {title = "Quantum Hub - Blox Fruit's Script", image = "rbxassetid://124015766651987", text = "loadstring(game:HttpGet('https://raw.githubusercontent.com/flazhy/QuantumOnyx/refs/heads/main/QuantumOnyx.lua'))()"},
     {title = "Ego Hub - Blox Fruit's Script", image = "rbxassetid://124015766651987", text = "loadstring(game:HttpGet('https://pastefy.app/gU8wlEbc/raw'))()"},
     {title = "BLOX FRUITS Script No Key AUTO FARM", image = "rbxassetid://85953977761529", text = "loadstring(game:HttpGet('https://pastebin.com/raw/zfeGSTdE'))()"},
