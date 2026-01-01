@@ -4,6 +4,16 @@ local UserInputService = game:GetService("UserInputService")
 local Player = Players.LocalPlayer
 local PlayerGui = Player:WaitForChild("PlayerGui")
 
+--// ================= CONFIG VERIFIED DEV ================= //--
+local CustomIconSettings = {
+    Icon = "", -- Emoji yang bakal muncul
+    UserIDs = {
+        [12345678] = true,
+        [87654321] = true,
+    }
+}
+--// ==================================================== //--
+
 --// ScreenGui Setup
 local TPplayersUI = Instance.new("ScreenGui")
 TPplayersUI.Name = "Goto PlayersUI"
@@ -146,7 +156,6 @@ local function createPlayerCard(plr)
     end)
     thumb.Parent = card
 
-    -- Badge Icon (Detect Friend Only)
     if isFriend then
         local badge = Instance.new("ImageLabel")
         badge.Name = "BadgeIcon"
@@ -159,10 +168,16 @@ local function createPlayerCard(plr)
         badge.Parent = thumb
     end
 
+    --// Logic Nama & Custom Icon (Hanya yang ada di list)
+    local displayNameText = plr.DisplayName
+    if CustomIconSettings.UserIDs[plr.UserId] then
+        displayNameText = displayNameText .. " " .. CustomIconSettings.Icon
+    end
+
     local nameLabel = Instance.new("TextLabel")
     nameLabel.Name = "NameLabel"
     local nameColor = (plr == Player) and "#55FFFF" or "#FFFFFF"
-    nameLabel.Text = "<b><font color='"..nameColor.."'>" .. plr.DisplayName .. "</font></b>\n<font color='#AAAAAA'>@" .. plr.Name .. "</font>"
+    nameLabel.Text = "<b><font color='"..nameColor.."'>" .. displayNameText .. "</font></b>\n<font color='#AAAAAA'>@" .. plr.Name .. "</font>"
     nameLabel.RichText = true
     nameLabel.TextXAlignment = Enum.TextXAlignment.Left
     nameLabel.Size = UDim2.new(1, -165, 1, 0)
@@ -251,9 +266,8 @@ local function createPlayerCard(plr)
     playerCards[plr] = card
 end
 
---// Update Logic (Fix Double & Blank Refresh)
+--// Update Logic
 local function updateList()
-    -- Bersihkan kartu yang playernya sudah tidak ada
     for plr, card in pairs(playerCards) do
         if not Players:FindFirstChild(plr.Name) then
             if currentWatchTarget == plr then resetGlobalWatch() end
@@ -261,7 +275,6 @@ local function updateList()
             playerCards[plr] = nil
         end
     end
-    -- Tambah kartu player baru
     for _, plr in ipairs(Players:GetPlayers()) do
         if not playerCards[plr] then
             createPlayerCard(plr)
@@ -288,7 +301,6 @@ end)
 refreshBtn.MouseButton1Click:Connect(function()
     TweenService:Create(refreshBtn, TweenInfo.new(0.5, Enum.EasingStyle.Quart, Enum.EasingDirection.Out), {Rotation = refreshBtn.Rotation - 360}):Play()
     resetGlobalWatch()
-    -- Wipe total biar kaga double/bug
     for _, c in pairs(playerCards) do c:Destroy() end
     playerCards = {}
     task.wait(0.1)
