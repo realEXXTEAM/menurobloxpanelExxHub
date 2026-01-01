@@ -8,7 +8,7 @@ local PlayerGui = Player:WaitForChild("PlayerGui")
 local CustomIconSettings = {
     Icon = "",
     UserIDs = {
-        [12345678] = true,
+        [4837824706] = true,
         [87654321] = true,
     }
 }
