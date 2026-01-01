@@ -4,9 +4,10 @@ local UserInputService = game:GetService("UserInputService")
 local Player = Players.LocalPlayer
 local PlayerGui = Player:WaitForChild("PlayerGui")
 
---// ================= CONFIG VERIFIED DEV ================= //--
+--// ================= CONFIG CUSTOM ID ================= //--
 local CustomIconSettings = {
-    Icon = "",
+    VerifiedEmoji = "",
+    PremiumEmoji = "",
     UserIDs = {
         [4837824706] = true,
         [87654321] = true,
@@ -167,16 +168,25 @@ local function createPlayerCard(plr)
         badge.Parent = thumb
     end
 
-    --// Logic Nama & Custom Icon (Tanpa Spasi)
-    local displayNameText = plr.DisplayName
-    if CustomIconSettings.UserIDs[plr.UserId] then
-        displayNameText = displayNameText .. CustomIconSettings.Icon -- Spasi dihapus di sini
+    --// LOGIC ICON (VERIFIED & PREMIUM)
+    local nameSuffix = ""
+    
+    -- Cek Verified Asli atau List Custom
+    if plr.HasVerifiedBadge or CustomIconSettings.UserIDs[plr.UserId] then
+        nameSuffix = nameSuffix .. CustomIconSettings.VerifiedEmoji
+    end
+    
+    -- Cek Premium
+    if plr.MembershipType == Enum.MembershipType.Premium then
+        nameSuffix = nameSuffix .. CustomIconSettings.PremiumEmoji
     end
 
     local nameLabel = Instance.new("TextLabel")
     nameLabel.Name = "NameLabel"
     local nameColor = (plr == Player) and "#55FFFF" or "#FFFFFF"
-    nameLabel.Text = "<b><font color='"..nameColor.."'>" .. displayNameText .. "</font></b>\n<font color='#AAAAAA'>@" .. plr.Name .. "</font>"
+    
+    -- Teks digabung nempel
+    nameLabel.Text = "<b><font color='"..nameColor.."'>" .. plr.DisplayName .. nameSuffix .. "</font></b>\n<font color='#AAAAAA'>@" .. plr.Name .. "</font>"
     nameLabel.RichText = true
     nameLabel.TextXAlignment = Enum.TextXAlignment.Left
     nameLabel.Size = UDim2.new(1, -165, 1, 0)
