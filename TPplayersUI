@@ -6,7 +6,7 @@ local PlayerGui = Player:WaitForChild("PlayerGui")
 
 --// ================= CONFIG VERIFIED DEV ================= //--
 local CustomIconSettings = {
-    Icon = "", -- Emoji yang bakal muncul
+    Icon = "",
     UserIDs = {
         [12345678] = true,
         [87654321] = true,
