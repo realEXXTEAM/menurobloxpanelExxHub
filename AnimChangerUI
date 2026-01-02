@@ -1,6 +1,7 @@
 ---- FE ANIMATION BY CRAFTER ----
 local Players = game:GetService("Players")
 local TweenService = game:GetService("TweenService")
+local UserInputService = game:GetService("UserInputService")
 
 local Player = Players.LocalPlayer
 if not Player.Character or not Player.Character.Parent then
@@ -18,6 +19,7 @@ local currentEquippedPack = nil
 -- =================================================================
 -- ANIMATION LIST
 -- =================================================================
+local AnimPackList = {
 local AnimPackList = {
     ["(canceled) Sneaky"] = {
         Idle = "rbxassetid://1132473842",
@@ -118,7 +120,7 @@ local AnimPackList = {
         Swim = "rbxassetid://10921253142",
         SwimIdle = "rbxassetid://10921253767"
     },
-     ["(😂) Spam Emote Classic"] = {
+     ["(ðŸ˜‚) Spam Emote Classic"] = {
         Idle = "rbxassetid://507770818",
         Idle2 = "rbxassetid://507770818",
         Walk = "rbxassetid://507770239",
@@ -396,7 +398,7 @@ local AnimPackList = {
 }
 
 -- =================================================================
--- GUI SETUP (SAMA PERSIS KAYA ASLINYA)
+-- GUI SETUP
 -- =================================================================
 local AnimChangerUI = Instance.new("ScreenGui")
 AnimChangerUI.Name = "AnimChangerUI"
@@ -445,6 +447,7 @@ CloseBtn.BackgroundTransparency = 1
 CloseBtn.TextColor3 = Color3.fromRGB(255, 255, 255)
 CloseBtn.Font = Enum.Font.GothamBlack 
 CloseBtn.TextSize = 18
+CloseBtn.Modal = true -- MENCEGAH KAMERA GAME IKUT GERAK
 CloseBtn.Parent = MainFrame
 
 CloseBtn.MouseButton1Click:Connect(function() 
@@ -467,7 +470,9 @@ ScrollList.ScrollBarThickness = 3
 ScrollList.AutomaticCanvasSize = Enum.AutomaticSize.Y
 ScrollList.CanvasSize = UDim2.new(0, 0, 0, 0)
 ScrollList.Parent = ListContainer
-local UIListLayout = Instance.new("UIListLayout"); UIListLayout.Padding = UDim.new(0, 6); UIListLayout.SortOrder = Enum.SortOrder.Name; UIListLayout.Parent = ScrollList; UIListLayout.HorizontalAlignment = Enum.HorizontalAlignment.Center
+local UIListLayout = Instance.new("UIListLayout");
+UIListLayout.Padding = UDim.new(0, 6); UIListLayout.SortOrder = Enum.SortOrder.Name; UIListLayout.Parent = ScrollList;
+UIListLayout.HorizontalAlignment = Enum.HorizontalAlignment.Center
 
 -- Right Side (Preview Area)
 local RightContainer = Instance.new("Frame")
@@ -476,9 +481,7 @@ RightContainer.Position = UDim2.new(0, 180, 0, 45)
 RightContainer.BackgroundTransparency = 1
 RightContainer.Parent = MainFrame
 
--- [[ INI BAGIAN YANG GW UBAH BIAR BACKGROUND MUNCUL ]] --
-
--- 1. ImageLabel (Background) - Ditaruh Paling Belakang (ZIndex 1)
+-- BACKGROUND & PREVIEW
 local PreviewBackground = Instance.new("ImageLabel")
 PreviewBackground.Name = "PreviewBackground"
 PreviewBackground.Size = UDim2.new(1, 0, 0, 160)
@@ -488,17 +491,18 @@ PreviewBackground.Image = BACKGROUND_IMAGE_ID
 PreviewBackground.ScaleType = Enum.ScaleType.Crop
 PreviewBackground.ZIndex = 1 
 PreviewBackground.Parent = RightContainer
-local BGCorner = Instance.new("UICorner"); BGCorner.CornerRadius = UDim.new(0, 10); BGCorner.Parent = PreviewBackground
+local BGCorner = Instance.new("UICorner");
+BGCorner.CornerRadius = UDim.new(0, 10); BGCorner.Parent = PreviewBackground
 
--- 2. ViewportFrame (Karakter) - Ditaruh Depan (ZIndex 2) tapi TRANSPARAN
 local PreviewFrame = Instance.new("ViewportFrame")
 PreviewFrame.Size = UDim2.new(1, 0, 0, 160)
 PreviewFrame.Position = UDim2.new(0, 0, 0, 0)
-PreviewFrame.BackgroundTransparency = 1 -- << INI KUNCINYA (Dulu script lu warnanya hitam, jadi nutupin)
+PreviewFrame.BackgroundTransparency = 1 
 PreviewFrame.BorderSizePixel = 0
 PreviewFrame.ZIndex = 2
 PreviewFrame.Parent = RightContainer
-local WorldModel = Instance.new("WorldModel"); WorldModel.Parent = PreviewFrame
+local WorldModel = Instance.new("WorldModel");
+WorldModel.Parent = PreviewFrame
 
 -- Instruction
 local SelectPromptLabel = Instance.new("TextLabel")
@@ -520,7 +524,9 @@ PreviewActionContainer.Position = UDim2.new(0, 0, 0, 165)
 PreviewActionContainer.BackgroundTransparency = 1
 PreviewActionContainer.Visible = false 
 PreviewActionContainer.Parent = RightContainer
-local UIGridLayout = Instance.new("UIGridLayout"); UIGridLayout.CellSize = UDim2.new(0, 60, 0, 18); UIGridLayout.CellPadding = UDim2.new(0, 5, 0, 5); UIGridLayout.HorizontalAlignment = Enum.HorizontalAlignment.Center; UIGridLayout.Parent = PreviewActionContainer
+local UIGridLayout = Instance.new("UIGridLayout");
+UIGridLayout.CellSize = UDim2.new(0, 60, 0, 18); UIGridLayout.CellPadding = UDim2.new(0, 5, 0, 5); UIGridLayout.HorizontalAlignment = Enum.HorizontalAlignment.Center;
+UIGridLayout.Parent = PreviewActionContainer
 
 local EquipBtn = Instance.new("TextButton")
 EquipBtn.Text = "APPLY PACK"
@@ -532,13 +538,19 @@ EquipBtn.Font = Enum.Font.GothamBold
 EquipBtn.TextSize = 14
 EquipBtn.Visible = false 
 EquipBtn.Parent = RightContainer
-local EquipCorner = Instance.new("UICorner"); EquipCorner.Parent = EquipBtn
+local EquipCorner = Instance.new("UICorner");
+EquipCorner.Parent = EquipBtn
 
 -- Variables
 local currentSelectedPack = nil
 local currentPreviewAnimator = nil
 local currentPreviewTrack = nil
 local currentActiveBtn = nil
+
+-- [[ ROTATION VARIABLES ]]
+local currentCamAngle = 0
+local isDragging = false
+local lastMouseX = 0
 
 -- =================================================================
 -- LOGIC APPLY
@@ -574,13 +586,15 @@ local function ApplyPackToCharacter(char, packName)
 		if idleObject then
 			local idle1Id = packData.Idle and packData.Idle:gsub(" ", "") or ""
 			local anim1 = idleObject:FindFirstChild("Animation1") 
-			if not anim1 then anim1 = Instance.new("Animation", idleObject); anim1.Name = "Animation1" end
+			if not anim1 then anim1 = Instance.new("Animation", idleObject);
+			anim1.Name = "Animation1" end
 			anim1.AnimationId = idle1Id
 
 			local idle2Id = packData.Idle2 and packData.Idle2:gsub(" ", "") or "" 
 			local anim2 = idleObject:FindFirstChild("Animation2")
 			if idle2Id ~= "" then
-				if not anim2 then anim2 = Instance.new("Animation", idleObject); anim2.Name = "Animation2" end
+				if not anim2 then anim2 = Instance.new("Animation", idleObject);
+				anim2.Name = "Animation2" end
 				anim2.AnimationId = idle2Id
 			else
 				if anim2 then anim2:Destroy() end
@@ -602,19 +616,66 @@ local function ApplyPackToCharacter(char, packName)
 end
 
 -- =================================================================
--- PREVIEW LOGIC
+-- PREVIEW LOGIC (FIXED: FRONT FACING)
 -- =================================================================
+
 local function SetupPreviewCamera(targetPart)
-	local Camera = Instance.new("Camera")
-	Camera.CFrame = CFrame.new(targetPart.Position + (targetPart.CFrame.LookVector * 6) + Vector3.new(0, 0.5, 0), targetPart.Position)
-	PreviewFrame.CurrentCamera = Camera
-	PreviewFrame.CurrentCamera.Parent = PreviewFrame
+	if not targetPart then return end
+	
+	if not PreviewFrame.CurrentCamera then
+		local Camera = Instance.new("Camera")
+		Camera.Parent = PreviewFrame
+		PreviewFrame.CurrentCamera = Camera
+	end
+	
+	local Cam = PreviewFrame.CurrentCamera
+	local centerPos = targetPart.Position
+	local distance = 6
+	local height = 0.5
+	
+	-- EDIT: Tambah math.pi agar kamera mulai dari DEPAN karakter
+	local rotationCFrame = CFrame.Angles(0, math.pi + currentCamAngle, 0)
+	local offsetVector = Vector3.new(0, height, distance)
+	local finalCamPos = centerPos + (rotationCFrame * offsetVector)
+	
+	Cam.CFrame = CFrame.new(finalCamPos, centerPos)
 end
+
+-- Input Handling Drag (FIXED DIRECTION)
+PreviewFrame.InputBegan:Connect(function(input)
+	if input.UserInputType == Enum.UserInputType.MouseButton1 or input.UserInputType == Enum.UserInputType.Touch then
+		isDragging = true
+		lastMouseX = input.Position.X
+	end
+end)
+
+UserInputService.InputEnded:Connect(function(input)
+	if input.UserInputType == Enum.UserInputType.MouseButton1 or input.UserInputType == Enum.UserInputType.Touch then
+		isDragging = false
+	end
+end)
+
+UserInputService.InputChanged:Connect(function(input)
+	if isDragging and (input.UserInputType == Enum.UserInputType.MouseMovement or input.UserInputType == Enum.UserInputType.Touch) then
+		local delta = input.Position.X - lastMouseX
+		lastMouseX = input.Position.X
+		
+		-- EDIT: Pakai (-) delta agar arah putar natural (Geser kanan = Putar kanan)
+		currentCamAngle = currentCamAngle - (delta * 0.015)
+		
+		local previewChar = WorldModel:FindFirstChildOfClass("Model")
+		if previewChar and previewChar.PrimaryPart then
+			SetupPreviewCamera(previewChar.PrimaryPart)
+		end
+	end
+end)
+
 
 local function InitialPreviewSetup()
 	for _, child in pairs(WorldModel:GetChildren()) do child:Destroy() end
 	currentPreviewAnimator = nil
 	currentPreviewTrack = nil
+	currentCamAngle = 0 
 
 	if Player.Character then
 		Player.Character.Archivable = true
@@ -656,7 +717,6 @@ local function PlayPreviewAction(actionName)
 	currentPreviewTrack.Looped = true
 	currentPreviewTrack:Play()
 
-	-- Fix Rotasi Renang (Fitur ini gw simpen karena penting biar ga aneh)
 	local previewChar = WorldModel:FindFirstChildOfClass("Model")
 	if previewChar and previewChar.PrimaryPart then
 		if actionName == "Swim" or actionName == "SwimIdle" then
@@ -664,7 +724,7 @@ local function PlayPreviewAction(actionName)
 		else
 			previewChar:SetPrimaryPartCFrame(CFrame.new(0, 0, 0))
 		end
-		SetupPreviewCamera(previewChar.PrimaryPart) -- Reset camera
+		SetupPreviewCamera(previewChar.PrimaryPart) 
 	end
 end
 
@@ -672,6 +732,7 @@ local function UpdatePreviewCharacter(packName)
 	currentSelectedPack = packName
 	currentPreviewAnimator = nil
 	currentPreviewTrack = nil
+	currentCamAngle = 0 
 
 	for _, child in pairs(WorldModel:GetChildren()) do child:Destroy() end
 
@@ -706,7 +767,8 @@ for _, actionName in ipairs(actions) do
 	ActionBtn.Font = Enum.Font.GothamSemibold
 	ActionBtn.TextSize = 10
 	ActionBtn.Parent = PreviewActionContainer
-	local AC = Instance.new("UICorner"); AC.CornerRadius = UDim.new(0,5); AC.Parent = ActionBtn
+	local AC = Instance.new("UICorner");
+	AC.CornerRadius = UDim.new(0,5); AC.Parent = ActionBtn
 
 	ActionBtn.MouseButton1Click:Connect(function()
 		if not currentSelectedPack then return end 
@@ -750,7 +812,9 @@ for _, packName in ipairs(packNames) do
 	Btn.TextSize = 12
 	Btn.Parent = ScrollList
 	local BtnCorner = Instance.new("UICorner"); BtnCorner.Parent = Btn
-	local Stroke = Instance.new("UIStroke"); Stroke.Name = "SelectionStroke"; Stroke.ApplyStrokeMode = Enum.ApplyStrokeMode.Border; Stroke.Color = Color3.fromRGB(50, 150, 255); Stroke.Thickness = 0; Stroke.Parent = Btn
+	local Stroke = Instance.new("UIStroke"); Stroke.Name = "SelectionStroke";
+	Stroke.ApplyStrokeMode = Enum.ApplyStrokeMode.Border; Stroke.Color = Color3.fromRGB(50, 150, 255); Stroke.Thickness = 0;
+	Stroke.Parent = Btn
 
 	Btn.MouseButton1Click:Connect(function()
 		if currentActiveBtn then
@@ -767,12 +831,46 @@ for _, packName in ipairs(packNames) do
 	end)
 end
 
--- AUTO-LOAD
+-- =================================================================
+-- AUTO-LOAD & R15 CHECK
+-- =================================================================
+local function UpdateListByRig(char)
+	local hum = char:WaitForChild("Humanoid", 10)
+	if not hum then return end
+	
+	local isR15 = (hum.RigType == Enum.HumanoidRigType.R15)
+	
+	for _, child in pairs(ScrollList:GetChildren()) do
+		if child:IsA("TextButton") then
+			child.Visible = isR15
+		end
+	end
+	
+	if not isR15 then
+		SelectPromptLabel.Visible = true
+		SelectPromptLabel.Text = "⚠️ R6 DETECTED (Script only supports R15) ⚠️"
+		SelectPromptLabel.TextColor3 = Color3.fromRGB(255, 100, 100)
+		PreviewActionContainer.Visible = false
+		EquipBtn.Visible = false
+	else
+		if not currentSelectedPack then
+			SelectPromptLabel.Visible = true
+			SelectPromptLabel.Text = "Please select an Animation Pack from the list on the left."
+			SelectPromptLabel.TextColor3 = Color3.fromRGB(150, 150, 160)
+		end
+	end
+end
+
 Player.CharacterAdded:Connect(function(newChar)
+	UpdateListByRig(newChar)
 	if currentEquippedPack then
 		task.wait(0.5) 
 		ApplyPackToCharacter(newChar, currentEquippedPack)
 	end
 end)
+
+if Player.Character then
+	UpdateListByRig(Player.Character)
+end
 
 InitialPreviewSetup()
