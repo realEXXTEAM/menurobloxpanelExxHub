@@ -20,7 +20,6 @@ local currentEquippedPack = nil
 -- ANIMATION LIST
 -- =================================================================
 local AnimPackList = {
-local AnimPackList = {
     ["(canceled) Sneaky"] = {
         Idle = "rbxassetid://1132473842",
         Idle2 = "rbxassetid://1132477671",
