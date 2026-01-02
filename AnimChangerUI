@@ -185,14 +185,14 @@ local AnimPackList = {
         Swim = "rbxassetid://18537389531",
         SwimIdle = "rbxassetid://18537387180"
     },
-     ["Catwalk Clam by e.l.f"] = {
+    ["Catwalk Clam by e.l.f"] = {
         Idle = "rbxassetid://133806214992291",
         Idle2 = "rbxassetid://94970088341563",
         Walk = "rbxassetid://109168724482748",
         Run = "rbxassetid://81024476153754",
         Jump = "rbxassetid://116936326516985",
         Fall = "rbxassetid://92294537340807",
-        Climb = "rbxassetid://18537380791",
+        Climb = "rbxassetid://119377220967554",
         Swim = "rbxassetid://134591743181628",
         SwimIdle = "rbxassetid://98854111361360"
     },
