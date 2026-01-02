@@ -1,4 +1,3 @@
-print("1.2")
 local TweenService = game:GetService("TweenService")
 local Player = game.Players.LocalPlayer
 
@@ -90,7 +89,7 @@ local menuItems = {
 	{Text="Goto Players", Icon="rbxassetid://80278360213440"},
     {Text="AnimChanger", Icon="rbxassetid://115198205982652"},
 	{Text="Info Server", Icon="rbxassetid://18633720097"},
-    {Text="ESP Player", Icon="rbxassetid://6031075931"},
+    {Text="ESP Players", Icon="rbxassetid://6031075931"},
 }
 
 local opened = false
