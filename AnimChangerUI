@@ -339,15 +339,15 @@ local AnimPackList = {
         SwimIdle = "rbxassetid://10921325443"
     },
     ["Toy"] = {
-        Idle = "rbxassetid://10921071918",
-        Idle2 = "rbxassetid://10921072875",
-        Walk = "rbxassetid://10921082452",
-        Run = "rbxassetid://10921076136",
-        Jump = "rbxassetid://10921078135",
-        Fall = "rbxassetid://10921077030",
-        Climb = "rbxassetid://10921070953",
-        Swim = "rbxassetid://10921079380",
-        SwimIdle = "rbxassetid://10921081059"
+        Idle = "rbxassetid://10921301576",
+        Idle2 = "rbxassetid://10921302207",
+        Walk = "rbxassetid://10921312010",
+        Run = "rbxassetid://10921306285",
+        Jump = "rbxassetid://10921308158",
+        Fall = "rbxassetid://10921307241",
+        Climb = "rbxassetid://10921300839",
+        Swim = "rbxassetid://10921309319",
+        SwimIdle = "rbxassetid://10921310341"
     },
     ["Leviathan"] = {
         Idle = "rbxassetid://10921132962",
