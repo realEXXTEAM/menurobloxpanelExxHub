@@ -328,8 +328,8 @@ local AnimPackList = {
         SwimIdle = "rbxassetid://10921151661"
     },
     ["Vampire"] = {
-        Idle = "rbxassetid://10921314188",
-        Idle2 = "rbxassetid://10921315373",
+        Idle = "rbxassetid://10921315373",
+        Idle2 = "rbxassetid://10921316709",
         Walk = "rbxassetid://10921326949",
         Run = "rbxassetid://10921320299",
         Jump = "rbxassetid://10921322186",
