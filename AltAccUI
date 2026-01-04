@@ -5,6 +5,7 @@ local TweenService = game:GetService("TweenService")
 local AltAccounts = {
     {user = "BlastDancerVenom2009", pass = "BLOXGENfep7x"}, 
     {user = "LukeBl0ckAqua", pass = "Generated$5326979"},
+    {user = "EpicGhoulJul93", pass = "FsoBlox8196"},
 }
 
 local AdminMessages = {
