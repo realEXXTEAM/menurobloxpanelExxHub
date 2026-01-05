@@ -891,7 +891,7 @@ local function UpdateListByRig(char)
 	
 	if not isR15 then
 		SelectPromptLabel.Visible = true
-		SelectPromptLabel.Text = "⚠️ R6 DETECTED (Script only supports R15) ⚠️"
+		SelectPromptLabel.Text = "R6 DETECTED (Script only supports R15)"
 		SelectPromptLabel.TextColor3 = Color3.fromRGB(255, 100, 100)
 		PreviewActionContainer.Visible = false
 		EquipBtn.Visible = false
