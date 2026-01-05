@@ -9,8 +9,16 @@ local AltAccounts = {
 }
 
 local AdminMessages = {
-    {judul = "EXX TEAM", isi = "Sooner or later, log in as soon as possible. If this account is inaccessible, it means someone else has taken it!"},
-    {judul = "EXX TEAM", isi = "Max upload 10"},
+    {
+        judul = "EXX TEAM", 
+        isi = "Sooner or later, log in as soon as possible. If this account is inaccessible, it means someone else has taken it!",
+        imgId = "rbxassetid://114540365994851" 
+    },
+    {
+        judul = "EXX TEAM", 
+        isi = "Max upload 10",
+        imgId = ""
+    },
 }
 
 -- SETUP SCREEN GUI
@@ -18,7 +26,6 @@ local FreeAltAccountUI = Instance.new("ScreenGui")
 FreeAltAccountUI.Name = "FreeAltAccountUI"
 FreeAltAccountUI.IgnoreGuiInset = true
 FreeAltAccountUI.ResetOnSpawn = false
-FreeAltAccountUI.Enabled = true
 FreeAltAccountUI.Parent = Player:WaitForChild("PlayerGui")
 
 local function animateContent(content)
@@ -34,8 +41,6 @@ local MainFrame = Instance.new("Frame")
 MainFrame.Size = UDim2.new(0, 320, 0, 240)
 MainFrame.Position = UDim2.new(0.5, -160, 0.5, -120)
 MainFrame.BackgroundColor3 = Color3.fromRGB(15, 15, 15)
-MainFrame.BackgroundTransparency = 0.1
-MainFrame.BorderSizePixel = 0
 MainFrame.Parent = FreeAltAccountUI
 Instance.new("UICorner", MainFrame).CornerRadius = UDim.new(0, 10)
 
@@ -49,13 +54,14 @@ local Title = Instance.new("TextLabel")
 Title.Size = UDim2.new(1, -110, 1, 0)
 Title.Position = UDim2.new(0, 15, 0, 0)
 Title.BackgroundTransparency = 1
-Title.Text = "ALT GENERATOR ( 2 available)"
+Title.Text = "ALT GENERATOR ("..#AltAccounts.." available)"
 Title.TextColor3 = Color3.fromRGB(255, 255, 255)
 Title.Font = Enum.Font.GothamBold
 Title.TextSize = 14
 Title.TextXAlignment = Enum.TextXAlignment.Left
 Title.Parent = Headbar
 
+-- TOMBOL CLOSE
 local CloseBtn = Instance.new("TextButton")
 CloseBtn.Size = UDim2.new(0, 35, 0, 35)
 CloseBtn.Position = UDim2.new(1, -40, 0, 0)
@@ -67,15 +73,14 @@ CloseBtn.TextSize = 18
 CloseBtn.Parent = Headbar
 CloseBtn.MouseButton1Click:Connect(function() FreeAltAccountUI:Destroy() end)
 
--- NAVIGASI EMAIL (Update Posisi: Samping Kiri Tombol X)
 local EmailNav = Instance.new("ImageButton")
 EmailNav.Size = UDim2.new(0, 22, 0, 22)
 EmailNav.Position = UDim2.new(1, -70, 0, 6)
-EmailNav.BackgroundTransparency = 1
 EmailNav.Image = "rbxassetid://80999006490397"
+EmailNav.BackgroundTransparency = 1
 EmailNav.Parent = Headbar
 
--- CONTAINER
+-- CONTAINER & PAGES
 local Container = Instance.new("Frame")
 Container.Size = UDim2.new(1, 0, 1, -40)
 Container.Position = UDim2.new(0, 0, 0, 40)
@@ -96,14 +101,13 @@ local PageList = createPage("List")
 local PageDetail = createPage("Detail")
 local PageEmail = createPage("Email")
 
--- SYNC CANVAS FUNCTION
 local function syncCanvas(scrollFrame, layout)
     layout:GetPropertyChangedSignal("AbsoluteContentSize"):Connect(function()
         scrollFrame.CanvasSize = UDim2.new(0, 0, 0, layout.AbsoluteContentSize.Y + 10)
     end)
 end
 
--- --- PAGE LIST AKUN ---
+-- --- PAGE LIST ---
 local ScrollList = Instance.new("ScrollingFrame")
 ScrollList.Size = UDim2.new(1, -20, 1, -10)
 ScrollList.Position = UDim2.new(0, 10, 0, 0)
@@ -118,28 +122,16 @@ UIGrid.Parent = ScrollList
 syncCanvas(ScrollList, UIGrid)
 
 -- --- PAGE DETAIL ---
-local CharBg = Instance.new("Frame")
-CharBg.Size = UDim2.new(0, 110, 0, 150)
-CharBg.Position = UDim2.new(0, 15, 0, 15)
-CharBg.BackgroundColor3 = Color3.fromRGB(0, 0, 0)
-CharBg.Parent = PageDetail
-Instance.new("UICorner", CharBg)
-
-local DetImg = Instance.new("ImageLabel")
-DetImg.Size = UDim2.new(1, 0, 1, 0)
-DetImg.BackgroundTransparency = 1
-DetImg.Parent = CharBg
-
 local function createInfoRow(labelText, y)
     local label = Instance.new("TextLabel")
     label.Size = UDim2.new(0, 160, 0, 15)
     label.Position = UDim2.new(0, 135, 0, y - 18)
-    label.BackgroundTransparency = 1
     label.Text = labelText
     label.TextColor3 = Color3.fromRGB(180, 180, 180)
     label.Font = Enum.Font.GothamBold
     label.TextSize = 10
     label.TextXAlignment = Enum.TextXAlignment.Left
+    label.BackgroundTransparency = 1
     label.Parent = PageDetail
 
     local r = Instance.new("Frame")
@@ -152,10 +144,10 @@ local function createInfoRow(labelText, y)
     local t = Instance.new("TextLabel")
     t.Size = UDim2.new(1, -35, 1, 0)
     t.Position = UDim2.new(0, 10, 0, 0)
-    t.BackgroundTransparency = 1
     t.TextColor3 = Color3.fromRGB(255, 255, 255)
-    t.TextSize = 11
-    t.Font = Enum.Font.GothamMedium
+    t.TextSize = 12
+    t.TextTruncate = Enum.TextTruncate.AtEnd -- Supaya tidak mengecil tapi terpotong ...
+    t.BackgroundTransparency = 1
     t.TextXAlignment = Enum.TextXAlignment.Left
     t.Parent = r
 
@@ -169,6 +161,18 @@ local function createInfoRow(labelText, y)
     return t, b
 end
 
+local CharBg = Instance.new("Frame")
+CharBg.Size = UDim2.new(0, 110, 0, 150)
+CharBg.Position = UDim2.new(0, 15, 0, 15)
+CharBg.BackgroundColor3 = Color3.fromRGB(0, 0, 0)
+CharBg.Parent = PageDetail
+Instance.new("UICorner", CharBg)
+
+local DetImg = Instance.new("ImageLabel")
+DetImg.Size = UDim2.new(1, 0, 1, 0)
+DetImg.BackgroundTransparency = 1
+DetImg.Parent = CharBg
+
 local uT, uB = createInfoRow("USERNAME", 30)
 local pT, pB = createInfoRow("PASSWORD", 85)
 
@@ -178,7 +182,11 @@ BackDet.Position = UDim2.new(0, 135, 0, 135)
 BackDet.Text = "BACK"
 BackDet.Parent = PageDetail
 Instance.new("UICorner", BackDet)
-BackDet.MouseButton1Click:Connect(function() PageDetail.Visible = false PageList.Visible = true animateContent(PageList) end)
+BackDet.MouseButton1Click:Connect(function() 
+    PageDetail.Visible = false 
+    PageList.Visible = true 
+    animateContent(PageList) 
+end)
 
 -- --- PAGE EMAIL ---
 local EmailScroll = Instance.new("ScrollingFrame")
@@ -187,6 +195,7 @@ EmailScroll.Position = UDim2.new(0, 10, 0, 5)
 EmailScroll.BackgroundTransparency = 1
 EmailScroll.ScrollBarThickness = 2
 EmailScroll.Parent = PageEmail
+
 local EmailLayout = Instance.new("UIListLayout")
 EmailLayout.Padding = UDim.new(0, 8)
 EmailLayout.Parent = EmailScroll
@@ -194,29 +203,44 @@ syncCanvas(EmailScroll, EmailLayout)
 
 for _, msg in pairs(AdminMessages) do
     local m = Instance.new("Frame")
-    m.Size = UDim2.new(1, 0, 0, 60)
+    m.Size = UDim2.new(1, 0, 0, 110) 
     m.BackgroundColor3 = Color3.fromRGB(40, 40, 40)
     m.Parent = EmailScroll
     Instance.new("UICorner", m)
+
     local t = Instance.new("TextLabel")
     t.Size = UDim2.new(1, -10, 0, 25)
     t.Position = UDim2.new(0, 10, 0, 5)
     t.Text = msg.judul
     t.TextColor3 = Color3.fromRGB(255, 215, 0)
-    t.BackgroundTransparency = 1
+    t.TextSize = 16 
     t.Font = Enum.Font.GothamBold
     t.TextXAlignment = Enum.TextXAlignment.Left
+    t.TextYAlignment = Enum.TextYAlignment.Top 
+    t.BackgroundTransparency = 1
     t.Parent = m
+
     local c = Instance.new("TextLabel")
-    c.Size = UDim2.new(1, -20, 0, 30)
-    c.Position = UDim2.new(0, 10, 0, 25)
+    c.Size = UDim2.new(0.6, 0, 0, 70)
+    c.Position = UDim2.new(0, 10, 0, 30)
     c.Text = msg.isi
     c.TextColor3 = Color3.fromRGB(255, 255, 255)
-    c.BackgroundTransparency = 1
-    c.TextSize = 10
+    c.TextSize = 12
     c.TextWrapped = true
     c.TextXAlignment = Enum.TextXAlignment.Left
+    c.TextYAlignment = Enum.TextYAlignment.Top 
+    c.BackgroundTransparency = 1
     c.Parent = m
+
+    if msg.imgId and msg.imgId ~= "" then
+        local img = Instance.new("ImageLabel")
+        img.Size = UDim2.new(0, 85, 0, 85)
+        img.Position = UDim2.new(1, -95, 0, 10)
+        img.Image = msg.imgId
+        img.BackgroundColor3 = Color3.fromRGB(20, 20, 20)
+        img.Parent = m
+        Instance.new("UICorner", img)
+    end
 end
 
 local BackEm = Instance.new("TextButton")
@@ -226,9 +250,9 @@ BackEm.Text = "BACK"
 BackEm.Parent = PageEmail
 Instance.new("UICorner", BackEm)
 
--- --- LOGIC NAVIGASI (Update Title) ---
+-- --- NAV LOGIC ---
 EmailNav.MouseButton1Click:Connect(function()
-    Title.Text = "EMAIL" -- Ganti Title
+    Title.Text = "EMAIL"
     EmailNav.Visible = false
     PageList.Visible = false 
     PageDetail.Visible = false
@@ -237,25 +261,27 @@ EmailNav.MouseButton1Click:Connect(function()
 end)
 
 BackEm.MouseButton1Click:Connect(function() 
-    Title.Text = "ALT GENERATOR" -- Balikin Title
+    Title.Text = "ALT GENERATOR"
     EmailNav.Visible = true
     PageEmail.Visible = false 
     PageList.Visible = true 
     animateContent(PageList) 
 end)
 
--- --- GENERATE LIST AKUN ---
+-- --- GENERATE ACCOUNT LIST ---
 for _, data in pairs(AltAccounts) do
     local itm = Instance.new("TextButton")
     itm.BackgroundColor3 = Color3.fromRGB(30, 30, 30)
     itm.Text = ""
     itm.Parent = ScrollList
     Instance.new("UICorner", itm)
+
     local img = Instance.new("ImageLabel")
     img.Size = UDim2.new(1, 0, 0.8, 0)
     img.BackgroundTransparency = 1
     img.Image = "https://www.roblox.com/headshot-thumbnail/image?width=150&height=150&format=png&username=" .. data.user
     img.Parent = itm
+
     local n = Instance.new("TextLabel")
     n.Size = UDim2.new(1, 0, 0.2, 0)
     n.Position = UDim2.new(0,0,0.8,0)
@@ -270,189 +296,19 @@ for _, data in pairs(AltAccounts) do
         PageList.Visible = false
         PageDetail.Visible = true
         animateContent(PageDetail)
-        
         DetImg.Image = "https://www.roblox.com/avatar-thumbnail/image?width=420&height=420&format=png&username=" .. data.user
-        
         uT.Text = data.user
         pT.Text = data.pass
-        uB.MouseButton1Click:Once(function() setclipboard(data.user) end)
-        pB.MouseButton1Click:Once(function() setclipboard(data.pass) end)
-    end)
-end
-
-PageList.Visible = true
-animateContent(PageList)
-ScrollList.Position = UDim2.new(0, 10, 0, 0)
-ScrollList.BackgroundTransparency = 1
-ScrollList.ScrollBarThickness = 2
-ScrollList.Parent = PageList
-
-local UIGrid = Instance.new("UIGridLayout")
-UIGrid.CellSize = UDim2.new(0, 90, 0, 110)
-UIGrid.HorizontalAlignment = Enum.HorizontalAlignment.Center
-UIGrid.Parent = ScrollList
-syncCanvas(ScrollList, UIGrid)
-
--- --- PAGE DETAIL ---
-local CharBg = Instance.new("Frame")
-CharBg.Size = UDim2.new(0, 110, 0, 150)
-CharBg.Position = UDim2.new(0, 15, 0, 15)
-CharBg.BackgroundColor3 = Color3.fromRGB(0, 0, 0)
-CharBg.Parent = PageDetail
-Instance.new("UICorner", CharBg)
-
-local DetImg = Instance.new("ImageLabel")
-DetImg.Size = UDim2.new(1, 0, 1, 0)
-DetImg.BackgroundTransparency = 1
-DetImg.Parent = CharBg
-
-local function createInfoRow(labelText, y)
-    local label = Instance.new("TextLabel")
-    label.Size = UDim2.new(0, 160, 0, 15)
-    label.Position = UDim2.new(0, 135, 0, y - 18)
-    label.BackgroundTransparency = 1
-    label.Text = labelText
-    label.TextColor3 = Color3.fromRGB(180, 180, 180)
-    label.Font = Enum.Font.GothamBold
-    label.TextSize = 10
-    label.TextXAlignment = Enum.TextXAlignment.Left
-    label.Parent = PageDetail
-
-    local r = Instance.new("Frame")
-    r.Size = UDim2.new(0, 160, 0, 35)
-    r.Position = UDim2.new(0, 135, 0, y)
-    r.BackgroundColor3 = Color3.fromRGB(30, 30, 30)
-    r.Parent = PageDetail
-    Instance.new("UICorner", r)
-
-    local t = Instance.new("TextLabel")
-    t.Size = UDim2.new(1, -35, 1, 0)
-    t.Position = UDim2.new(0, 10, 0, 0)
-    t.BackgroundTransparency = 1
-    t.TextColor3 = Color3.fromRGB(255, 255, 255)
-    t.TextSize = 11
-    t.Font = Enum.Font.GothamMedium
-    t.TextXAlignment = Enum.TextXAlignment.Left
-    t.Parent = r
-
-    local b = Instance.new("ImageButton")
-    b.Size = UDim2.new(0, 20, 0, 20)
-    b.Position = UDim2.new(1, -25, 0.5, -10)
-    b.Image = "rbxassetid://90434151822042"
-    b.BackgroundTransparency = 1
-    b.Parent = r
-    
-    return t, b
-end
-
-local uT, uB = createInfoRow("USERNAME", 30)
-local pT, pB = createInfoRow("PASSWORD", 85)
-
-local BackDet = Instance.new("TextButton")
-BackDet.Size = UDim2.new(0, 160, 0, 30)
-BackDet.Position = UDim2.new(0, 135, 0, 135)
-BackDet.Text = "BACK"
-BackDet.Parent = PageDetail
-Instance.new("UICorner", BackDet)
-BackDet.MouseButton1Click:Connect(function() PageDetail.Visible = false PageList.Visible = true animateContent(PageList) end)
-
--- --- PAGE EMAIL ---
-local EmailScroll = Instance.new("ScrollingFrame")
-EmailScroll.Size = UDim2.new(1, -20, 1, -60)
-EmailScroll.Position = UDim2.new(0, 10, 0, 5)
-EmailScroll.BackgroundTransparency = 1
-EmailScroll.ScrollBarThickness = 2
-EmailScroll.Parent = PageEmail
-local EmailLayout = Instance.new("UIListLayout")
-EmailLayout.Padding = UDim.new(0, 8)
-EmailLayout.Parent = EmailScroll
-syncCanvas(EmailScroll, EmailLayout)
-
-for _, msg in pairs(AdminMessages) do
-    local m = Instance.new("Frame")
-    m.Size = UDim2.new(1, 0, 0, 60)
-    m.BackgroundColor3 = Color3.fromRGB(40, 40, 40)
-    m.Parent = EmailScroll
-    Instance.new("UICorner", m)
-    local t = Instance.new("TextLabel")
-    t.Size = UDim2.new(1, -10, 0, 25)
-    t.Position = UDim2.new(0, 10, 0, 5)
-    t.Text = msg.judul
-    t.TextColor3 = Color3.fromRGB(255, 215, 0)
-    t.BackgroundTransparency = 1
-    t.Font = Enum.Font.GothamBold
-    t.TextXAlignment = Enum.TextXAlignment.Left
-    t.Parent = m
-    local c = Instance.new("TextLabel")
-    c.Size = UDim2.new(1, -20, 0, 30)
-    c.Position = UDim2.new(0, 10, 0, 25)
-    c.Text = msg.isi
-    c.TextColor3 = Color3.fromRGB(255, 255, 255)
-    c.BackgroundTransparency = 1
-    c.TextSize = 10
-    c.TextWrapped = true
-    c.TextXAlignment = Enum.TextXAlignment.Left
-    c.Parent = m
-end
-
-local BackEm = Instance.new("TextButton")
-BackEm.Size = UDim2.new(0, 100, 0, 30)
-BackEm.Position = UDim2.new(0.5, -50, 1, -35)
-BackEm.Text = "BACK"
-BackEm.Parent = PageEmail
-Instance.new("UICorner", BackEm)
-
--- --- LOGIC NAVIGASI (Update Title) ---
-EmailNav.MouseButton1Click:Connect(function()
-    Title.Text = "EMAIL" -- Ganti Title
-    EmailNav.Visible = false
-    PageList.Visible = false 
-    PageDetail.Visible = false
-    PageEmail.Visible = true
-    animateContent(PageEmail)
-end)
-
-BackEm.MouseButton1Click:Connect(function() 
-    Title.Text = "ALT GENERATOR" -- Balikin Title
-    EmailNav.Visible = true
-    PageEmail.Visible = false 
-    PageList.Visible = true 
-    animateContent(PageList) 
-end)
-
--- --- GENERATE LIST AKUN ---
-for _, data in pairs(AltAccounts) do
-    local itm = Instance.new("TextButton")
-    itm.BackgroundColor3 = Color3.fromRGB(30, 30, 30)
-    itm.Text = ""
-    itm.Parent = ScrollList
-    Instance.new("UICorner", itm)
-    local img = Instance.new("ImageLabel")
-    img.Size = UDim2.new(1, 0, 0.8, 0)
-    img.BackgroundTransparency = 1
-    img.Image = "https://www.roblox.com/headshot-thumbnail/image?width=150&height=150&format=png&username=" .. data.user
-    img.Parent = itm
-    local n = Instance.new("TextLabel")
-    n.Size = UDim2.new(1, 0, 0.2, 0)
-    n.Position = UDim2.new(0,0,0.8,0)
-    n.Text = "@"..data.user
-    n.TextColor3 = Color3.fromRGB(255,255,255)
-    n.BackgroundTransparency = 1
-    n.TextScaled = true
-    n.Font = Enum.Font.GothamBold
-    n.Parent = itm
-
-    itm.MouseButton1Click:Connect(function()
-        PageList.Visible = false
-        PageDetail.Visible = true
-        animateContent(PageDetail)
         
-        DetImg.Image = "https://www.roblox.com/avatar-thumbnail/image?width=420&height=420&format=png&username=" .. data.user
-        
-        uT.Text = data.user
-        pT.Text = data.pass
-        uB.MouseButton1Click:Once(function() setclipboard(data.user) end)
-        pB.MouseButton1Click:Once(function() setclipboard(data.pass) end)
+        -- Copy System (Clean)
+        local uConn; uConn = uB.MouseButton1Click:Connect(function()
+            setclipboard(data.user)
+            uConn:Disconnect()
+        end)
+        local pConn; pConn = pB.MouseButton1Click:Connect(function()
+            setclipboard(data.pass)
+            pConn:Disconnect()
+        end)
     end)
 end
 
