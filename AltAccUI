@@ -23,7 +23,7 @@ local AdminMessages = {
 
 -- SETUP SCREEN GUI
 local FreeAltAccountUI = Instance.new("ScreenGui")
-FreeAltAccountUI.Name = "FreeAltAccountUI"
+FreeAltAccountUI.Name = "Alt AccountUI"
 FreeAltAccountUI.IgnoreGuiInset = true
 FreeAltAccountUI.ResetOnSpawn = false
 FreeAltAccountUI.Parent = Player:WaitForChild("PlayerGui")
