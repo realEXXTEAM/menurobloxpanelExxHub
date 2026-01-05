@@ -26,6 +26,7 @@ local FreeAltAccountUI = Instance.new("ScreenGui")
 FreeAltAccountUI.Name = "Alt AccountUI"
 FreeAltAccountUI.IgnoreGuiInset = true
 FreeAltAccountUI.ResetOnSpawn = false
+FreeAltAccountUI.Enabled = false
 FreeAltAccountUI.Parent = Player:WaitForChild("PlayerGui")
 
 local function animateContent(content)
