@@ -26,7 +26,7 @@ local FreeAltAccountUI = Instance.new("ScreenGui")
 FreeAltAccountUI.Name = "Alt AccountUI"
 FreeAltAccountUI.IgnoreGuiInset = true
 FreeAltAccountUI.ResetOnSpawn = false
-FreeAltAccountUI.Enabled = false
+FreeAltAccountUI.Enabled = true
 FreeAltAccountUI.Parent = Player:WaitForChild("PlayerGui")
 
 local function animateContent(content)
@@ -62,7 +62,7 @@ Title.TextSize = 14
 Title.TextXAlignment = Enum.TextXAlignment.Left
 Title.Parent = Headbar
 
--- TOMBOL CLOSE
+-- CLOSE BUTTON
 local CloseBtn = Instance.new("TextButton")
 CloseBtn.Size = UDim2.new(0, 35, 0, 35)
 CloseBtn.Position = UDim2.new(1, -40, 0, 0)
@@ -72,7 +72,7 @@ CloseBtn.TextColor3 = Color3.fromRGB(255, 255, 255)
 CloseBtn.Font = Enum.Font.GothamBold
 CloseBtn.TextSize = 18
 CloseBtn.Parent = Headbar
-CloseBtn.MouseButton1Click:Connect(function() FreeAltAccountUI:Destroy() end)
+CloseBtn.MouseButton1Click:Connect(function() FreeAltAccountUI.Enabled = false end)
 
 local EmailNav = Instance.new("ImageButton")
 EmailNav.Size = UDim2.new(0, 22, 0, 22)
@@ -90,17 +90,18 @@ Container.Parent = MainFrame
 
 local function createPage(name)
     local pg = Instance.new("CanvasGroup")
-    pg.Name = name
-    pg.Size = UDim2.new(1, 0, 1, 0)
-    pg.BackgroundTransparency = 1
-    pg.Visible = false
-    pg.Parent = Container
+    pg.Name = name; pg.Size = UDim2.new(1, 0, 1, 0); pg.BackgroundTransparency = 1
+    pg.Visible = false; pg.Parent = Container
     return pg
 end
 
 local PageList = createPage("List")
 local PageDetail = createPage("Detail")
 local PageEmail = createPage("Email")
+
+-- GLOBALS FOR COPY
+local SelectedUser = ""
+local SelectedPass = ""
 
 local function syncCanvas(scrollFrame, layout)
     layout:GetPropertyChangedSignal("AbsoluteContentSize"):Connect(function()
@@ -110,206 +111,133 @@ end
 
 -- --- PAGE LIST ---
 local ScrollList = Instance.new("ScrollingFrame")
-ScrollList.Size = UDim2.new(1, -20, 1, -10)
-ScrollList.Position = UDim2.new(0, 10, 0, 0)
-ScrollList.BackgroundTransparency = 1
-ScrollList.ScrollBarThickness = 2
+ScrollList.Size = UDim2.new(1, -20, 1, -10); ScrollList.Position = UDim2.new(0, 10, 0, 0)
+ScrollList.BackgroundTransparency = 1; ScrollList.ScrollBarThickness = 2
 ScrollList.Parent = PageList
 
 local UIGrid = Instance.new("UIGridLayout")
-UIGrid.CellSize = UDim2.new(0, 90, 0, 110)
-UIGrid.HorizontalAlignment = Enum.HorizontalAlignment.Center
+UIGrid.CellSize = UDim2.new(0, 90, 0, 110); UIGrid.HorizontalAlignment = Enum.HorizontalAlignment.Center
 UIGrid.Parent = ScrollList
 syncCanvas(ScrollList, UIGrid)
 
 -- --- PAGE DETAIL ---
 local function createInfoRow(labelText, y)
     local label = Instance.new("TextLabel")
-    label.Size = UDim2.new(0, 160, 0, 15)
-    label.Position = UDim2.new(0, 135, 0, y - 18)
-    label.Text = labelText
-    label.TextColor3 = Color3.fromRGB(180, 180, 180)
-    label.Font = Enum.Font.GothamBold
-    label.TextSize = 10
-    label.TextXAlignment = Enum.TextXAlignment.Left
-    label.BackgroundTransparency = 1
-    label.Parent = PageDetail
+    label.Size = UDim2.new(0, 160, 0, 15); label.Position = UDim2.new(0, 135, 0, y - 18)
+    label.Text = labelText; label.TextColor3 = Color3.fromRGB(180, 180, 180)
+    label.Font = Enum.Font.GothamBold; label.TextSize = 10; label.TextXAlignment = Enum.TextXAlignment.Left
+    label.BackgroundTransparency = 1; label.Parent = PageDetail
 
     local r = Instance.new("Frame")
-    r.Size = UDim2.new(0, 160, 0, 35)
-    r.Position = UDim2.new(0, 135, 0, y)
-    r.BackgroundColor3 = Color3.fromRGB(30, 30, 30)
-    r.Parent = PageDetail
+    r.Size = UDim2.new(0, 160, 0, 35); r.Position = UDim2.new(0, 135, 0, y)
+    r.BackgroundColor3 = Color3.fromRGB(30, 30, 30); r.Parent = PageDetail
     Instance.new("UICorner", r)
 
     local t = Instance.new("TextLabel")
-    t.Size = UDim2.new(1, -35, 1, 0)
-    t.Position = UDim2.new(0, 10, 0, 0)
-    t.TextColor3 = Color3.fromRGB(255, 255, 255)
-    t.TextSize = 12
-    t.TextTruncate = Enum.TextTruncate.AtEnd -- Supaya tidak mengecil tapi terpotong ...
-    t.BackgroundTransparency = 1
-    t.TextXAlignment = Enum.TextXAlignment.Left
-    t.Parent = r
+    t.Size = UDim2.new(1, -35, 1, 0); t.Position = UDim2.new(0, 10, 0, 0)
+    t.TextColor3 = Color3.fromRGB(255, 255, 255); t.TextSize = 12; t.TextTruncate = Enum.TextTruncate.AtEnd
+    t.BackgroundTransparency = 1; t.TextXAlignment = Enum.TextXAlignment.Left; t.Parent = r
 
     local b = Instance.new("ImageButton")
-    b.Size = UDim2.new(0, 20, 0, 20)
-    b.Position = UDim2.new(1, -25, 0.5, -10)
-    b.Image = "rbxassetid://90434151822042"
-    b.BackgroundTransparency = 1
-    b.Parent = r
+    b.Size = UDim2.new(0, 20, 0, 20); b.Position = UDim2.new(1, -25, 0.5, -10)
+    b.Image = "rbxassetid://90434151822042"; b.BackgroundTransparency = 1; b.Parent = r
     
     return t, b
 end
 
 local CharBg = Instance.new("Frame")
-CharBg.Size = UDim2.new(0, 110, 0, 150)
-CharBg.Position = UDim2.new(0, 15, 0, 15)
-CharBg.BackgroundColor3 = Color3.fromRGB(0, 0, 0)
-CharBg.Parent = PageDetail
+CharBg.Size = UDim2.new(0, 110, 0, 150); CharBg.Position = UDim2.new(0, 15, 0, 15)
+CharBg.BackgroundColor3 = Color3.fromRGB(0, 0, 0); CharBg.Parent = PageDetail
 Instance.new("UICorner", CharBg)
 
 local DetImg = Instance.new("ImageLabel")
-DetImg.Size = UDim2.new(1, 0, 1, 0)
-DetImg.BackgroundTransparency = 1
-DetImg.Parent = CharBg
+DetImg.Size = UDim2.new(1, 0, 1, 0); DetImg.BackgroundTransparency = 1; DetImg.Parent = CharBg
 
 local uT, uB = createInfoRow("USERNAME", 30)
 local pT, pB = createInfoRow("PASSWORD", 85)
 
+-- COPY LOGIC FIXED
+uB.MouseButton1Click:Connect(function() if setclipboard then setclipboard(SelectedUser) end end)
+pB.MouseButton1Click:Connect(function() if setclipboard then setclipboard(SelectedPass) end end)
+
 local BackDet = Instance.new("TextButton")
-BackDet.Size = UDim2.new(0, 160, 0, 30)
-BackDet.Position = UDim2.new(0, 135, 0, 135)
-BackDet.Text = "BACK"
-BackDet.Parent = PageDetail
+BackDet.Size = UDim2.new(0, 160, 0, 30); BackDet.Position = UDim2.new(0, 135, 0, 135)
+BackDet.Text = "BACK"; BackDet.Parent = PageDetail
 Instance.new("UICorner", BackDet)
 BackDet.MouseButton1Click:Connect(function() 
-    PageDetail.Visible = false 
-    PageList.Visible = true 
-    animateContent(PageList) 
+    PageDetail.Visible = false; PageList.Visible = true; animateContent(PageList) 
 end)
 
--- --- PAGE EMAIL ---
+-- --- PAGE EMAIL  ---
 local EmailScroll = Instance.new("ScrollingFrame")
-EmailScroll.Size = UDim2.new(1, -20, 1, -60)
-EmailScroll.Position = UDim2.new(0, 10, 0, 5)
-EmailScroll.BackgroundTransparency = 1
-EmailScroll.ScrollBarThickness = 2
+EmailScroll.Size = UDim2.new(1, -20, 1, -60); EmailScroll.Position = UDim2.new(0, 10, 0, 5)
+EmailScroll.BackgroundTransparency = 1; EmailScroll.ScrollBarThickness = 2
 EmailScroll.Parent = PageEmail
 
 local EmailLayout = Instance.new("UIListLayout")
-EmailLayout.Padding = UDim.new(0, 8)
-EmailLayout.Parent = EmailScroll
+EmailLayout.Padding = UDim.new(0, 8); EmailLayout.Parent = EmailScroll
 syncCanvas(EmailScroll, EmailLayout)
 
 for _, msg in pairs(AdminMessages) do
     local m = Instance.new("Frame")
-    m.Size = UDim2.new(1, 0, 0, 110) 
-    m.BackgroundColor3 = Color3.fromRGB(40, 40, 40)
+    m.Size = UDim2.new(1, 0, 0, 110); m.BackgroundColor3 = Color3.fromRGB(40, 40, 40)
     m.Parent = EmailScroll
     Instance.new("UICorner", m)
 
     local t = Instance.new("TextLabel")
-    t.Size = UDim2.new(1, -10, 0, 25)
-    t.Position = UDim2.new(0, 10, 0, 5)
-    t.Text = msg.judul
-    t.TextColor3 = Color3.fromRGB(255, 215, 0)
-    t.TextSize = 16 
-    t.Font = Enum.Font.GothamBold
-    t.TextXAlignment = Enum.TextXAlignment.Left
-    t.TextYAlignment = Enum.TextYAlignment.Top 
-    t.BackgroundTransparency = 1
-    t.Parent = m
+    t.Size = UDim2.new(1, -10, 0, 25); t.Position = UDim2.new(0, 10, 0, 5)
+    t.Text = msg.judul; t.TextColor3 = Color3.fromRGB(255, 215, 0); t.TextSize = 16 
+    t.Font = Enum.Font.GothamBold; t.TextXAlignment = Enum.TextXAlignment.Left; t.BackgroundTransparency = 1; t.Parent = m
 
     local c = Instance.new("TextLabel")
-    c.Size = UDim2.new(0.6, 0, 0, 70)
-    c.Position = UDim2.new(0, 10, 0, 30)
-    c.Text = msg.isi
-    c.TextColor3 = Color3.fromRGB(255, 255, 255)
-    c.TextSize = 12
-    c.TextWrapped = true
-    c.TextXAlignment = Enum.TextXAlignment.Left
-    c.TextYAlignment = Enum.TextYAlignment.Top 
-    c.BackgroundTransparency = 1
-    c.Parent = m
+    c.Size = UDim2.new(0.6, 0, 0, 70); c.Position = UDim2.new(0, 10, 0, 30)
+    c.Text = msg.isi; c.TextColor3 = Color3.fromRGB(255, 255, 255); c.TextSize = 12
+    c.TextWrapped = true; c.TextXAlignment = Enum.TextXAlignment.Left; c.TextYAlignment = Enum.TextYAlignment.Top 
+    c.BackgroundTransparency = 1; c.Parent = m
 
     if msg.imgId and msg.imgId ~= "" then
         local img = Instance.new("ImageLabel")
-        img.Size = UDim2.new(0, 85, 0, 85)
-        img.Position = UDim2.new(1, -95, 0, 10)
-        img.Image = msg.imgId
-        img.BackgroundColor3 = Color3.fromRGB(20, 20, 20)
-        img.Parent = m
+        img.Size = UDim2.new(0, 85, 0, 85); img.Position = UDim2.new(1, -95, 0, 10)
+        img.Image = msg.imgId; img.BackgroundColor3 = Color3.fromRGB(20, 20, 20); img.Parent = m
         Instance.new("UICorner", img)
     end
 end
 
 local BackEm = Instance.new("TextButton")
-BackEm.Size = UDim2.new(0, 100, 0, 30)
-BackEm.Position = UDim2.new(0.5, -50, 1, -35)
-BackEm.Text = "BACK"
-BackEm.Parent = PageEmail
+BackEm.Size = UDim2.new(0, 100, 0, 30); BackEm.Position = UDim2.new(0.5, -50, 1, -35)
+BackEm.Text = "BACK"; BackEm.Parent = PageEmail
 Instance.new("UICorner", BackEm)
 
--- --- NAV LOGIC ---
+-- NAV LOGIC
 EmailNav.MouseButton1Click:Connect(function()
-    Title.Text = "EMAIL"
-    EmailNav.Visible = false
-    PageList.Visible = false 
-    PageDetail.Visible = false
-    PageEmail.Visible = true
-    animateContent(PageEmail)
+    Title.Text = "EMAIL"; EmailNav.Visible = false; PageList.Visible = false; PageDetail.Visible = false; PageEmail.Visible = true; animateContent(PageEmail)
 end)
 
 BackEm.MouseButton1Click:Connect(function() 
-    Title.Text = "ALT GENERATOR"
-    EmailNav.Visible = true
-    PageEmail.Visible = false 
-    PageList.Visible = true 
-    animateContent(PageList) 
+    Title.Text = "ALT GENERATOR"; EmailNav.Visible = true; PageEmail.Visible = false; PageList.Visible = true; animateContent(PageList) 
 end)
 
 -- --- GENERATE ACCOUNT LIST ---
 for _, data in pairs(AltAccounts) do
     local itm = Instance.new("TextButton")
-    itm.BackgroundColor3 = Color3.fromRGB(30, 30, 30)
-    itm.Text = ""
-    itm.Parent = ScrollList
+    itm.BackgroundColor3 = Color3.fromRGB(30, 30, 30); itm.Text = ""; itm.Parent = ScrollList
     Instance.new("UICorner", itm)
 
     local img = Instance.new("ImageLabel")
-    img.Size = UDim2.new(1, 0, 0.8, 0)
-    img.BackgroundTransparency = 1
+    img.Size = UDim2.new(1, 0, 0.8, 0); img.BackgroundTransparency = 1
     img.Image = "https://www.roblox.com/headshot-thumbnail/image?width=150&height=150&format=png&username=" .. data.user
     img.Parent = itm
 
     local n = Instance.new("TextLabel")
-    n.Size = UDim2.new(1, 0, 0.2, 0)
-    n.Position = UDim2.new(0,0,0.8,0)
-    n.Text = "@"..data.user
-    n.TextColor3 = Color3.fromRGB(255,255,255)
-    n.BackgroundTransparency = 1
-    n.TextScaled = true
-    n.Font = Enum.Font.GothamBold
-    n.Parent = itm
+    n.Size = UDim2.new(1, 0, 0.2, 0); n.Position = UDim2.new(0,0,0.8,0)
+    n.Text = "@"..data.user; n.TextColor3 = Color3.fromRGB(255,255,255); n.BackgroundTransparency = 1
+    n.TextScaled = true; n.Font = Enum.Font.GothamBold; n.Parent = itm
 
     itm.MouseButton1Click:Connect(function()
-        PageList.Visible = false
-        PageDetail.Visible = true
-        animateContent(PageDetail)
+        SelectedUser = data.user; SelectedPass = data.pass
+        PageList.Visible = false; PageDetail.Visible = true; animateContent(PageDetail)
         DetImg.Image = "https://www.roblox.com/avatar-thumbnail/image?width=420&height=420&format=png&username=" .. data.user
-        uT.Text = data.user
-        pT.Text = data.pass
-        
-        -- Copy System (Clean)
-        local uConn; uConn = uB.MouseButton1Click:Connect(function()
-            setclipboard(data.user)
-            uConn:Disconnect()
-        end)
-        local pConn; pConn = pB.MouseButton1Click:Connect(function()
-            setclipboard(data.pass)
-            pConn:Disconnect()
-        end)
+        uT.Text = data.user; pT.Text = data.pass
     end)
 end
 
