@@ -17,10 +17,10 @@ end
 local STSServerUI = Instance.new("ScreenGui")
 STSServerUI.Name = "STSServerUI"
 STSServerUI.DisplayOrder = 9999
-STSServerUI.ResetOnSpawn = false
+STSServerUI.ResetOnSpawn = true
 STSServerUI.ZIndexBehavior = Enum.ZIndexBehavior.Global
 STSServerUI.IgnoreGuiInset = true
-STSServerUI.Enabled = true 
+STSServerUI.Enabled = false 
 STSServerUI.Parent = Player:WaitForChild("PlayerGui")
 
 -- == 3. MAIN FRAME ==
