@@ -21,7 +21,7 @@ local TX_ON = "rbxassetid://6031068421"
 local ESPSettingsUI = Instance.new("ScreenGui", LocalPlayer:WaitForChild("PlayerGui"))
 ESPSettingsUI.Name = "ESP PlayersUI"
 ESPSettingsUI.DisplayOrder = 9999
-ESPSettingsUI.ResetOnSpawn = false
+ESPSettingsUI.ResetOnSpawn = true
 ESPSettingsUI.Enabled = false
 
 local MainFrame = Instance.new("Frame", ESPSettingsUI)
