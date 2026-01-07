@@ -17,7 +17,12 @@ local AdminMessages = {
     },
     {
         judul = "EXX TEAM", 
-        isi = "Max upload 10",
+        isi = "12 hours for 1 upload account",
+        imgId = ""
+    },
+    {
+        judul = "EXX TEAM", 
+        isi = "Max upload 5",
         imgId = ""
     },
 }
