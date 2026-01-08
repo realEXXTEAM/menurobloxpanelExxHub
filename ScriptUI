@@ -114,7 +114,7 @@ uiPadding.Parent = listFrame
 
 --// Example Data
 local scripts = {
-    {title = "", image = "rbxassetid://0", text = "loadstring(game:HttpGet('https://raw.githubusercontent.com/Jadelly/bloxfruit/refs/heads/main/Zeusscript', true))()"},
+    {title = "Zeus Hub – Blox Fruits Script (No Key)", image = "rbxassetid://102731130900220", text = "loadstring(game:HttpGet('https://raw.githubusercontent.com/Jadelly/bloxfruit/refs/heads/main/Zeusscript', true))()"},
     {title = "Leaf Hub - Blox Fruit Script", image = "rbxassetid://99306903212172", text = "loadstring(game:HttpGet('https://pastebin.com/raw/1zwVmBCn'))()"},
     {title = "The Forge Script – Catraz Hub", image = "rbxassetid://128465030736317", text = "loadstring(game:HttpGet('https://raw.githubusercontent.com/nurvian/Catraz-HUB/refs/heads/main/Catraz/main.lua'))()"},
     {title = "Night Hub (BETA) – Blox Fruits Script (No Key)", image = "rbxassetid://103704059312696", text = "loadstring(game:HttpGet('https://raw.githubusercontent.com/WhiteX1208/Scripts/refs/heads/main/BF-Beta.lua'))()"},
