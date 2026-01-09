@@ -7,7 +7,7 @@ local MusicUI = Instance.new("ScreenGui")
 MusicUI.Name = "MusicUI"
 MusicUI.DisplayOrder = 9999
 MusicUI.ResetOnSpawn = false
-MusicUI.ZIndexBehavior = Enum.ZIndexBehavior.Global -- Tetap Global
+MusicUI.ZIndexBehavior = Enum.ZIndexBehavior.Global
 MusicUI.IgnoreGuiInset = true
 MusicUI.Enabled = false
 MusicUI.Parent = Player:WaitForChild("PlayerGui")
@@ -150,7 +150,8 @@ UIListLayout.Padding = UDim.new(0, 5)
 --// Songs List
 local Songs = {
     {Name = "BABY SHARK", SoundId = "rbxassetid://131822907093877"},
-    {Name = "A Thousand Years", SoundId = "rbxassetid://94142287387850"},
+    {Name = "TheFatRat", SoundId = "rbxassetid://71225819538909"},
+    {Name = "End Of Beginning", SoundId = "rbxassetid://91319037332598"},
     {Name = "dj kun", SoundId = "rbxassetid://116647235474599"},
     {Name = "mangsedih", SoundId = "rbxassetid://128259754377999"},
     {Name = "galau brutal", SoundId = "rbxassetid://76769189002980"},
