@@ -203,5 +203,4 @@ for i, item in ipairs(menuItems) do
 	end)
 end
 
--- 🧠 Auto update CanvasSize biar scroll sesuai jumlah menu
 scroll.CanvasSize = UDim2.new(0, 0, 0, (#menuItems * itemHeight) + padding)
