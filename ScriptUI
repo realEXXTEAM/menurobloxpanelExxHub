@@ -116,7 +116,7 @@ uiPadding.Parent = listFrame
 local scripts = {
     {title = "Prime Hub - Escape Tsunami For Brainrot", image = "rbxassetid://71693628644645", text = "loadstring(game:HttpGet('https://pastefy.app/p70ojJ6Y/raw'))()"},
     {title = "Speed Hub - Escape Tsunami For Brainrot", image = "rbxassetid://71693628644645", text = "loadstring(game:HttpGet('https://pastefy.app/6GJwjDkq/raw'))()"},
-    {title = "Lumin Hub - Escape Tsunami For Brainrot", image = "rbxassetid://71693628644645", text = "loadstring(game:HttpGet("http://luminon.top/loader.lua"))()"},
+    {title = "Lumin Hub - Escape Tsunami For Brainrot", image = "rbxassetid://71693628644645", text = "loadstring(game:HttpGet('http://luminon.top/loader.lua'))()"},
     {title = "Rift Hub - Escape Tsunami For Brainrot", image = "rbxassetid://71693628644645", text = "loadstring(game:HttpGet('https://rifton.top/loader.lua'))()"},
     {title = "Zeus Hub – Blox Fruits Script (No Key)", image = "rbxassetid://102731130900220", text = "loadstring(game:HttpGet('https://raw.githubusercontent.com/Jadelly/bloxfruit/refs/heads/main/Zeusscript', true))()"},
     {title = "Leaf Hub - Blox Fruit Script", image = "rbxassetid://99306903212172", text = "loadstring(game:HttpGet('https://pastebin.com/raw/1zwVmBCn'))()"},
