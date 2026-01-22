@@ -93,7 +93,7 @@ local menuItems = {
     {Text="Save Script", Icon="rbxassetid://112238336567509"},
     {Text="Goto Players", Icon="rbxassetid://80278360213440"},
     {Text="AnimChanger", Icon="rbxassetid://115198205982652"},
-    {Text="Info Server", Icon="rbxassetid://18633720097"},
+    {Text="Info Server", Icon="rbxassetid://119828878228867"},
     {Text="ESP Players", Icon="rbxassetid://6031075931"},
 }
 
