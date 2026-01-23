@@ -96,7 +96,6 @@ local menuItems = {
     {Text="AnimChanger", Icon="rbxassetid://115198205982652"},
     {Text="Info Server", Icon="rbxassetid://119828878228867"},
     {Text="ESP Players", Icon="rbxassetid://6031075931"},
-    {Text="AimLock Players", Icon="rbxassetid://13014719000"},
 }
 
 local opened = false
