@@ -105,7 +105,6 @@ local function toggleMenu(state)
     if animating then return end
     animating = true
     opened = state
-
     TweenService:Create(rotFrame, TweenInfo.new(0.25), {Rotation = opened and 180 or 0}):Play()
     if opened then
         TweenService:Create(menuLabel, TweenInfo.new(0.1), {TextTransparency = 1}):Play()
