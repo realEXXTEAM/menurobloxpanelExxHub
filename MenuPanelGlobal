@@ -89,7 +89,7 @@ listLayout.VerticalAlignment = Enum.VerticalAlignment.Center
 local menuItems = {
     {Text="Executor", Icon="rbxassetid://6031075938"},
     {Text="Script Blox", Icon="rbxassetid://91251007612635"},
-    {Text="Script", Icon="rbxassetid://122385028196411"},
+    {Text="Script", Icon="rbxassetid://112780490255100"},
     {Text="Save Script", Icon="rbxassetid://112238336567509"},
     {Text="Goto Players", Icon="rbxassetid://80278360213440"},
     {Text="AnimChanger", Icon="rbxassetid://115198205982652"},
@@ -118,7 +118,6 @@ local function toggleMenu(state)
 
     if opened then
         mainFrame.Visible = true
-        -- Animasi mekar (Kotak -> Lebar)
         local tween1 = TweenService:Create(mainFrame, TweenInfo.new(0.2, Enum.EasingStyle.Back, Enum.EasingDirection.Out), {Size = UDim2.new(0, 50, 0, 50)})
         tween1:Play()
         tween1.Completed:Wait()
@@ -142,7 +141,7 @@ for _, item in ipairs(menuItems) do
     validUI[item.Text.."UI"] = true
 end
 
--- Tombol Menu (Hanya Ikon)
+-- Tombol Menu
 for i, item in ipairs(menuItems) do
     local btn = Instance.new("ImageButton")
     btn.Size = UDim2.new(0, 45, 0, 45)
