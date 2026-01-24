@@ -27,9 +27,9 @@ ExecutorUI.IgnoreGuiInset = true
 ExecutorUI.Enabled = false -- Saya set True biar langsung kelihatan pas di-run
 ExecutorUI.Parent = Player:WaitForChild("PlayerGui")
 
---// Frame Utama (UKURAN DIKECILIN)
+--// Frame Utama
 local bg = Instance.new("Frame")
-bg.Size = UDim2.new(0, 400, 0, 240) -- Ukuran lebih compact
+bg.Size = UDim2.new(0, 400, 0, 240)
 bg.AnchorPoint = Vector2.new(0.5, 0.5)
 bg.Position = UDim2.new(0.5, 0, 0.5, 0)
 bg.BackgroundColor3 = Color3.fromRGB(20, 20, 25)
@@ -38,7 +38,7 @@ bg.BorderSizePixel = 0
 bg.Parent = ExecutorUI
 
 local corner = Instance.new("UICorner")
-corner.CornerRadius = UDim.new(0, 10) -- Corner radius lebih kecil biar pas
+corner.CornerRadius = UDim.new(0, 10)
 corner.Parent = bg
 
 --// Title
@@ -54,11 +54,11 @@ title.TextXAlignment = Enum.TextXAlignment.Left
 title.Parent = bg
 
 --// Tombol X (Close)
-local closeBtn = Instance.new("TextButton")
+local closeBtn = Instance.new("ImageButton")
 closeBtn.Size = UDim2.new(0, 20, 0, 20)
 closeBtn.Position = UDim2.new(1, -28, 0, 8)
 closeBtn.BackgroundTransparency = 1
-closeBtn.Text = "x"
+closeBtn.Image = "rbxassetid//4988112250"
 closeBtn.Font = Enum.Font.GothamBold
 closeBtn.TextSize = 16
 closeBtn.TextColor3 = Color3.new(1, 1, 1)
