@@ -1,26 +1,35 @@
 local Players = game:GetService("Players")
 local TweenService = game:GetService("TweenService")
-local UserInputService = game:GetService("UserInputService")
 local Player = Players.LocalPlayer
 
---// 1. Bersihkan UI lama jika ada (biar gak numpuk)
-local existingUI = Player:WaitForChild("PlayerGui"):FindFirstChild("ExecutorUI")
-if existingUI then existingUI:Destroy() end
+--// Anti Delete
+local function protectUI(gui)
+	local connection
+	connection = gui.AncestryChanged:Connect(function(_, parent)
+		if not parent then
+			pcall(function() connection:Disconnect() end) 
+			gui.Parent = Player:WaitForChild("PlayerGui") 
+		end
+	end)
+end
 
---// 2. Setup ScreenGui
+--// Hapus versi lama
+local old = Player:WaitForChild("PlayerGui"):FindFirstChild("ExecutorUI")
+if old then old:Destroy() end
+
+--// ScreenGui
 local ExecutorUI = Instance.new("ScreenGui")
 ExecutorUI.Name = "ExecutorUI"
 ExecutorUI.DisplayOrder = 9999
 ExecutorUI.ResetOnSpawn = false
 ExecutorUI.ZIndexBehavior = Enum.ZIndexBehavior.Global
 ExecutorUI.IgnoreGuiInset = true
-ExecutorUI.Enabled = true -- Dibuat TRUE biar langsung muncul
+ExecutorUI.Enabled = false -- Saya set True biar langsung kelihatan pas di-run
 ExecutorUI.Parent = Player:WaitForChild("PlayerGui")
 
---// 3. Frame Utama
+--// Frame Utama (UKURAN DIKECILIN)
 local bg = Instance.new("Frame")
-bg.Name = "MainFrame"
-bg.Size = UDim2.new(0, 400, 0, 240)
+bg.Size = UDim2.new(0, 400, 0, 240) -- Ukuran lebih compact
 bg.AnchorPoint = Vector2.new(0.5, 0.5)
 bg.Position = UDim2.new(0.5, 0, 0.5, 0)
 bg.BackgroundColor3 = Color3.fromRGB(20, 20, 25)
@@ -29,37 +38,8 @@ bg.BorderSizePixel = 0
 bg.Parent = ExecutorUI
 
 local corner = Instance.new("UICorner")
-corner.CornerRadius = UDim.new(0, 10)
+corner.CornerRadius = UDim.new(0, 10) -- Corner radius lebih kecil biar pas
 corner.Parent = bg
-
---// 4. Fitur Dragging (Biar bisa digeser)
-local dragging, dragInput, dragStart, startPos
-bg.InputBegan:Connect(function(input)
-	if input.UserInputType == Enum.UserInputType.MouseButton1 or input.UserInputType == Enum.UserInputType.Touch then
-		dragging = true
-		dragStart = input.Position
-		startPos = bg.Position
-		
-		input.Changed:Connect(function()
-			if input.UserInputState == Enum.UserInputState.End then
-				dragging = false
-			end
-		end)
-	end
-end)
-
-bg.InputChanged:Connect(function(input)
-	if input.UserInputType == Enum.UserInputType.MouseMovement or input.UserInputType == Enum.UserInputType.Touch then
-		dragInput = input
-	end
-end)
-
-UserInputService.InputChanged:Connect(function(input)
-	if input == dragInput and dragging then
-		local delta = input.Position - dragStart
-		bg.Position = UDim2.new(startPos.X.Scale, startPos.X.Offset + delta.X, startPos.Y.Scale, startPos.Y.Offset + delta.Y)
-	end
-end)
 
 --// Title
 local title = Instance.new("TextLabel")
@@ -69,60 +49,57 @@ title.BackgroundTransparency = 1
 title.Font = Enum.Font.GothamBold
 title.Text = "Executor"
 title.TextColor3 = Color3.fromRGB(255, 255, 255)
-title.TextSize = 14
+title.TextSize = 14 -- Teks lebih kecil
 title.TextXAlignment = Enum.TextXAlignment.Left
 title.Parent = bg
 
 --// Tombol X (Close)
-local closeBtn = Instance.new("ImageButton")
+local closeBtn = Instance.new("TextButton")
 closeBtn.Size = UDim2.new(0, 20, 0, 20)
 closeBtn.Position = UDim2.new(1, -28, 0, 8)
 closeBtn.BackgroundTransparency = 1
-closeBtn.Image = "rbxassetid://4988112250" 
-closeBtn.ImageColor3 = Color3.fromRGB(200, 50, 50) -- Sedikit merah biar jelas
+closeBtn.Text = "x"
+closeBtn.Font = Enum.Font.GothamBold
+closeBtn.TextSize = 16
+closeBtn.TextColor3 = Color3.new(1, 1, 1)
 closeBtn.Parent = bg
 
 closeBtn.MouseButton1Click:Connect(function()
 	ExecutorUI.Enabled = false
-	game.StarterGui:SetCore("SendNotification", {
-		Title = "Hidden";
-		Text = "Press Right Ctrl to open";
-		Duration = 3;
-	})
 end)
 
 --// Scrolling Frame
 local scroll = Instance.new("ScrollingFrame")
-scroll.Size = UDim2.new(1, -30, 1, -85)
+scroll.Size = UDim2.new(1, -30, 1, -85) -- Ukuran area ketik disesuaikan
 scroll.Position = UDim2.new(0, 15, 0, 40)
 scroll.BackgroundColor3 = Color3.fromRGB(15, 15, 20)
 scroll.BackgroundTransparency = 0.3
-scroll.ScrollBarThickness = 4
+scroll.ScrollBarThickness = 4 -- Scrollbar lebih tipis biar gak ganggu
 scroll.ScrollBarImageColor3 = Color3.fromRGB(100, 100, 255)
-scroll.BorderSizePixel = 0
+scroll.ScrollingDirection = Enum.ScrollingDirection.XY
 scroll.AutomaticCanvasSize = Enum.AutomaticSize.XY
-scroll.CanvasSize = UDim2.new(0, 0, 0, 0)
+scroll.BorderSizePixel = 0
 scroll.Parent = bg
 
 local scrollCorner = Instance.new("UICorner")
 scrollCorner.CornerRadius = UDim.new(0, 8)
 scrollCorner.Parent = scroll
 
---// TextBox (Input Code)
+--// TextBox (Area Ketik)
 local input = Instance.new("TextBox")
-input.Size = UDim2.new(1, 0, 1, 0)
+input.Size = UDim2.new(1, 0, 1, 0) 
 input.BackgroundTransparency = 1
 input.ClearTextOnFocus = false
 input.MultiLine = true
-input.TextWrapped = false -- Biar coding style (scroll ke samping)
+input.TextWrapped = false
 input.AutomaticSize = Enum.AutomaticSize.XY
 input.TextXAlignment = Enum.TextXAlignment.Left
 input.TextYAlignment = Enum.TextYAlignment.Top
 input.Font = Enum.Font.Code
-input.TextSize = 13
+input.TextSize = 13 -- Teks code diperkecil sedikit
 input.TextColor3 = Color3.fromRGB(240, 240, 240)
-input.PlaceholderText = "-- Paste your script here..."
-input.Text = ""
+input.PlaceholderText = "-- Paste script..."
+input.Text = "" 
 input.Parent = scroll
 
 local pad = Instance.new("UIPadding")
@@ -130,20 +107,19 @@ pad.PaddingLeft = UDim.new(0, 5)
 pad.PaddingTop = UDim.new(0, 5)
 pad.Parent = input
 
---// Tombol RUN
+--// Tombol RUN (DIKECILIN)
 local runBtn = Instance.new("ImageButton")
-runBtn.Size = UDim2.new(0, 45, 0, 45)
+runBtn.Size = UDim2.new(0, 45, 0, 45) -- Dari 55 jadi 45
 runBtn.AnchorPoint = Vector2.new(0.5, 1)
 runBtn.Position = UDim2.new(0.5, 0, 1, -8)
 runBtn.BackgroundColor3 = Color3.fromRGB(45, 45, 60)
 runBtn.BackgroundTransparency = 0.2
--- PERBAIKAN: Menggunakan ID Icon Play yang valid
-runBtn.Image = "rbxassetid://4947572534" 
+runBtn.Image = "rbxassetid://127467405552658"
 runBtn.ImageColor3 = Color3.fromRGB(180, 180, 255)
 runBtn.Parent = bg
 
 local btnCorner = Instance.new("UICorner")
-btnCorner.CornerRadius = UDim.new(1, 0) -- Bulat sempurna
+btnCorner.CornerRadius = UDim.new(1, 0)
 btnCorner.Parent = runBtn
 
 -- Animasi Hover
@@ -154,74 +130,46 @@ runBtn.MouseLeave:Connect(function()
 	TweenService:Create(runBtn, TweenInfo.new(0.15), {BackgroundTransparency = 0.2, ImageColor3 = Color3.fromRGB(180, 180, 255)}):Play()
 end)
 
---// Fungsi Notifikasi
-local function notify(msg, type)
-	local color = Color3.fromRGB(255, 255, 255)
-	if type == "Error" then color = Color3.fromRGB(255, 100, 100) end
-	if type == "Success" then color = Color3.fromRGB(100, 255, 100) end
-	
+-- Notifikasi System
+local function notify(msg)
 	pcall(function()
 		game.StarterGui:SetCore("SendNotification", {
-			Title = "Executor";
-			Text = msg;
-			Duration = 2;
+			Title = "Executor",
+			Text = msg,
+			Duration = 2
 		})
 	end)
 end
 
---// Logic Eksekusi Script
+-- Run Action
 runBtn.MouseButton1Click:Connect(function()
-	-- Efek Klik
-	local t1 = TweenService:Create(runBtn, TweenInfo.new(0.1), {Size = UDim2.new(0, 40, 0, 40)})
-	local t2 = TweenService:Create(runBtn, TweenInfo.new(0.1), {Size = UDim2.new(0, 45, 0, 45)})
-	t1:Play() t1.Completed:Wait() t2:Play()
+	local tweenIn = TweenService:Create(runBtn, TweenInfo.new(0.1), {Size = UDim2.new(0, 50, 0, 50)})
+	local tweenOut = TweenService:Create(runBtn, TweenInfo.new(0.1), {Size = UDim2.new(0, 45, 0, 45)})
+	tweenIn:Play()
+	tweenIn.Completed:Wait()
+	tweenOut:Play()
 
 	local code = input.Text
 	if code == "" or code:match("^%s*$") then
-		notify("⚠️ Code is empty!", "Error")
+		notify("⚠️ Empty!")
 		return
 	end
 
-	-- Cek apakah loadstring tersedia
-	local success, func = pcall(function()
-		return loadstring(code)
-	end)
-
-	if not success then
-		-- Fallback jika loadstring didisable (biasanya di localscript biasa)
-		notify("⚠️ 'loadstring' unavailable here.", "Error")
-		warn("Loadstring error or not enabled.")
-		return
-	end
-	
-	if not func then
-		-- Error syntax pada code yang diinput
-		notify("⚠️ Syntax Error!", "Error")
-		return
-	end
-
-	-- Jalankan script
-	task.spawn(function()
-		local status, err = pcall(func)
-		if status then
-			notify("✅ Executed!", "Success")
-		else
-			notify("❌ Runtime Error!", "Error")
-			warn("Execution Error:", err)
-		end
-	end)
-end)
-
---// Shortcut Keyboard: Right Control untuk Buka/Tutup
-UserInputService.InputBegan:Connect(function(inp, gameProcessed)
-	if not gameProcessed and inp.KeyCode == Enum.KeyCode.RightControl then
-		ExecutorUI.Enabled = not ExecutorUI.Enabled
+	local func, err = loadstring(code)
+	if func then
+		notify("✅ Executed!")
+		task.spawn(func)
+	else
+		notify("⚠️ Error!")
+		warn("Executor Error:", err)
 	end
 end)
 
---// Anti Delete Sederhana
-ExecutorUI.AncestryChanged:Connect(function(_, parent)
-	if not parent and Player:FindFirstChild("PlayerGui") then
-		ExecutorUI.Parent = Player.PlayerGui
+protectUI(ExecutorUI)
+
+Player.CharacterAdded:Connect(function()
+	task.wait(0.5)
+	if not Player.PlayerGui:FindFirstChild("ExecutorUI") then
+		ExecutorUI.Parent = Player:WaitForChild("PlayerGui")
 	end
 end)
