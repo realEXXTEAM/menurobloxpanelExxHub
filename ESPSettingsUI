@@ -29,7 +29,7 @@ if syn and syn.protect_gui then syn.protect_gui(ESPSettingsUI) end
 ESPSettingsUI.Parent = LocalPlayer:WaitForChild("PlayerGui")
 ESPSettingsUI.DisplayOrder = 9999
 ESPSettingsUI.ResetOnSpawn = false
-ESPSettingsUI.Enabled = true
+ESPSettingsUI.Enabled = false
 
 local MainFrame = Instance.new("Frame", ESPSettingsUI)
 MainFrame.Size = UDim2.new(0, 320, 0, 300)
