@@ -146,7 +146,7 @@ for i, item in ipairs(menuItems) do
     local btn = Instance.new("ImageButton")
     btn.Size = UDim2.new(0, 45, 0, 45)
     btn.BackgroundColor3 = Color3.fromRGB(35,35,35)
-    btn.BackgroundTransparency = 0.5
+    btn.BackgroundTransparency = 0.2
     btn.Image = item.Icon
     btn.ScaleType = Enum.ScaleType.Fit
     btn.ZIndex = 9998
