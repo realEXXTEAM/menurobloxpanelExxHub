@@ -1,32 +1,25 @@
 local Players = game:GetService("Players")
 local RunService = game:GetService("RunService")
 local TweenService = game:GetService("TweenService")
-local UserInputService = game:GetService("UserInputService")
 local Camera = workspace.CurrentCamera
 local LocalPlayer = Players.LocalPlayer
 
---// Konfigurasi
+--// Konfigurasi Global
 getgenv().ESP_Config = {
     Outline = false,
     Box = false,
     Antena = false,
     Names = false,
-    TeamCheck = false,
-    FriendCheck = false,
     Color = Color3.fromRGB(255, 255, 255)
 }
 
-local ESP_Objects = {} 
-
---// UI Textures (Button)
+--// UI Textures
 local TX_OFF = "rbxassetid://6031068420"
 local TX_ON = "rbxassetid://6031068421"
 
 --// UI Setup
-local ESPSettingsUI = Instance.new("ScreenGui")
+local ESPSettingsUI = Instance.new("ScreenGui", LocalPlayer:WaitForChild("PlayerGui"))
 ESPSettingsUI.Name = "ESP PlayersUI"
-if syn and syn.protect_gui then syn.protect_gui(ESPSettingsUI) end
-ESPSettingsUI.Parent = LocalPlayer:WaitForChild("PlayerGui")
 ESPSettingsUI.DisplayOrder = 9999
 ESPSettingsUI.ResetOnSpawn = false
 ESPSettingsUI.Enabled = false
@@ -37,36 +30,13 @@ MainFrame.Position = UDim2.new(0.5, -160, 0.5, -150)
 MainFrame.BackgroundColor3 = Color3.fromRGB(0, 0, 0)
 MainFrame.BackgroundTransparency = 0.2
 MainFrame.Active = true
+MainFrame.Draggable = false
 Instance.new("UICorner", MainFrame).CornerRadius = UDim.new(0, 10)
-
-local function MakeDraggable(frame)
-    local dragging, dragInput, dragStart, startPos
-    frame.InputBegan:Connect(function(input)
-        if input.UserInputType == Enum.UserInputType.MouseButton1 then
-            dragging = true
-            dragStart = input.Position
-            startPos = frame.Position
-            input.Changed:Connect(function()
-                if input.UserInputState == Enum.UserInputState.End then dragging = false end
-            end)
-        end
-    end)
-    frame.InputChanged:Connect(function(input)
-        if input.UserInputType == Enum.UserInputType.MouseMovement then dragInput = input end
-    end)
-    UserInputService.InputChanged:Connect(function(input)
-        if input == dragInput and dragging then
-            local delta = input.Position - dragStart
-            frame.Position = UDim2.new(startPos.X.Scale, startPos.X.Offset + delta.X, startPos.Y.Scale, startPos.Y.Offset + delta.Y)
-        end
-    end)
-end
-MakeDraggable(MainFrame)
 
 local Title = Instance.new("TextLabel", MainFrame)
 Title.Size = UDim2.new(1, -40, 0, 35)
 Title.Position = UDim2.new(0, 10, 0, 5)
-Title.Text = "⚙️ ESP Settings [⚠️FPS DROP]"
+Title.Text = "⚙️ ESP SETTINGS (BETA)"
 Title.TextColor3 = Color3.fromRGB(255, 255, 255)
 Title.BackgroundTransparency = 1
 Title.Font = Enum.Font.GothamBold
@@ -83,23 +53,15 @@ CloseBtn.TextSize = 18
 CloseBtn.Font = Enum.Font.GothamBold
 CloseBtn.MouseButton1Click:Connect(function() ESPSettingsUI.Enabled = false end)
 
---// SCROLLING FRAME (AUTO CANVAS ADDED)
 local ScrollFrame = Instance.new("ScrollingFrame", MainFrame)
 ScrollFrame.Size = UDim2.new(1, -20, 1, -55)
 ScrollFrame.Position = UDim2.new(0, 10, 0, 45)
 ScrollFrame.BackgroundTransparency = 1
 ScrollFrame.ScrollBarThickness = 2
-ScrollFrame.CanvasSize = UDim2.new(0,0,0,0) -- Default
-
 local UIList = Instance.new("UIListLayout", ScrollFrame)
 UIList.Padding = UDim.new(0, 6)
 
--- LOGIC AUTO SIZE (Biar scroll nyesuain tombol)
-UIList:GetPropertyChangedSignal("AbsoluteContentSize"):Connect(function()
-    ScrollFrame.CanvasSize = UDim2.new(0, 0, 0, UIList.AbsoluteContentSize.Y + 10)
-end)
-
---// Fungsi Toggle
+--// Fungsi Toggle 
 local function CreateToggle(name, configKey)
     local Item = Instance.new("Frame", ScrollFrame)
     Item.Size = UDim2.new(1, 0, 0, 40)
@@ -130,89 +92,66 @@ local function CreateToggle(name, configKey)
     end)
 end
 
---// Logic ESP (Fixed & Optimized)
+--// Logic ESP (RE-CHECK & RE-RENDER FORCE)
 local function AddESP(plr)
-    if plr == LocalPlayer then return end
-
-    if ESP_Objects[plr] then -- Cleanup Old
-        for _,v in pairs(ESP_Objects[plr]) do
-             if typeof(v) == "Instance" then v:Destroy() else pcall(function() v:Remove() end) end
-        end
-        ESP_Objects[plr] = nil
-    end
-
     local BoxOutline = Drawing.new("Square")
+    BoxOutline.Visible = false
     BoxOutline.Thickness = 3
     BoxOutline.Color = Color3.new(0,0,0)
     BoxOutline.Filled = false
+
     local Box = Drawing.new("Square")
+    Box.Visible = false
     Box.Thickness = 1
     Box.Filled = false
+
     local Line = Drawing.new("Line")
     local Text = Drawing.new("Text")
-    Text.Center = true; Text.Outline = true; Text.Size = 15
 
-    ESP_Objects[plr] = {BoxOutline=BoxOutline, Box=Box, Line=Line, Text=Text}
-
-    local connection
-    connection = RunService.RenderStepped:Connect(function()
-        if not plr or not plr.Parent then
-            BoxOutline:Remove(); Box:Remove(); Line:Remove(); Text:Remove()
-            connection:Disconnect()
-            ESP_Objects[plr] = nil
-            return
-        end
-
-        if plr.Character and plr.Character:FindFirstChild("HumanoidRootPart") and plr.Character:FindFirstChild("Humanoid") then
+    RunService.RenderStepped:Connect(function()
+        if plr.Character and plr.Character:FindFirstChild("HumanoidRootPart") and plr ~= LocalPlayer then
             local Root = plr.Character.HumanoidRootPart
-            local Hum = plr.Character.Humanoid
             local Pos, OnScreen = Camera:WorldToViewportPoint(Root.Position)
 
-            local Config = getgenv().ESP_Config
-            local IsTeammate = (plr.Team == LocalPlayer.Team and plr.Team ~= nil)
-            local IsFriend = plr:IsFriendsWith(LocalPlayer.UserId)
-            local ShowESP = true
-            local CurrentColor = Config.Color
-
-            -- Logic Team & Friend
-            if Config.TeamCheck and IsTeammate and not IsFriend then ShowESP = false end
-            if Config.FriendCheck and IsFriend then CurrentColor = Color3.fromRGB(0, 255, 255) end -- Cyan Friend
-
-            if OnScreen and Hum.Health > 0 and ShowESP then
-                local SizeX = 2200 / Pos.Z; local SizeY = 2800 / Pos.Z
+            if OnScreen then
+                local SizeX = 2200 / Pos.Z
+                local SizeY = 2800 / Pos.Z
                 local BoxPos = Vector2.new(Pos.X - SizeX / 2, Pos.Y - SizeY / 2)
 
-                BoxOutline.Visible = Config.Box; BoxOutline.Size = Vector2.new(SizeX, SizeY); BoxOutline.Position = BoxPos
-                Box.Visible = Config.Box; Box.Size = BoxOutline.Size; Box.Position = BoxPos; Box.Color = CurrentColor
-                
-                Line.Visible = Config.Antena
+                -- Paksa Update Visibility berdasarkan config
+                BoxOutline.Visible = getgenv().ESP_Config.Box
+                BoxOutline.Size = Vector2.new(SizeX, SizeY)
+                BoxOutline.Position = BoxPos
+
+                Box.Visible = getgenv().ESP_Config.Box
+                Box.Size = BoxOutline.Size
+                Box.Position = BoxPos
+                Box.Color = getgenv().ESP_Config.Color
+
+                Line.Visible = getgenv().ESP_Config.Antena
                 Line.From = Vector2.new(Camera.ViewportSize.X / 2, Camera.ViewportSize.Y)
-                Line.To = Vector2.new(Pos.X, Pos.Y); Line.Color = CurrentColor
+                Line.To = Vector2.new(Pos.X, Pos.Y)
+                Line.Color = getgenv().ESP_Config.Color
 
-                Text.Visible = Config.Names
-                local dist = math.floor((Root.Position - Camera.CFrame.Position).Magnitude)
-                local nameStr = plr.Name
-                if IsFriend then nameStr = "[F] " .. nameStr end
-                Text.Text = nameStr .. " [" .. tostring(dist) .. "m]"
-                Text.Position = Vector2.new(Pos.X, BoxPos.Y - 20); Text.Color = CurrentColor
-
-                -- Outline / Highlight Logic (FIXED WARNA)
+                Text.Visible = getgenv().ESP_Config.Names
+                local dist = math.floor((Root.Position - LocalPlayer.Character.HumanoidRootPart.Position).Magnitude)
+                Text.Text = plr.Name .. " [" .. tostring(dist) .. "m]"
+                Text.Position = Vector2.new(Pos.X, Pos.Y - (SizeY / 2) - 15)
+                Text.Color = getgenv().ESP_Config.Color
+                Text.Center = true
+                Text.Outline = true
+                
+                -- Highlight logic
                 local hl = plr.Character:FindFirstChild("ESP_Highlight")
-                if Config.Outline then
+                if getgenv().ESP_Config.Outline then
                     if not hl then
                         hl = Instance.new("Highlight", plr.Character)
                         hl.Name = "ESP_Highlight"
-                        hl.FillTransparency = 1; hl.OutlineTransparency = 0
                     end
-                    hl.OutlineColor = CurrentColor -- Warna ngikut (Gak merah doang)
-                    hl.Enabled = true
-                else
-                    if hl then hl.Enabled = false end
-                end
+                    hl.OutlineColor = getgenv().ESP_Config.Color
+                elseif hl then hl:Destroy() end
             else
                 BoxOutline.Visible = false; Box.Visible = false; Line.Visible = false; Text.Visible = false
-                local hl = plr.Character:FindFirstChild("ESP_Highlight")
-                if hl then hl.Enabled = false end
             end
         else
             BoxOutline.Visible = false; Box.Visible = false; Line.Visible = false; Text.Visible = false
@@ -220,30 +159,19 @@ local function AddESP(plr)
     end)
 end
 
--- Init
+-- Start
 for _, p in pairs(Players:GetPlayers()) do AddESP(p) end
 Players.PlayerAdded:Connect(AddESP)
-Players.PlayerRemoving:Connect(function(p)
-    if ESP_Objects[p] then
-        for _,v in pairs(ESP_Objects[p]) do
-             if typeof(v) == "Instance" then v:Destroy() else pcall(function() v:Remove() end) end
-        end
-        ESP_Objects[p] = nil
-    end
-end)
 
---// LIST TOMBOL (Style Lama, Fitur Baru)
 CreateToggle("Outline Player", "Outline")
 CreateToggle("Box ESP", "Box")
 CreateToggle("Antena (Tracers)", "Antena")
 CreateToggle("Name | Studs", "Names")
-CreateToggle("Team Check", "TeamCheck")
-CreateToggle("Friend Check [Cyan]", "FriendCheck")
 
---// Panel Warna (Logic Selected Tetap Ada - FIX TYPO YELLOW)
+--// Panel Warna (Logic Selected Tetap Ada)
 local ColorBtn = Instance.new("TextButton", ScrollFrame)
 ColorBtn.Size = UDim2.new(1, 0, 0, 35)
-ColorBtn.Text = "[🎨] Switch Color"
+ColorBtn.Text = "[🎨] Switch Collor"
 ColorBtn.BackgroundColor3 = Color3.fromRGB(45, 45, 45)
 ColorBtn.TextColor3 = Color3.fromRGB(255, 255, 255)
 Instance.new("UICorner", ColorBtn)
@@ -267,19 +195,14 @@ local colors = {
     {c = Color3.fromRGB(255, 0, 0), n = "Selected"},
     {c = Color3.fromRGB(0, 255, 0), n = "Selected"},
     {c = Color3.fromRGB(0, 170, 255), n = "Selected"},
-    {c = Color3.fromRGB(255, 255, 0), n = "Selected"},
-    {c = Color3.fromRGB(255, 0, 255), n = "Selected"},
+    {c = Color3.fromRGB(255, 255,  yellow), n = "Selected"},
+    {c = Color3.fromRGB(255, 0, 255), n = "Selected"}
 }
 
 local colorButtons = {}
 local function UpdatePaletteText()
     for _, b in ipairs(colorButtons) do
-        local c1 = getgenv().ESP_Config.Color; local c2 = b.ColorVal
-        if c1.R==c2.R and c1.G==c2.G and c1.B==c2.B then
-             b.Button.Text = b.Txt
-        else
-             b.Button.Text = ""
-        end
+        b.Button.Text = (getgenv().ESP_Config.Color == b.ColorVal) and b.Txt or ""
     end
 end
 
@@ -287,8 +210,8 @@ for _, d in ipairs(colors) do
     local ColBtn = Instance.new("TextButton", ColorList)
     ColBtn.Size = UDim2.new(1, 0, 0, 35)
     ColBtn.BackgroundColor3 = d.c
-    ColBtn.TextColor3 = Color3.new(0,0,0) -- Hitam biar kebaca
-    ColBtn.TextStrokeTransparency = 0.8
+    ColBtn.TextColor3 = Color3.new(1,1,1)
+    ColBtn.TextStrokeTransparency = 0
     ColBtn.Font = Enum.Font.GothamBold
     ColBtn.TextSize = 11
     Instance.new("UICorner", ColBtn)
