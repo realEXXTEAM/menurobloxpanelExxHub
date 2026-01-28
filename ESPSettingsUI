@@ -5,20 +5,20 @@ local UserInputService = game:GetService("UserInputService")
 local Camera = workspace.CurrentCamera
 local LocalPlayer = Players.LocalPlayer
 
---// Konfigurasi Global (FITUR BARU ADDED)
+--// Konfigurasi
 getgenv().ESP_Config = {
     Outline = false,
     Box = false,
     Antena = false,
     Names = false,
     TeamCheck = false,
-    FriendCheck = true,
+    FriendCheck = false,
     Color = Color3.fromRGB(255, 255, 255)
 }
 
 local ESP_Objects = {} 
 
---// UI Textures (ORIGINAL)
+--// UI Textures (Button)
 local TX_OFF = "rbxassetid://6031068420"
 local TX_ON = "rbxassetid://6031068421"
 
@@ -39,7 +39,6 @@ MainFrame.BackgroundTransparency = 0.2
 MainFrame.Active = true
 Instance.new("UICorner", MainFrame).CornerRadius = UDim.new(0, 10)
 
--- Drag Function (Biar tetep smooth tapi gak ngerubah tampilan)
 local function MakeDraggable(frame)
     local dragging, dragInput, dragStart, startPos
     frame.InputBegan:Connect(function(input)
@@ -67,7 +66,7 @@ MakeDraggable(MainFrame)
 local Title = Instance.new("TextLabel", MainFrame)
 Title.Size = UDim2.new(1, -40, 0, 35)
 Title.Position = UDim2.new(0, 10, 0, 5)
-Title.Text = "⚙️ ESP Settings"
+Title.Text = "⚙️ ESP Settings [⚠️FPS DROP]"
 Title.TextColor3 = Color3.fromRGB(255, 255, 255)
 Title.BackgroundTransparency = 1
 Title.Font = Enum.Font.GothamBold
