@@ -140,7 +140,7 @@ Scrolling.Position = UDim2.new(0, 10, 0, 45)
 Scrolling.CanvasSize = UDim2.new(0, 0, 0, 0)
 Scrolling.ScrollBarThickness = 0
 Scrolling.BackgroundTransparency = 1
-Scrolling.ClipsDescendants = true -- Motong isi yang keluar batas
+Scrolling.ClipsDescendants = true
 Scrolling.ZIndex = 1 
 
 local UIListLayout = Instance.new("UIListLayout")
@@ -149,6 +149,7 @@ UIListLayout.Padding = UDim.new(0, 5)
 
 --// Songs List
 local Songs = {
+    {Name = "DJ Kasih Paham Bos", SoundId = "rbxassetid://123476716998589"},
     {Name = "BABY SHARK", SoundId = "rbxassetid://131822907093877"},
     {Name = "TheFatRat", SoundId = "rbxassetid://71225819538909"},
     {Name = "XE FUNK", SoundId = "rbxassetid://131415306381990"},
