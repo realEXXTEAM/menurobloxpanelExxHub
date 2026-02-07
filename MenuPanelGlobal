@@ -11,7 +11,7 @@ screenGui.ZIndexBehavior = Enum.ZIndexBehavior.Global
 screenGui.DisplayOrder = 1000000
 screenGui.IgnoreGuiInset = true
 
---// Paksa masuk ke CoreGui
+--// Parenting CoreGui
 local success, err = pcall(function()
     screenGui.Parent = CoreGui
 end)
@@ -19,13 +19,23 @@ if not success then
     screenGui.Parent = PlayerGui
 end
 
+--// [TAMBAHAN] Background Click Detector (Auto Close)
+local closeDetector = Instance.new("TextButton")
+closeDetector.Name = "CloseDetector"
+closeDetector.Size = UDim2.new(1, 0, 1, 0)
+closeDetector.BackgroundTransparency = 1
+closeDetector.Text = ""
+closeDetector.AutoButtonColor = false
+closeDetector.Visible = false -- Hanya muncul saat menu buka
+closeDetector.ZIndex = 9990 -- Di bawah menu tapi di atas game
+closeDetector.Parent = screenGui
+
 --// Toggle Button
 local toggleButton = Instance.new("TextButton")
 toggleButton.Size = UDim2.new(0, 44, 0, 44)
 toggleButton.Position = UDim2.new(0.5, -22, 0, 12)
 toggleButton.BackgroundColor3 = Color3.fromRGB(0, 0, 0)
 toggleButton.BackgroundTransparency = 0.2
-toggleButton.AutoButtonColor = false
 toggleButton.Text = ""
 toggleButton.ZIndex = 9999
 toggleButton.Parent = screenGui
@@ -114,24 +124,25 @@ local function toggleMenu(state)
     animating = true
     opened = state
 
+    -- Tampilkan detector kalau menu dibuka
+    closeDetector.Visible = opened
+
     TweenService:Create(rotFrame, TweenInfo.new(0.25), {Rotation = opened and 180 or 0}):Play()
     if opened then
         TweenService:Create(menuLabel, TweenInfo.new(0.1), {TextTransparency = 1}):Play()
         task.wait(0.1)
         TweenService:Create(closeLabel, TweenInfo.new(0.15), {TextTransparency = 0}):Play()
-    else
-        TweenService:Create(closeLabel, TweenInfo.new(0.1), {TextTransparency = 1}):Play()
-        task.wait(0.1)
-        TweenService:Create(menuLabel, TweenInfo.new(0.15), {TextTransparency = 0}):Play()
-    end
-
-    if opened then
+        
         mainFrame.Visible = true
         local tween1 = TweenService:Create(mainFrame, TweenInfo.new(0.2, Enum.EasingStyle.Back, Enum.EasingDirection.Out), {Size = UDim2.new(0, 50, 0, 50)})
         tween1:Play()
         tween1.Completed:Wait()
         TweenService:Create(mainFrame, TweenInfo.new(0.3, Enum.EasingStyle.Quart, Enum.EasingDirection.Out), {Size = UDim2.new(0, 300, 0, 60)}):Play()
     else
+        TweenService:Create(closeLabel, TweenInfo.new(0.1), {TextTransparency = 1}):Play()
+        task.wait(0.1)
+        TweenService:Create(menuLabel, TweenInfo.new(0.15), {TextTransparency = 0}):Play()
+        
         local tweenClose = TweenService:Create(mainFrame, TweenInfo.new(0.2, Enum.EasingStyle.Quart, Enum.EasingDirection.In), {Size = UDim2.new(0, 0, 0, 0)})
         tweenClose:Play()
         tweenClose.Completed:Wait()
@@ -140,8 +151,16 @@ local function toggleMenu(state)
     animating = false
 end
 
+-- Klik tombol utama
 toggleButton.MouseButton1Click:Connect(function()
     toggleMenu(not opened)
+end)
+
+-- [TAMBAHAN] Klik di luar frame (Auto Close)
+closeDetector.MouseButton1Click:Connect(function()
+    if opened then
+        toggleMenu(false)
+    end
 end)
 
 local validUINames = {}
@@ -166,11 +185,8 @@ for i, item in ipairs(menuItems) do
 
     btn.MouseButton1Click:Connect(function()
         local uiName = item.Text.."UI"
-        
-        -- Cari di PlayerGui DAN CoreGui
         local targetUI = PlayerGui:FindFirstChild(uiName) or CoreGui:FindFirstChild(uiName)
 
-        -- Matikan semua UI lain yang ada di list (cek dua tempat)
         local function disableOthers(folder)
             for _, v in pairs(folder:GetChildren()) do
                 if v:IsA("ScreenGui") and validUINames[v.Name] and v.Name ~= uiName then
@@ -182,7 +198,6 @@ for i, item in ipairs(menuItems) do
         disableOthers(PlayerGui)
         disableOthers(CoreGui)
 
-        -- Toggle UI yang terpilih
         if targetUI then 
             targetUI.Enabled = not targetUI.Enabled 
         end
