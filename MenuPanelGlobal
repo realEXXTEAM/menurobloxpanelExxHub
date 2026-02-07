@@ -26,8 +26,8 @@ closeDetector.Size = UDim2.new(1, 0, 1, 0)
 closeDetector.BackgroundTransparency = 1
 closeDetector.Text = ""
 closeDetector.AutoButtonColor = false
-closeDetector.Visible = false -- Hanya muncul saat menu buka
-closeDetector.ZIndex = 9990 -- Di bawah menu tapi di atas game
+closeDetector.Visible = false 
+closeDetector.ZIndex = 9990 
 closeDetector.Parent = screenGui
 
 --// Toggle Button
