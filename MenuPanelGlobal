@@ -1,4 +1,5 @@
 local TweenService = game:GetService("TweenService")
+local CoreGui = game:GetService("CoreGui")
 local Player = game.Players.LocalPlayer
 
 --// GUI Setup
@@ -8,7 +9,15 @@ screenGui.ResetOnSpawn = false
 screenGui.ZIndexBehavior = Enum.ZIndexBehavior.Global
 screenGui.DisplayOrder = 1000000
 screenGui.IgnoreGuiInset = true
-screenGui.Parent = Player:WaitForChild("PlayerGui")
+
+--// Parenting ke CoreGui
+local success, err = pcall(function()
+    screenGui.Parent = CoreGui
+end)
+
+if not success then
+    screenGui.Parent = Player:WaitForChild("PlayerGui")
+end
 
 --// Toggle Button
 local toggleButton = Instance.new("TextButton")
@@ -175,10 +184,11 @@ for i, item in ipairs(menuItems) do
     end)
 
     btn.MouseButton1Click:Connect(function()
-        local playerGui = Player:WaitForChild("PlayerGui")
-        local ui = playerGui:FindFirstChild(item.Text.."UI")
+        -- Mengambil parent dari GUI ini (CoreGui/PlayerGui)
+        local currentParent = screenGui.Parent
+        local ui = currentParent:FindFirstChild(item.Text.."UI")
 
-        for _, v in pairs(playerGui:GetChildren()) do
+        for _, v in pairs(currentParent:GetChildren()) do
             if v:IsA("ScreenGui") and validUI[v.Name] and v ~= ui then
                 v.Enabled = false
             end
