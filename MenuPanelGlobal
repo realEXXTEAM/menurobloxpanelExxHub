@@ -3,9 +3,13 @@ local CoreGui = game:GetService("CoreGui")
 local Player = game.Players.LocalPlayer
 local PlayerGui = Player:WaitForChild("PlayerGui")
 
+--// CONFIGURASI ICON
+local MENU_ICON_ID = "rbxassetid://84755900656538" 
+local CLOSE_ICON_ID = "rbxassetid://121392148105762" 
+
 --// GUI Setup
 local screenGui = Instance.new("ScreenGui")
-screenGui.Name = "TopBarMenuExxHubGLBL"
+screenGui.Name = "TopBarMenuExxHub"
 screenGui.ResetOnSpawn = false
 screenGui.ZIndexBehavior = Enum.ZIndexBehavior.Global
 screenGui.DisplayOrder = 1000000
@@ -44,32 +48,17 @@ local toggleCorner = Instance.new("UICorner")
 toggleCorner.CornerRadius = UDim.new(1, 0)
 toggleCorner.Parent = toggleButton
 
-local rotFrame = Instance.new("Frame")
-rotFrame.Size = UDim2.new(1,0,1,0)
-rotFrame.BackgroundTransparency = 1
-rotFrame.ZIndex = 9999
-rotFrame.Parent = toggleButton
-
-local menuLabel = Instance.new("TextLabel")
-menuLabel.Size = UDim2.new(1,0,1,0)
-menuLabel.BackgroundTransparency = 1
-menuLabel.Text = "≡"
-menuLabel.Font = Enum.Font.GothamBold
-menuLabel.TextSize = 28
-menuLabel.TextColor3 = Color3.new(1,1,1)
-menuLabel.ZIndex = 9999
-menuLabel.Parent = rotFrame
-
-local closeLabel = Instance.new("TextLabel")
-closeLabel.Size = UDim2.new(1,0,1,0)
-closeLabel.BackgroundTransparency = 1
-closeLabel.Text = "X"
-closeLabel.Font = Enum.Font.GothamBold
-closeLabel.TextSize = 28
-closeLabel.TextColor3 = Color3.new(1,1,1)
-closeLabel.TextTransparency = 1
-closeLabel.ZIndex = 9999
-closeLabel.Parent = rotFrame
+--// [UPDATE] Icon dengan ukuran besar
+local mainIcon = Instance.new("ImageLabel")
+mainIcon.Name = "MainIcon"
+mainIcon.Size = UDim2.new(0.85, 0, 0.85, 0) 
+mainIcon.AnchorPoint = Vector2.new(0.5, 0.5)
+mainIcon.Position = UDim2.new(0.5, 0, 0.5, 0)
+mainIcon.BackgroundTransparency = 1
+mainIcon.Image = MENU_ICON_ID 
+mainIcon.ScaleType = Enum.ScaleType.Fit
+mainIcon.ZIndex = 9999
+mainIcon.Parent = toggleButton
 
 --// Popup Frame
 local mainFrame = Instance.new("Frame")
@@ -119,35 +108,57 @@ local menuItems = {
 local opened = false
 local animating = false
 
+--// [UPDATE] Animasi Menyusut + Berputar + Ganti Icon
 local function toggleMenu(state)
     if animating then return end
     animating = true
     opened = state
 
-    -- Tampilkan detector kalau menu dibuka
     closeDetector.Visible = opened
 
-    TweenService:Create(rotFrame, TweenInfo.new(0.25), {Rotation = opened and 180 or 0}):Play()
+    -- 1. Animasi Menyusut Sambil Berputar 180 derajat
+    local shrinkInfo = TweenInfo.new(0.2, Enum.EasingStyle.Quad, Enum.EasingDirection.In)
+    local shrinkTween = TweenService:Create(mainIcon, shrinkInfo, {
+        Size = UDim2.new(0, 0, 0, 0),
+        Rotation = 180
+    })
+    
+    shrinkTween:Play()
+    shrinkTween.Completed:Wait()
+
+    -- Ganti Icon Gambar & Reset Rotasi ke arah sebaliknya untuk efek putaran halus kembali
     if opened then
-        TweenService:Create(menuLabel, TweenInfo.new(0.1), {TextTransparency = 1}):Play()
-        task.wait(0.1)
-        TweenService:Create(closeLabel, TweenInfo.new(0.15), {TextTransparency = 0}):Play()
+        mainIcon.Image = CLOSE_ICON_ID
+        mainIcon.Rotation = -180
         
         mainFrame.Visible = true
-        local tween1 = TweenService:Create(mainFrame, TweenInfo.new(0.2, Enum.EasingStyle.Back, Enum.EasingDirection.Out), {Size = UDim2.new(0, 50, 0, 50)})
-        tween1:Play()
-        tween1.Completed:Wait()
-        TweenService:Create(mainFrame, TweenInfo.new(0.3, Enum.EasingStyle.Quart, Enum.EasingDirection.Out), {Size = UDim2.new(0, 300, 0, 60)}):Play()
+        task.spawn(function()
+            local tween1 = TweenService:Create(mainFrame, TweenInfo.new(0.2, Enum.EasingStyle.Back, Enum.EasingDirection.Out), {Size = UDim2.new(0, 50, 0, 50)})
+            tween1:Play()
+            tween1.Completed:Wait()
+            TweenService:Create(mainFrame, TweenInfo.new(0.3, Enum.EasingStyle.Quart, Enum.EasingDirection.Out), {Size = UDim2.new(0, 300, 0, 60)}):Play()
+        end)
     else
-        TweenService:Create(closeLabel, TweenInfo.new(0.1), {TextTransparency = 1}):Play()
-        task.wait(0.1)
-        TweenService:Create(menuLabel, TweenInfo.new(0.15), {TextTransparency = 0}):Play()
+        mainIcon.Image = MENU_ICON_ID
+        mainIcon.Rotation = -180
         
-        local tweenClose = TweenService:Create(mainFrame, TweenInfo.new(0.2, Enum.EasingStyle.Quart, Enum.EasingDirection.In), {Size = UDim2.new(0, 0, 0, 0)})
-        tweenClose:Play()
-        tweenClose.Completed:Wait()
-        mainFrame.Visible = false
+        task.spawn(function()
+            local tweenClose = TweenService:Create(mainFrame, TweenInfo.new(0.2, Enum.EasingStyle.Quart, Enum.EasingDirection.In), {Size = UDim2.new(0, 0, 0, 0)})
+            tweenClose:Play()
+            tweenClose.Completed:Wait()
+            mainFrame.Visible = false
+        end)
     end
+
+    -- 2. Animasi Membesar (Grow) + Berputar Balik ke 0 + Efek Back (Memantul)
+    local growInfo = TweenInfo.new(0.3, Enum.EasingStyle.Back, Enum.EasingDirection.Out)
+    local growTween = TweenService:Create(mainIcon, growInfo, {
+        Size = UDim2.new(0.85, 0, 0.85, 0),
+        Rotation = 0
+    })
+    
+    growTween:Play()
+    task.wait(0.3)
     animating = false
 end
 
@@ -156,13 +167,14 @@ toggleButton.MouseButton1Click:Connect(function()
     toggleMenu(not opened)
 end)
 
--- [TAMBAHAN] Klik di luar frame (Auto Close)
+-- Klik di luar frame (Auto Close)
 closeDetector.MouseButton1Click:Connect(function()
     if opened then
         toggleMenu(false)
     end
 end)
 
+-- Validasi UI (untuk fitur auto-disable UI lain)
 local validUINames = {}
 for _, item in ipairs(menuItems) do
     validUINames[item.Text.."UI"] = true
