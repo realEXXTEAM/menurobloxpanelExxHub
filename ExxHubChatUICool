@@ -1,0 +1,36 @@
+local TextChatService = game:GetService("TextChatService")
+local luckiestGuyFont = Font.fromEnum(Enum.Font.LuckiestGuy)
+
+-- BubbleChatConfiguration
+local bubbleChat = TextChatService.BubbleChatConfiguration
+bubbleChat.BackgroundColor3 = Color3.fromRGB(0, 0, 0) 
+bubbleChat.BackgroundTransparency = 0.3
+bubbleChat.FontFace = luckiestGuyFont 
+bubbleChat.TextColor3 = Color3.fromRGB(255, 255, 255) 
+bubbleChat.TextSize = 16
+bubbleChat.BubbleDuration = 15
+bubbleChat.BubblesSpacing = 6
+bubbleChat.MaxBubbles = 3
+bubbleChat.MaxDistance = 100
+bubbleChat.Enabled = true
+
+-- ChatInputBarConfiguration
+local inputBar = TextChatService.ChatInputBarConfiguration
+inputBar.BackgroundColor3 = Color3.fromRGB(255, 255, 255) 
+inputBar.BackgroundTransparency = 0.2
+-- FontFace tidak diubah (kembali normal agar ngetik lebih nyaman)
+inputBar.PlaceholderColor3 = Color3.fromRGB(178, 178, 178) 
+inputBar.TextColor3 = Color3.fromRGB(0, 0, 0) 
+inputBar.TextSize = 14
+inputBar.TextStrokeColor3 = Color3.fromRGB(0, 0, 0) 
+inputBar.TextStrokeTransparency = 0.5
+
+-- ChatWindowConfiguration
+local chatWindow = TextChatService.ChatWindowConfiguration
+chatWindow.BackgroundColor3 = Color3.fromRGB(0, 0, 0) 
+chatWindow.BackgroundTransparency = 0.3
+-- FontFace tidak diubah (tetap normal)
+chatWindow.TextColor3 = Color3.fromRGB(255, 255, 255) 
+chatWindow.TextSize = 14
+chatWindow.TextStrokeColor3 = Color3.fromRGB(0, 0, 0) 
+chatWindow.TextStrokeTransparency = 0.5

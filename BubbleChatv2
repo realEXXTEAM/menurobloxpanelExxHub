@@ -1,9 +1,0 @@
-local TextChatService = game:GetService("TextChatService")
-local bubbleChat = TextChatService.BubbleChatConfiguration
-
-bubbleChat.BackgroundColor3 = Color3.fromRGB(0, 0, 0)
-bubbleChat.BackgroundTransparency = 0.3
-bubbleChat.FontFace = Font.fromEnum(Enum.Font.LuckiestGuy)
-bubbleChat.TailVisible = true
-bubbleChat.TextColor3 = Color3.fromRGB(255, 255, 255)
-bubbleChat.TextSize = 16
