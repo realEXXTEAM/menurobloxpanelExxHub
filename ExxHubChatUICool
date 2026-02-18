@@ -1,12 +1,13 @@
 local TextChatService = game:GetService("TextChatService")
+local CoreGui = game:GetService("CoreGui")
 local luckiestGuyFont = Font.fromEnum(Enum.Font.LuckiestGuy)
 
--- BubbleChatConfiguration
+--- Bubble chat
 local bubbleChat = TextChatService.BubbleChatConfiguration
-bubbleChat.BackgroundColor3 = Color3.fromRGB(0, 0, 0) 
+bubbleChat.BackgroundColor3 = Color3.fromRGB(0, 0, 0)
 bubbleChat.BackgroundTransparency = 0.3
-bubbleChat.FontFace = luckiestGuyFont 
-bubbleChat.TextColor3 = Color3.fromRGB(255, 255, 255) 
+bubbleChat.FontFace = luckiestGuyFont
+bubbleChat.TextColor3 = Color3.fromRGB(255, 255, 255)
 bubbleChat.TextSize = 16
 bubbleChat.BubbleDuration = 15
 bubbleChat.BubblesSpacing = 6
@@ -14,23 +15,46 @@ bubbleChat.MaxBubbles = 3
 bubbleChat.MaxDistance = 100
 bubbleChat.Enabled = true
 
--- ChatInputBarConfiguration
+--- Chat input bar
 local inputBar = TextChatService.ChatInputBarConfiguration
-inputBar.BackgroundColor3 = Color3.fromRGB(255, 255, 255) 
+inputBar.BackgroundColor3 = Color3.fromRGB(255, 255, 255)
 inputBar.BackgroundTransparency = 0.2
--- FontFace tidak diubah (kembali normal agar ngetik lebih nyaman)
-inputBar.PlaceholderColor3 = Color3.fromRGB(178, 178, 178) 
-inputBar.TextColor3 = Color3.fromRGB(0, 0, 0) 
+inputBar.PlaceholderColor3 = Color3.fromRGB(178, 178, 178)
+inputBar.TextColor3 = Color3.fromRGB(0, 0, 0)
 inputBar.TextSize = 14
-inputBar.TextStrokeColor3 = Color3.fromRGB(0, 0, 0) 
+inputBar.TextStrokeColor3 = Color3.fromRGB(0, 0, 0)
 inputBar.TextStrokeTransparency = 0.5
 
--- ChatWindowConfiguration
+--- Chat window
 local chatWindow = TextChatService.ChatWindowConfiguration
-chatWindow.BackgroundColor3 = Color3.fromRGB(0, 0, 0) 
+chatWindow.BackgroundColor3 = Color3.fromRGB(0, 0, 0)
 chatWindow.BackgroundTransparency = 0.3
--- FontFace tidak diubah (tetap normal)
-chatWindow.TextColor3 = Color3.fromRGB(255, 255, 255) 
+chatWindow.TextColor3 = Color3.fromRGB(255, 255, 255)
 chatWindow.TextSize = 14
-chatWindow.TextStrokeColor3 = Color3.fromRGB(0, 0, 0) 
+chatWindow.TextStrokeColor3 = Color3.fromRGB(0, 0, 0)
 chatWindow.TextStrokeTransparency = 0.5
+
+--- Backpack inventory
+pcall(function()
+    local robloxGui = CoreGui:WaitForChild("RobloxGui")
+    local backpack = robloxGui:WaitForChild("Backpack")
+    local inventory = backpack:WaitForChild("Inventory")
+    local search = inventory:WaitForChild("Search")
+    local textBox = search:WaitForChild("TextBox")
+
+    inventory.BackgroundColor3 = Color3.fromRGB(0, 0, 0)
+    inventory.BackgroundTransparency = 0.5
+    inventory.BorderSizePixel = 0
+
+    search.BackgroundColor3 = Color3.fromRGB(0, 0, 0)
+    search.BackgroundTransparency = 0.5
+    search.BorderSizePixel = 0
+
+    textBox.BackgroundColor3 = Color3.fromRGB(0, 0, 0)
+    textBox.BackgroundTransparency = 1
+    textBox.Text = "🔎 Search"
+    textBox.TextColor3 = Color3.fromRGB(255, 255, 255)
+    textBox.PlaceholderColor3 = Color3.fromRGB(178, 178, 178)
+    textBox.TextSize = 24
+    textBox.BorderSizePixel = 0
+end)
