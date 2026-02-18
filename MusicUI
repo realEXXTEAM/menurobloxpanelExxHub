@@ -149,6 +149,8 @@ UIListLayout.Padding = UDim.new(0, 5)
 
 --// Songs List
 local Songs = {
+    {Namd = "I Love You So", SoundId = "rbxassetid://131484103484346"}, 
+    {Name = "DJ Intinya Kaca Mata", SoundId = "rbxassetid://78190399857627"}, 
     {Name = "DJ Kasih Paham Bos", SoundId = "rbxassetid://123476716998589"},
     {Name = "BABY SHARK", SoundId = "rbxassetid://131822907093877"},
     {Name = "TheFatRat", SoundId = "rbxassetid://71225819538909"},
