@@ -592,7 +592,7 @@ local currentActiveBtn = nil
 
 -- [[ ROTATION VARIABLES ]]
 local currentCamAngle = 0
-local isDragging = false
+local isDragging = true
 local lastMouseX = 0
 
 -- =================================================================
