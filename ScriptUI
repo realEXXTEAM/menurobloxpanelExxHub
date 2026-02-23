@@ -114,7 +114,7 @@ uiPadding.Parent = listFrame
 
 --// Example Data
 local scripts = {
-    {title = "Garden Horizons Script – Chiyo Hub", image = "rbxassetid://0", text = "loadstring(game:HttpGet('https://raw.githubusercontent.com/kaisenlmao/loader/refs/heads/main/chiyo.lua'))()"},
+    {title = "Garden Horizons Script – Chiyo Hub", image = "rbxassetid://95598589346793", text = "loadstring(game:HttpGet('https://raw.githubusercontent.com/kaisenlmao/loader/refs/heads/main/chiyo.lua'))()"},
     {title = "MeoX Hub - Blox Fruit's (No Key)", image = "rbxassetid://107306321209913", text = "loadstring(game:HttpGet('https://raw.githubusercontent.com/VanHoangIOS/MeoXHub/refs/heads/main/Main.lua'))()"},
     {title = "Matsune Auto Bounty - Blox Fruit's (Open Source Edit)", image = "rbxassetid://112113882697708", text = "loadstring(game:HttpGet('https://pastefy.app/IkS0Jjh7/raw'))()"},
     {title = "Zeus Hub – Blox Fruits Script (No Key)", image = "rbxassetid://102731130900220", text = "loadstring(game:HttpGet('https://raw.githubusercontent.com/Jadelly/bloxfruit/refs/heads/main/Zeusscript', true))()"},
