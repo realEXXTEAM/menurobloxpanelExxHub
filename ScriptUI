@@ -114,6 +114,10 @@ uiPadding.Parent = listFrame
 
 --// Example Data
 local scripts = {
+    {title = "GardenHorizonWait", image = "rbxassetid://0", text = ""},
+    {title = "GardenHorizonWait", image = "rbxassetid://0", text = ""}, 
+    {title = "GardenHorizonWait", image = "rbxassetid://0", text = ""},
+    {title = "GardenHorizonWait", image = "rbxassetid://0", text = ""},
     {title = "Garden Horizons Script - Zenith Hub", image = "rbxassetid://73619044426687", text = "loadstring(game:HttpGet('https://zenithhub.cloud/panel/script'))()"},
     {title = "Garden Horizons Script – Airflow Hub", image = "rbxassetid://83159446662536", text = "loadstring(game:HttpGet('https://airflowscript.com/loader'))()"},
     {title = "Garden Horizons Script – Speed Hub", image = "rbxassetid://123132329647917", text = "loadstring(game:HttpGet('https://raw.githubusercontent.com/AhmadV99/Speed-Hub-X/main/Speed%20Hub%20X.lua', true))()"},
