@@ -114,7 +114,7 @@ uiPadding.Parent = listFrame
 
 --// Example Data
 local scripts = {
-    {title = "GardenHorizonWait", image = "rbxassetid://0", text = ""},
+    {title = "Garden Horizons Script – Solix Hub", image = "rbxassetid://87056489533308", text = "loadstring(game:HttpGet('https://raw.githubusercontent.com/meobeo8/a/a/a'))()"},
     {title = "Garden Horizons Script No Key – Cyrus Hub", image = "rbxassetid://091616327140362, text = "loadstring(game:HttpGet('https://raw.githubusercontent.com/CyrusOffc/scriptcyrus/refs/heads/main/roblox/loader.lua'))()"}, 
     {title = "Garden Horizons Script No Key – Orion Hub", image = "rbxassetid://136733346895963", text = "loadstring(game:HttpGet('https://api.luarmor.net/files/v4/loaders/91bf1b7c70f3860a9554f13009f0b9a7.lua'))()"},
     {title = "Garden Horizons Script – GH Hub", image = "rbxassetid://139257807170738", text = "loadstring(game:HttpGet('https://gist.githubusercontent.com/topppp1804/6156d087baebc0efa8c18e9a8c0cb75f/raw/gardenhorizonsv2'))()"},
