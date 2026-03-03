@@ -20,9 +20,9 @@ local inputBar = TextChatService.ChatInputBarConfiguration
 inputBar.BackgroundColor3 = Color3.fromRGB(255, 255, 255)
 inputBar.BackgroundTransparency = 0.2
 inputBar.PlaceholderColor3 = Color3.fromRGB(178, 178, 178)
-inputBar.TextColor3 = Color3.fromRGB(0, 0, 0)
+inputBar.TextColor3 = Color3.fromRGB(255, 255, 255)
 inputBar.TextSize = 14
-inputBar.TextStrokeColor3 = Color3.fromRGB(0, 0, 0)
+inputBar.TextStrokeColor3 = Color3.fromRGB(255, 255, 255)
 inputBar.TextStrokeTransparency = 0.5
 
 --- Chat window
@@ -52,7 +52,6 @@ pcall(function()
 
     textBox.BackgroundColor3 = Color3.fromRGB(0, 0, 0)
     textBox.BackgroundTransparency = 1
-    textBox.Text = "🔎 Search"
     textBox.TextColor3 = Color3.fromRGB(255, 255, 255)
     textBox.PlaceholderColor3 = Color3.fromRGB(178, 178, 178)
     textBox.TextSize = 24
