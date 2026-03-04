@@ -6,7 +6,6 @@ local luckiestGuyFont = Font.fromEnum(Enum.Font.LuckiestGuy)
 local bubbleChat = TextChatService.BubbleChatConfiguration
 bubbleChat.BackgroundColor3 = Color3.fromRGB(0, 0, 0)
 bubbleChat.BackgroundTransparency = 0.3
-bubbleChat.FontFace = Fantasy
 bubbleChat.TextColor3 = Color3.fromRGB(255, 255, 255)
 bubbleChat.TextSize = 16
 bubbleChat.BubbleDuration = 15
