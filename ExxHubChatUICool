@@ -16,9 +16,9 @@ bubbleChat.Enabled = true
 
 --- Chat input bar
 local inputBar = TextChatService.ChatInputBarConfiguration
-inputBar.BackgroundColor3 = Color3.fromRGB(255, 255, 255)
+inputBar.BackgroundColor3 = Color3.fromRGB(0, 0, 0)
 inputBar.BackgroundTransparency = 0.2
-inputBar.PlaceholderColor3 = Color3.fromRGB(0, 0, 0)
+inputBar.PlaceholderColor3 = Color3.fromRGB(255, 255, 255)
 inputBar.TextColor3 = Color3.fromRGB(255, 255, 255)
 inputBar.TextSize = 14
 inputBar.TextStrokeColor3 = Color3.fromRGB(255, 255, 255)
