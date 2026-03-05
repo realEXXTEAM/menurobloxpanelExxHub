@@ -58,104 +58,113 @@ pcall(function()
 end)
 
 --- HOTBAR + INVENTORY
-local Backpack = game:GetService("CoreGui"):WaitForChild("RobloxGui"):WaitForChild("Backpack")
-local Inventory = Backpack:WaitForChild("Inventory")
+local RunService = game:GetService("RunService")
+local CoreGui = game:GetService("CoreGui")
+
+local Backpack = CoreGui:WaitForChild("RobloxGui"):WaitForChild("Backpack")
 local Hotbar = Backpack:WaitForChild("Hotbar")
-local InvGrid = Inventory:WaitForChild("ScrollingFrame"):WaitForChild("UIGridFrame")
+local InvGrid = Backpack:WaitForChild("Inventory"):WaitForChild("ScrollingFrame"):WaitForChild("UIGridFrame")
+local SearchBox = Backpack.Inventory.Search.TextBox
 
-local SearchFrame = Inventory:WaitForChild("Search")
-local SearchBox = SearchFrame:WaitForChild("TextBox")
-local ClearButton = SearchFrame:WaitForChild("X")
+-- Fungsi Brutal untuk ganti Edge bawaan ke Child [4] yang bulat
+local function FixSelectionEdge(slot, isHotbar)
+    if not slot then return end
 
--- Fungsi Utama Style (Bentuk & Warna)
-local function ApplyStyle(obj, radius, forceBlack)
-    if obj and obj:IsA("GuiObject") then
-        obj.BorderSizePixel = 0
-        
-        -- Paksa warna hitam jika diminta
-        if forceBlack then
-            obj.BackgroundColor3 = Color3.new(0, 0, 0)
-            obj:GetPropertyChangedSignal("BackgroundColor3"):Connect(function()
-                obj.BackgroundColor3 = Color3.new(0, 0, 0)
-            end)
-        end
+    -- 1. Slot Utama: Harus Bulat
+    local slotCorner = slot:FindFirstChild("SlotRound") or Instance.new("UICorner")
+    slotCorner.Name = "SlotRound"
+    slotCorner.CornerRadius = UDim.new(1, 0)
+    slotCorner.Parent = slot
+    slot.BorderSizePixel = 0
 
-        local corner = obj:FindFirstChild("RoundEffect") or Instance.new("UICorner")
-        corner.Name = "RoundEffect"
-        corner.CornerRadius = radius or UDim.new(1, 0)
-        corner.Parent = obj
-    end
-end
-
--- Fungsi khusus untuk menangani elemen internal slot (Equipped & Drag Outline)
-local function StyleInternalSlot(slot, isHotbar)
-    -- 1. Tangani elemen "Equipped" (biru-biru) yang kamu maksud
     local equipped = slot:FindFirstChild("Equipped")
     if equipped then
-        -- Mencari anak ke-4 secara spesifik seperti yang kamu minta
         local children = equipped:GetChildren()
-        if children[4] and children[4]:IsA("GuiObject") then
-            ApplyStyle(children[4], UDim.new(1, 0))
+        
+        -- 2. HAPUS/SEMBUNYIKAN outline 1, 2, 3 (garis kotak)
+        for i = 1, #children do
+            if i ~= 4 and children[i]:IsA("GuiObject") then
+                children[i].Visible = false
+                children[i].BackgroundTransparency = 1
+            end
         end
-        -- Opsional: bulatkan semua anak di equipped agar tidak ada yang bocor kotak
-        for _, child in pairs(children) do
-            if child:IsA("GuiObject") then ApplyStyle(child, UDim.new(1, 0)) end
+
+        -- 3. MODIFIKASI CHILD [4]: Jadi Outline Bulat Sempurna
+        local edge4 = children[4]
+        if edge4 and edge4:IsA("GuiObject") then
+            edge4.Visible = equipped.Visible
+            edge4.Size = UDim2.new(1, 0, 1, 0) -- Full nutupin slot
+            edge4.Position = UDim2.new(0, 0, 0, 0)
+            edge4.BackgroundColor3 = Color3.new(1, 1, 1) -- Putih
+            edge4.BackgroundTransparency = 0
+            
+            -- Kasih UIStroke di child [4] biar bentuknya garis lingkaran (bukan blok putih)
+            local stroke = edge4:FindFirstChild("StrokeFix") or Instance.new("UIStroke")
+            stroke.Name = "StrokeFix"
+            stroke.Thickness = 2.5
+            stroke.Color = Color3.new(1, 1, 1)
+            stroke.ApplyStrokeMode = Enum.ApplyStrokeMode.Border
+            stroke.Parent = edge4
+            
+            -- Jadikan child [4] transparan tapi strokenya muncul
+            edge4.BackgroundTransparency = 1 
+            
+            local edgeCorner = edge4:FindFirstChild("EdgeRound") or Instance.new("UICorner")
+            edgeCorner.Name = "EdgeRound"
+            edgeCorner.CornerRadius = UDim.new(1, 0)
+            edgeCorner.Parent = edge4
+        end
+
+        -- 4. LOGIKA VISIBLE HOTBAR (Hitam pas pegang, Transparan pas lepas)
+        if isHotbar then
+            if equipped.Visible then
+                slot.BackgroundTransparency = 0
+                slot.BackgroundColor3 = Color3.new(0, 0, 0)
+            else
+                slot.BackgroundTransparency = 1
+            end
         end
     end
-
-    -- 2. Tangani Drag/Selection Outline (garis putih saat ditekan/tarik)
-    for _, child in pairs(slot:GetChildren()) do
-        if child.Name:lower():find("outline") or child.Name:lower():find("selection") then
-            ApplyStyle(child, UDim.new(1, 0))
-        end
-    end
-    
-    -- Pastikan slot utama tetap bulat dan hitam (untuk hotbar)
-    ApplyStyle(slot, UDim.new(1, 0), isHotbar)
 end
 
--- 1. Search Box & Search Text (Melengkung & Presisi)
-ApplyStyle(SearchBox, UDim.new(0, 10)) -- Melengkung halus, ga lancip
-SearchBox.TextScaled = false
-SearchBox.TextSize = 14
-SearchBox.TextXAlignment = Enum.TextXAlignment.Left
-
-local pad = SearchBox:FindFirstChild("Padding") or Instance.new("UIPadding")
-pad.Name = "Padding"
-pad.PaddingLeft = UDim.new(0, 12)
-pad.Parent = SearchBox
-
--- 2. Tombol X (Hitam, Putih, Bulat)
-if ClearButton then
-    ClearButton.TextColor3 = Color3.new(1, 1, 1)
-    ApplyStyle(ClearButton, UDim.new(1, 0), true)
-end
-
--- 3. Inventory Panel (Lengkung)
-ApplyStyle(Inventory, UDim.new(0, 15))
-
--- 4. Looping Slot 1 - 99 (Hotbar & Inventory)
-local function RefreshAllSlots()
+RunService.RenderStepped:Connect(function()
+    -- Eksekusi Hotbar & Inventory 1-99
     for i = 1, 99 do
         local id = tostring(i)
+        FixSelectionEdge(Hotbar:FindFirstChild(id), true)
+        FixSelectionEdge(InvGrid:FindFirstChild(id), false)
+    end
+
+    -- Fix SearchBox (Melengkung, Teks Kecil, Presisi)
+    if SearchBox then
+        local sCorner = SearchBox:FindFirstChild("Round") or Instance.new("UICorner")
+        sCorner.Name = "Round"
+        sCorner.CornerRadius = UDim.new(0, 10)
+        sCorner.Parent = SearchBox
         
-        -- Hotbar
-        local hSlot = Hotbar:FindFirstChild(id)
-        if hSlot then 
-            StyleInternalSlot(hSlot, true) 
-        end
+        SearchBox.TextSize = 14
+        SearchBox.TextXAlignment = Enum.TextXAlignment.Left
+        SearchBox.BorderSizePixel = 0
         
-        -- Inventory
-        local iSlot = InvGrid:FindFirstChild(id)
-        if iSlot then 
-            StyleInternalSlot(iSlot, false) 
+        local pad = SearchBox:FindFirstChild("Pad") or Instance.new("UIPadding")
+        pad.Name = "Pad"
+        pad.PaddingLeft = UDim.new(0, 12)
+        pad.Parent = SearchBox
+        
+        -- SearchBox pojokan jangan lancip
+        local sFrame = SearchBox.Parent
+        if sFrame:IsA("GuiObject") then
+            local fCorner = sFrame:FindFirstChild("Round") or Instance.new("UICorner")
+            fCorner.Name = "Round"
+            fCorner.CornerRadius = UDim.new(0, 10)
+            fCorner.Parent = sFrame
         end
     end
-end
 
--- Eksekusi awal dan jaga agar tetap bulat saat UI berubah
-RefreshAllSlots()
-Hotbar.ChildAdded:Connect(function(child) StyleInternalSlot(child, true) end)
+    -- Fix Main Inventory Frame
+    local invCorner = Backpack.Inventory:FindFirstChild("Round") or Instance.new("UICorner")
+    invCorner.Name = "Round"
+    invCorner.CornerRadius = UDim.new(0, 15)
+    invCorner.Parent = Backpack.Inventory
+end)
 InvGrid.ChildAdded:Connect(function(child) StyleInternalSlot(child, false) end)
-
-print("Script Final: Equipped (biru), Outline (putih), dan SearchBox sudah melengkung sempurna!")
