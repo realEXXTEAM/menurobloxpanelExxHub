@@ -56,3 +56,106 @@ pcall(function()
     textBox.TextSize = 24
     textBox.BorderSizePixel = 0
 end)
+
+--- HOTBAR + INVENTORY
+local Backpack = game:GetService("CoreGui"):WaitForChild("RobloxGui"):WaitForChild("Backpack")
+local Inventory = Backpack:WaitForChild("Inventory")
+local Hotbar = Backpack:WaitForChild("Hotbar")
+local InvGrid = Inventory:WaitForChild("ScrollingFrame"):WaitForChild("UIGridFrame")
+
+local SearchFrame = Inventory:WaitForChild("Search")
+local SearchBox = SearchFrame:WaitForChild("TextBox")
+local ClearButton = SearchFrame:WaitForChild("X")
+
+-- Fungsi Utama Style (Bentuk & Warna)
+local function ApplyStyle(obj, radius, forceBlack)
+    if obj and obj:IsA("GuiObject") then
+        obj.BorderSizePixel = 0
+        
+        -- Paksa warna hitam jika diminta
+        if forceBlack then
+            obj.BackgroundColor3 = Color3.new(0, 0, 0)
+            obj:GetPropertyChangedSignal("BackgroundColor3"):Connect(function()
+                obj.BackgroundColor3 = Color3.new(0, 0, 0)
+            end)
+        end
+
+        local corner = obj:FindFirstChild("RoundEffect") or Instance.new("UICorner")
+        corner.Name = "RoundEffect"
+        corner.CornerRadius = radius or UDim.new(1, 0)
+        corner.Parent = obj
+    end
+end
+
+-- Fungsi khusus untuk menangani elemen internal slot (Equipped & Drag Outline)
+local function StyleInternalSlot(slot, isHotbar)
+    -- 1. Tangani elemen "Equipped" (biru-biru) yang kamu maksud
+    local equipped = slot:FindFirstChild("Equipped")
+    if equipped then
+        -- Mencari anak ke-4 secara spesifik seperti yang kamu minta
+        local children = equipped:GetChildren()
+        if children[4] and children[4]:IsA("GuiObject") then
+            ApplyStyle(children[4], UDim.new(1, 0))
+        end
+        -- Opsional: bulatkan semua anak di equipped agar tidak ada yang bocor kotak
+        for _, child in pairs(children) do
+            if child:IsA("GuiObject") then ApplyStyle(child, UDim.new(1, 0)) end
+        end
+    end
+
+    -- 2. Tangani Drag/Selection Outline (garis putih saat ditekan/tarik)
+    for _, child in pairs(slot:GetChildren()) do
+        if child.Name:lower():find("outline") or child.Name:lower():find("selection") then
+            ApplyStyle(child, UDim.new(1, 0))
+        end
+    end
+    
+    -- Pastikan slot utama tetap bulat dan hitam (untuk hotbar)
+    ApplyStyle(slot, UDim.new(1, 0), isHotbar)
+end
+
+-- 1. Search Box & Search Text (Melengkung & Presisi)
+ApplyStyle(SearchBox, UDim.new(0, 10)) -- Melengkung halus, ga lancip
+SearchBox.TextScaled = false
+SearchBox.TextSize = 14
+SearchBox.TextXAlignment = Enum.TextXAlignment.Left
+
+local pad = SearchBox:FindFirstChild("Padding") or Instance.new("UIPadding")
+pad.Name = "Padding"
+pad.PaddingLeft = UDim.new(0, 12)
+pad.Parent = SearchBox
+
+-- 2. Tombol X (Hitam, Putih, Bulat)
+if ClearButton then
+    ClearButton.TextColor3 = Color3.new(1, 1, 1)
+    ApplyStyle(ClearButton, UDim.new(1, 0), true)
+end
+
+-- 3. Inventory Panel (Lengkung)
+ApplyStyle(Inventory, UDim.new(0, 15))
+
+-- 4. Looping Slot 1 - 99 (Hotbar & Inventory)
+local function RefreshAllSlots()
+    for i = 1, 99 do
+        local id = tostring(i)
+        
+        -- Hotbar
+        local hSlot = Hotbar:FindFirstChild(id)
+        if hSlot then 
+            StyleInternalSlot(hSlot, true) 
+        end
+        
+        -- Inventory
+        local iSlot = InvGrid:FindFirstChild(id)
+        if iSlot then 
+            StyleInternalSlot(iSlot, false) 
+        end
+    end
+end
+
+-- Eksekusi awal dan jaga agar tetap bulat saat UI berubah
+RefreshAllSlots()
+Hotbar.ChildAdded:Connect(function(child) StyleInternalSlot(child, true) end)
+InvGrid.ChildAdded:Connect(function(child) StyleInternalSlot(child, false) end)
+
+print("Script Final: Equipped (biru), Outline (putih), dan SearchBox sudah melengkung sempurna!")
