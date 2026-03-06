@@ -56,3 +56,136 @@ pcall(function()
     textBox.TextSize = 24
     textBox.BorderSizePixel = 0
 end)
+
+--- HOTBAR + INVENTORY
+local RunService = game:GetService("RunService")
+local CoreGui = game:GetService("CoreGui")
+
+local Backpack = CoreGui:WaitForChild("RobloxGui"):WaitForChild("Backpack")
+local Hotbar = Backpack:WaitForChild("Hotbar")
+local Inventory = Backpack:WaitForChild("Inventory")
+local InvGrid = Inventory:WaitForChild("ScrollingFrame"):WaitForChild("UIGridFrame")
+local SearchFrame = Inventory:WaitForChild("Search")
+local SearchBox = SearchFrame:WaitForChild("TextBox")
+local CloseButton = SearchFrame:WaitForChild("X")
+
+if CloseButton and not CloseButton:FindFirstChild("UdahBulat") then
+    CloseButton.BackgroundColor3 = Color3.new(0, 0, 0)
+    CloseButton.TextColor3 = Color3.new(1, 1, 1)
+    CloseButton.BorderSizePixel = 0
+    local xCorner = Instance.new("UICorner")
+    xCorner.Name = "UdahBulat"
+    xCorner.CornerRadius = UDim.new(1, 0)
+    xCorner.Parent = CloseButton
+end
+
+if SearchBox and not SearchBox:FindFirstChild("UdahBulat") then
+    SearchBox.TextSize = 14
+    SearchBox.TextXAlignment = Enum.TextXAlignment.Left
+    SearchBox.BorderSizePixel = 0
+    local sCorner = Instance.new("UICorner")
+    sCorner.Name = "UdahBulat"
+    sCorner.CornerRadius = UDim.new(0, 10)
+    sCorner.Parent = SearchBox
+    local pad = Instance.new("UIPadding")
+    pad.PaddingLeft = UDim.new(0, 12)
+    pad.Parent = SearchBox
+end
+
+if not Inventory:FindFirstChild("UdahBulat") then
+    local invCorner = Instance.new("UICorner")
+    invCorner.Name = "UdahBulat"
+    invCorner.CornerRadius = UDim.new(0, 15)
+    invCorner.Parent = Inventory
+end
+
+RunService.RenderStepped:Connect(function()
+    for i = 1, 99 do
+        local id = tostring(i)
+        
+        local hSlot = Hotbar:FindFirstChild(id)
+        if hSlot and hSlot:IsA("GuiObject") then
+            hSlot.BorderSizePixel = 0
+            hSlot.BackgroundColor3 = Color3.new(0, 0, 0)
+            
+            local hCorner = hSlot:FindFirstChild("BulatSlot") or Instance.new("UICorner")
+            hCorner.Name = "BulatSlot"
+            hCorner.CornerRadius = UDim.new(1, 0)
+            hCorner.Parent = hSlot
+
+            local equipped = hSlot:FindFirstChild("Equipped")
+            if equipped then
+                hSlot.BackgroundTransparency = equipped.Visible and 0 or 1
+                
+                local children = equipped:GetChildren()
+                for j = 1, 3 do
+                    if children[j] and children[j]:IsA("GuiObject") then
+                        children[j].Visible = false
+                    end
+                end
+                
+                if children[4] and children[4]:IsA("GuiObject") then
+                    local edge4 = children[4]
+                    edge4.Visible = equipped.Visible
+                    edge4.BackgroundTransparency = 1
+                    
+                    edge4.Size = UDim2.new(1, 0, 1, 0)
+                    edge4.Position = UDim2.new(0, 0, 0, 0)
+                    
+                    local eCorner = edge4:FindFirstChild("BulatEdge") or Instance.new("UICorner")
+                    eCorner.Name = "BulatEdge"
+                    eCorner.CornerRadius = UDim.new(1, 0)
+                    eCorner.Parent = edge4
+                    
+                    local stroke = edge4:FindFirstChild("StrokeEdge") or Instance.new("UIStroke")
+                    stroke.Name = "StrokeEdge"
+                    stroke.Thickness = 2.5
+                    stroke.Color = Color3.new(1, 1, 1)
+                    stroke.ApplyStrokeMode = Enum.ApplyStrokeMode.Border
+                    stroke.Parent = edge4
+                end
+            end
+        end
+        
+        local iSlot = InvGrid:FindFirstChild(id)
+        if iSlot and iSlot:IsA("GuiObject") then
+            iSlot.BorderSizePixel = 0
+            
+            local iCorner = iSlot:FindFirstChild("BulatSlot") or Instance.new("UICorner")
+            iCorner.Name = "BulatSlot"
+            iCorner.CornerRadius = UDim.new(1, 0)
+            iCorner.Parent = iSlot
+
+            local equipped = iSlot:FindFirstChild("Equipped")
+            if equipped then
+                local children = equipped:GetChildren()
+                for j = 1, 3 do
+                    if children[j] and children[j]:IsA("GuiObject") then
+                        children[j].Visible = false
+                    end
+                end
+                
+                if children[4] and children[4]:IsA("GuiObject") then
+                    local edge4 = children[4]
+                    edge4.Visible = equipped.Visible
+                    edge4.BackgroundTransparency = 1
+                    
+                    edge4.Size = UDim2.new(1, 0, 1, 0)
+                    edge4.Position = UDim2.new(0, 0, 0, 0)
+                    
+                    local eCorner = edge4:FindFirstChild("BulatEdge") or Instance.new("UICorner")
+                    eCorner.Name = "BulatEdge"
+                    eCorner.CornerRadius = UDim.new(1, 0)
+                    eCorner.Parent = edge4
+                    
+                    local stroke = edge4:FindFirstChild("StrokeEdge") or Instance.new("UIStroke")
+                    stroke.Name = "StrokeEdge"
+                    stroke.Thickness = 2.5
+                    stroke.Color = Color3.new(1, 1, 1)
+                    stroke.ApplyStrokeMode = Enum.ApplyStrokeMode.Border
+                    stroke.Parent = edge4
+                end
+            end
+        end
+    end
+end)
