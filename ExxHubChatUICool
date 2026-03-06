@@ -69,11 +69,7 @@ local SearchFrame = Inventory:WaitForChild("Search")
 local SearchBox = SearchFrame:WaitForChild("TextBox")
 local CloseButton = SearchFrame:WaitForChild("X")
 
--- =========================================================
--- 1. STYLING STATIC (Cuma dieksekusi 1x biar gak bikin BUG/LAG)
--- =========================================================
-
--- Tombol X: Hitam, Teks Putih, Bulat
+-- Tombol X
 if CloseButton and not CloseButton:FindFirstChild("UdahBulat") then
     CloseButton.BackgroundColor3 = Color3.new(0, 0, 0)
     CloseButton.TextColor3 = Color3.new(1, 1, 1)
@@ -106,9 +102,6 @@ if not Inventory:FindFirstChild("UdahBulat") then
     invCorner.Parent = Inventory
 end
 
--- =========================================================
--- 2. LOOPING KHUSUS SLOT (Anti Nge-Bug, Fix Gepeng)
--- =========================================================
 RunService.RenderStepped:Connect(function()
     for i = 1, 99 do
         local id = tostring(i)
@@ -117,7 +110,7 @@ RunService.RenderStepped:Connect(function()
         local hSlot = Hotbar:FindFirstChild(id)
         if hSlot and hSlot:IsA("GuiObject") then
             hSlot.BorderSizePixel = 0
-            hSlot.BackgroundColor3 = Color3.new(0, 0, 0) -- Paksa Hitam
+            hSlot.BackgroundColor3 = Color3.new(0, 0, 0) 
             
             local hCorner = hSlot:FindFirstChild("BulatSlot") or Instance.new("UICorner")
             hCorner.Name = "BulatSlot"
@@ -215,7 +208,6 @@ end)
 end
 
 RunService.RenderStepped:Connect(function()
-    -- Eksekusi Hotbar & Inventory 1-99
     for i = 1, 99 do
         local id = tostring(i)
         FixSelectionEdge(Hotbar:FindFirstChild(id), true)
