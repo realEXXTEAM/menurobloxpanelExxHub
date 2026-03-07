@@ -2,6 +2,11 @@ local Players = game:GetService("Players")
 local TweenService = game:GetService("TweenService")
 local Player = Players.LocalPlayer
 
+--// Hapus versi lama jika ada
+if Player.PlayerGui:FindFirstChild("ScriptUI") then
+    Player.PlayerGui.ScriptUI:Destroy()
+end
+
 --// ScreenGui Setup
 local ScriptUI = Instance.new("ScreenGui")
 ScriptUI.Name = "ScriptUI"
@@ -9,8 +14,25 @@ ScriptUI.DisplayOrder = 9999
 ScriptUI.ResetOnSpawn = false
 ScriptUI.ZIndexBehavior = Enum.ZIndexBehavior.Global
 ScriptUI.IgnoreGuiInset = true
-ScriptUI.Enabled = false
+ScriptUI.Enabled = true
 ScriptUI.Parent = Player:WaitForChild("PlayerGui")
+
+--// Fungsi Global buat Efek Klik (Anti Bug/Stuck)
+local function applyClickEffect(button, normalSize, shrinkSize)
+    button.AnchorPoint = Vector2.new(0.5, 0.5)
+    
+    local function shrink()
+        TweenService:Create(button, TweenInfo.new(0.1, Enum.EasingStyle.Quad, Enum.EasingDirection.Out), {Size = shrinkSize}):Play()
+    end
+    
+    local function restore()
+        TweenService:Create(button, TweenInfo.new(0.1, Enum.EasingStyle.Quad, Enum.EasingDirection.Out), {Size = normalSize}):Play()
+    end
+
+    button.MouseButton1Down:Connect(shrink)
+    button.MouseButton1Up:Connect(restore)
+    button.MouseLeave:Connect(restore) 
+end
 
 --// Main Frame
 local mainFrame = Instance.new("Frame")
@@ -28,93 +50,93 @@ local mainCorner = Instance.new("UICorner")
 mainCorner.CornerRadius = UDim.new(0, 10)
 mainCorner.Parent = mainFrame
 
---// Close Button (With Press Effect)
-local closeBtn = Instance.new("TextButton")
+--// UI TITLE (Dinaikin lagi)
+local uiTitle = Instance.new("TextLabel")
+uiTitle.Name = "UITitle"
+uiTitle.Text = "ExxHub: Sharing Script"
+uiTitle.Font = Enum.Font.GothamBold
+uiTitle.TextSize = 14
+uiTitle.TextColor3 = Color3.fromRGB(255, 255, 255)
+uiTitle.TextXAlignment = Enum.TextXAlignment.Left
+uiTitle.BackgroundTransparency = 1
+uiTitle.Size = UDim2.new(0, 150, 0, 25)
+uiTitle.Position = UDim2.new(0, 15, 0, 10) -- Y dari 15 jadi 10
+uiTitle.Parent = mainFrame
+
+--// HEADER LINE (Garis panjang pemisah)
+local headerLine = Instance.new("Frame")
+headerLine.Name = "HeaderLine"
+headerLine.Size = UDim2.new(1, -20, 0, 1)
+headerLine.Position = UDim2.new(0.5, 0, 0, 42) -- Di bawah Search & Title
+headerLine.AnchorPoint = Vector2.new(0.5, 0)
+headerLine.BackgroundColor3 = Color3.fromRGB(255, 255, 255)
+headerLine.BackgroundTransparency = 0.7 -- Garis tipis transparan
+headerLine.BorderSizePixel = 0
+headerLine.Parent = mainFrame
+
+--// CLOSE BUTTON
+local closeBtn = Instance.new("ImageButton")
 closeBtn.Name = "CloseButton"
-closeBtn.Text = "X"
-closeBtn.Font = Enum.Font.GothamBold
-closeBtn.TextScaled = true
-closeBtn.TextColor3 = Color3.fromRGB(255, 255, 255)
+closeBtn.Image = "rbxassetid://121392148105762"
 closeBtn.BackgroundTransparency = 1
-closeBtn.Size = UDim2.new(0, 25, 0, 25) 
-closeBtn.AnchorPoint = Vector2.new(0.5, 0.5)
-closeBtn.Position = UDim2.new(1, -20, 0, 20)
+closeBtn.Size = UDim2.new(0, 22, 0, 22)
+closeBtn.Position = UDim2.new(1, -20, 0, 22) -- Disesuaikan posisinya
 closeBtn.ZIndex = 5
 closeBtn.Parent = mainFrame
 
-closeBtn.MouseButton1Down:Connect(function()
-    TweenService:Create(closeBtn, TweenInfo.new(0.1), {Size = UDim2.new(0, 20, 0, 20)}):Play()
-end)
+applyClickEffect(closeBtn, UDim2.new(0, 22, 0, 22), UDim2.new(0, 18, 0, 18))
+closeBtn.MouseButton1Click:Connect(function() ScriptUI.Enabled = false end)
 
-closeBtn.MouseButton1Up:Connect(function()
-    TweenService:Create(closeBtn, TweenInfo.new(0.1), {Size = UDim2.new(0, 25, 0, 25)}):Play()
-    ScriptUI.Enabled = false
-end)
-
---// Refresh Button (With Press Effect)
+--// REFRESH BUTTON
 local refreshBtn = Instance.new("ImageButton")
 refreshBtn.Image = "rbxassetid://86084882582277" 
 refreshBtn.BackgroundTransparency = 1
 refreshBtn.Size = UDim2.new(0, 22, 0, 22)
-refreshBtn.Position = UDim2.new(1, -45, 0, 20) 
-refreshBtn.AnchorPoint = Vector2.new(0.5, 0.5) 
+refreshBtn.Position = UDim2.new(1, -50, 0, 22) 
 refreshBtn.ZIndex = 5
 refreshBtn.Parent = mainFrame
 
+applyClickEffect(refreshBtn, UDim2.new(0, 22, 0, 22), UDim2.new(0, 18, 0, 18))
 local rotateTween = TweenService:Create(refreshBtn, TweenInfo.new(0.5, Enum.EasingStyle.Linear, Enum.EasingDirection.InOut, -1), {Rotation = -360})
 
-refreshBtn.MouseButton1Down:Connect(function()
-    TweenService:Create(refreshBtn, TweenInfo.new(0.1), {Size = UDim2.new(0, 18, 0, 18)}):Play()
-end)
-
-refreshBtn.MouseButton1Up:Connect(function()
-    TweenService:Create(refreshBtn, TweenInfo.new(0.1), {Size = UDim2.new(0, 22, 0, 22)}):Play()
+refreshBtn.MouseButton1Click:Connect(function()
     rotateTween:Play()
     task.wait(0.5)
-    if Player.PlayerGui:FindFirstChild("ScriptUI") then
-        Player.PlayerGui.ScriptUI:Destroy()
-    end
-    -- Load ulang script
+    if Player.PlayerGui:FindFirstChild("ScriptUI") then Player.PlayerGui.ScriptUI:Destroy() end
     loadstring(game:HttpGet("https://raw.githubusercontent.com/realEXXTEAM/panelmenuuniversal/refs/heads/main/FITUR%20REFRESH%20SCRIPTUI"))()
 end)
 
---// Search Box
+--// SEARCH BAR (Deket Refresh)
 local searchBox = Instance.new("TextBox")
 searchBox.PlaceholderText = "Search..."
 searchBox.Text = ""
-searchBox.Size = UDim2.new(0, 180, 0, 28)
-searchBox.Position = UDim2.new(0.5, 0, 0, 12) 
-searchBox.AnchorPoint = Vector2.new(0.5, 0)
+searchBox.Size = UDim2.new(0, 130, 0, 24)
+searchBox.Position = UDim2.new(1, -195, 0, 22) 
+searchBox.AnchorPoint = Vector2.new(0, 0.5)
 searchBox.Font = Enum.Font.Gotham
-searchBox.TextSize = 14
+searchBox.TextSize = 12
 searchBox.TextColor3 = Color3.fromRGB(255, 255, 255)
 searchBox.BackgroundColor3 = Color3.fromRGB(25, 25, 25)
 searchBox.BorderSizePixel = 0
 searchBox.Parent = mainFrame
+Instance.new("UICorner", searchBox).CornerRadius = UDim.new(0, 6)
 
-local searchCorner = Instance.new("UICorner")
-searchCorner.CornerRadius = UDim.new(0, 6)
-searchCorner.Parent = searchBox
-
---// ScrollingFrame
+--// ScrollingFrame (List Script)
 local listFrame = Instance.new("ScrollingFrame")
-listFrame.Size = UDim2.new(1, -14, 1, -55) 
-listFrame.Position = UDim2.new(0, 7, 0, 50)
+listFrame.Size = UDim2.new(1, -14, 1, -65) 
+listFrame.Position = UDim2.new(0, 7, 0, 55)
 listFrame.BackgroundTransparency = 1
-listFrame.CanvasSize = UDim2.new(0, 0, 0, 0)
-listFrame.ScrollBarThickness = 2
-listFrame.ScrollingDirection = Enum.ScrollingDirection.Y
+listFrame.ScrollBarThickness = 3
 listFrame.AutomaticCanvasSize = Enum.AutomaticSize.Y
 listFrame.Parent = mainFrame
 
 local uiGrid = Instance.new("UIGridLayout")
 uiGrid.CellSize = UDim2.new(0, 125, 0, 110) 
 uiGrid.CellPadding = UDim2.new(0, 8, 0, 8)
-uiGrid.SortOrder = Enum.SortOrder.LayoutOrder
 uiGrid.HorizontalAlignment = Enum.HorizontalAlignment.Center
 uiGrid.Parent = listFrame
 
---// Data Scripts
+--// Data Script
 local scripts = {
     {title = "Garden Horizons Script – Solix Hub", image = "rbxassetid://87056489533308", text = "loadstring(game:HttpGet('https://raw.githubusercontent.com/meobeo8/a/a/a'))()"},
     {title = "Garden Horizons Script No Key – Cyrus Hub", image = "rbxassetid://091616327140362", text = "loadstring(game:HttpGet('https://raw.githubusercontent.com/CyrusOffc/scriptcyrus/refs/heads/main/roblox/loader.lua'))()"}, 
@@ -154,7 +176,6 @@ local scripts = {
     {title = "Ego Hub - Blox Fruit's Script", image = "rbxassetid://124015766651987", text = "loadstring(game:HttpGet('https://pastefy.app/gU8wlEbc/raw'))()"},
     {title = "BLOX FRUITS Script No Key AUTO FARM", image = "rbxassetid://85953977761529", text = "loadstring(game:HttpGet('https://pastebin.com/raw/zfeGSTdE'))()"},
 }
-
 --// Function to Create Card
 local function createScriptCard(data)
     local card = Instance.new("Frame")
@@ -162,7 +183,6 @@ local function createScriptCard(data)
     card.BackgroundTransparency = 0.2
     card.Size = UDim2.new(0, 125, 0, 110)
     card.Parent = listFrame
-
     Instance.new("UICorner", card).CornerRadius = UDim.new(0, 8)
 
     local img = Instance.new("ImageLabel")
@@ -178,30 +198,24 @@ local function createScriptCard(data)
     title.TextScaled = true
     title.TextColor3 = Color3.fromRGB(255, 255, 255)
     title.BackgroundTransparency = 1
-    title.Size = UDim2.new(1, -10, 0, 18)
+    title.Size = UDim2.new(1, -10, 0, 20)
     title.Position = UDim2.new(0, 5, 0, 68)
     title.Parent = card
 
-    -- Copy Button with Effects
     local copyBtn = Instance.new("TextButton")
     copyBtn.Text = "Copy"
-    copyBtn.Font = Enum.Font.GothamBold
+    copyBtn.Font = Enum.Font.Gotham
     copyBtn.TextSize = 11
     copyBtn.TextColor3 = Color3.fromRGB(255, 255, 255)
     copyBtn.BackgroundColor3 = Color3.fromRGB(40, 40, 40)
     copyBtn.Size = UDim2.new(0.9, 0, 0, 18)
-    copyBtn.AnchorPoint = Vector2.new(0.5, 0.5)
     copyBtn.Position = UDim2.new(0.5, 0, 1, -13)
     copyBtn.Parent = card
-
     Instance.new("UICorner", copyBtn).CornerRadius = UDim.new(0, 4)
 
-    copyBtn.MouseButton1Down:Connect(function()
-        TweenService:Create(copyBtn, TweenInfo.new(0.1), {Size = UDim2.new(0.8, 0, 0, 15)}):Play()
-    end)
+    applyClickEffect(copyBtn, UDim2.new(0.9, 0, 0, 18), UDim2.new(0.8, 0, 0, 15))
 
-    copyBtn.MouseButton1Up:Connect(function()
-        TweenService:Create(copyBtn, TweenInfo.new(0.1), {Size = UDim2.new(0.9, 0, 0, 18)}):Play()
+    copyBtn.MouseButton1Click:Connect(function()
         setclipboard(data.text)
         copyBtn.Text = "COPIED!"
         task.wait(1)
@@ -209,9 +223,7 @@ local function createScriptCard(data)
     end)
 end
 
-for _, scriptData in ipairs(scripts) do
-    createScriptCard(scriptData)
-end
+for _, scriptData in ipairs(scripts) do createScriptCard(scriptData) end
 
 --// Search Filter
 searchBox:GetPropertyChangedSignal("Text"):Connect(function()
