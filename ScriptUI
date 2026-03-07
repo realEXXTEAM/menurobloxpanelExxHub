@@ -23,46 +23,54 @@ mainFrame.BorderSizePixel = 0
 mainFrame.Parent = ScriptUI
 mainFrame.ClipsDescendants = true
 mainFrame.Active = true
-mainFrame.Draggable = false
 
 local mainCorner = Instance.new("UICorner")
 mainCorner.CornerRadius = UDim.new(0, 10)
 mainCorner.Parent = mainFrame
 
---// Close Button
+--// Close Button (With Press Effect)
 local closeBtn = Instance.new("TextButton")
+closeBtn.Name = "CloseButton"
 closeBtn.Text = "X"
 closeBtn.Font = Enum.Font.GothamBold
 closeBtn.TextScaled = true
 closeBtn.TextColor3 = Color3.fromRGB(255, 255, 255)
 closeBtn.BackgroundTransparency = 1
 closeBtn.Size = UDim2.new(0, 25, 0, 25) 
-closeBtn.Position = UDim2.new(1, -30, 0, 5)
+closeBtn.AnchorPoint = Vector2.new(0.5, 0.5)
+closeBtn.Position = UDim2.new(1, -20, 0, 20)
 closeBtn.ZIndex = 5
 closeBtn.Parent = mainFrame
 
-closeBtn.MouseButton1Click:Connect(function()
+closeBtn.MouseButton1Down:Connect(function()
+    TweenService:Create(closeBtn, TweenInfo.new(0.1), {Size = UDim2.new(0, 20, 0, 20)}):Play()
+end)
+
+closeBtn.MouseButton1Up:Connect(function()
+    TweenService:Create(closeBtn, TweenInfo.new(0.1), {Size = UDim2.new(0, 25, 0, 25)}):Play()
     ScriptUI.Enabled = false
 end)
 
---// Refresh Button
+--// Refresh Button (With Press Effect)
 local refreshBtn = Instance.new("ImageButton")
 refreshBtn.Image = "rbxassetid://86084882582277" 
 refreshBtn.BackgroundTransparency = 1
-refreshBtn.Size = UDim2.new(0, 25, 0, 25)
-refreshBtn.Position = UDim2.new(1, -48, 0, 18) 
+refreshBtn.Size = UDim2.new(0, 22, 0, 22)
+refreshBtn.Position = UDim2.new(1, -45, 0, 20) 
 refreshBtn.AnchorPoint = Vector2.new(0.5, 0.5) 
 refreshBtn.ZIndex = 5
 refreshBtn.Parent = mainFrame
 
--- Setup Tween Rotasi
-local tweenInfo = TweenInfo.new(0.5, Enum.EasingStyle.Linear, Enum.EasingDirection.InOut, -1) -- -1 artinya loop infinity
-local rotateTween = TweenService:Create(refreshBtn, tweenInfo, {Rotation = -360})
+local rotateTween = TweenService:Create(refreshBtn, TweenInfo.new(0.5, Enum.EasingStyle.Linear, Enum.EasingDirection.InOut, -1), {Rotation = -360})
 
-refreshBtn.MouseButton1Click:Connect(function()
+refreshBtn.MouseButton1Down:Connect(function()
+    TweenService:Create(refreshBtn, TweenInfo.new(0.1), {Size = UDim2.new(0, 18, 0, 18)}):Play()
+end)
+
+refreshBtn.MouseButton1Up:Connect(function()
+    TweenService:Create(refreshBtn, TweenInfo.new(0.1), {Size = UDim2.new(0, 22, 0, 22)}):Play()
     rotateTween:Play()
     task.wait(0.5)
-    
     if Player.PlayerGui:FindFirstChild("ScriptUI") then
         Player.PlayerGui.ScriptUI:Destroy()
     end
@@ -94,7 +102,7 @@ listFrame.Size = UDim2.new(1, -14, 1, -55)
 listFrame.Position = UDim2.new(0, 7, 0, 50)
 listFrame.BackgroundTransparency = 1
 listFrame.CanvasSize = UDim2.new(0, 0, 0, 0)
-listFrame.ScrollBarThickness = 4
+listFrame.ScrollBarThickness = 2
 listFrame.ScrollingDirection = Enum.ScrollingDirection.Y
 listFrame.AutomaticCanvasSize = Enum.AutomaticSize.Y
 listFrame.Parent = mainFrame
@@ -103,16 +111,10 @@ local uiGrid = Instance.new("UIGridLayout")
 uiGrid.CellSize = UDim2.new(0, 125, 0, 110) 
 uiGrid.CellPadding = UDim2.new(0, 8, 0, 8)
 uiGrid.SortOrder = Enum.SortOrder.LayoutOrder
-uiGrid.FillDirection = Enum.FillDirection.Horizontal
 uiGrid.HorizontalAlignment = Enum.HorizontalAlignment.Center
 uiGrid.Parent = listFrame
 
-local uiPadding = Instance.new("UIPadding")
-uiPadding.PaddingTop = UDim.new(0, 5)
-uiPadding.PaddingBottom = UDim.new(0, 5)
-uiPadding.Parent = listFrame
-
---// Example Data
+--// Data Scripts
 local scripts = {
     {title = "Garden Horizons Script – Solix Hub", image = "rbxassetid://87056489533308", text = "loadstring(game:HttpGet('https://raw.githubusercontent.com/meobeo8/a/a/a'))()"},
     {title = "Garden Horizons Script No Key – Cyrus Hub", image = "rbxassetid://091616327140362", text = "loadstring(game:HttpGet('https://raw.githubusercontent.com/CyrusOffc/scriptcyrus/refs/heads/main/roblox/loader.lua'))()"}, 
@@ -161,9 +163,7 @@ local function createScriptCard(data)
     card.Size = UDim2.new(0, 125, 0, 110)
     card.Parent = listFrame
 
-    local corner = Instance.new("UICorner")
-    corner.CornerRadius = UDim.new(0, 8)
-    corner.Parent = card
+    Instance.new("UICorner", card).CornerRadius = UDim.new(0, 8)
 
     local img = Instance.new("ImageLabel")
     img.Image = data.image
@@ -178,30 +178,37 @@ local function createScriptCard(data)
     title.TextScaled = true
     title.TextColor3 = Color3.fromRGB(255, 255, 255)
     title.BackgroundTransparency = 1
-    title.Size = UDim2.new(1, -10, 0, 20)
+    title.Size = UDim2.new(1, -10, 0, 18)
     title.Position = UDim2.new(0, 5, 0, 68)
     title.Parent = card
 
+    -- Copy Button with Effects
     local copyBtn = Instance.new("TextButton")
     copyBtn.Text = "Copy"
-    copyBtn.Font = Enum.Font.Gotham
+    copyBtn.Font = Enum.Font.GothamBold
     copyBtn.TextSize = 11
     copyBtn.TextColor3 = Color3.fromRGB(255, 255, 255)
     copyBtn.BackgroundColor3 = Color3.fromRGB(40, 40, 40)
     copyBtn.Size = UDim2.new(0.9, 0, 0, 18)
-    copyBtn.Position = UDim2.new(0.05, 0, 1, -22)
+    copyBtn.AnchorPoint = Vector2.new(0.5, 0.5)
+    copyBtn.Position = UDim2.new(0.5, 0, 1, -13)
     copyBtn.Parent = card
 
-    local copyCorner = Instance.new("UICorner")
-    copyCorner.CornerRadius = UDim.new(0, 4)
-    copyCorner.Parent = copyBtn
+    Instance.new("UICorner", copyBtn).CornerRadius = UDim.new(0, 4)
 
-    copyBtn.MouseButton1Click:Connect(function()
+    copyBtn.MouseButton1Down:Connect(function()
+        TweenService:Create(copyBtn, TweenInfo.new(0.1), {Size = UDim2.new(0.8, 0, 0, 15)}):Play()
+    end)
+
+    copyBtn.MouseButton1Up:Connect(function()
+        TweenService:Create(copyBtn, TweenInfo.new(0.1), {Size = UDim2.new(0.9, 0, 0, 18)}):Play()
         setclipboard(data.text)
+        copyBtn.Text = "COPIED!"
+        task.wait(1)
+        copyBtn.Text = "Copy"
     end)
 end
 
---// Generate Cards
 for _, scriptData in ipairs(scripts) do
     createScriptCard(scriptData)
 end
