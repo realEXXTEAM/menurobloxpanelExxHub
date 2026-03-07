@@ -24,18 +24,15 @@ ScreenGui.Name = "Script BloxUI"
 ScreenGui.DisplayOrder = 9999
 ScreenGui.ResetOnSpawn = false
 ScreenGui.IgnoreGuiInset = true
-ScreenGui.Enabled = false
+ScreenGui.Enabled = true
 ScreenGui.ZIndexBehavior = Enum.ZIndexBehavior.Sibling
 
--- === PARENTING (PlayerGui ONLY) ===
 if Players.LocalPlayer then
     ScreenGui.Parent = Players.LocalPlayer:WaitForChild("PlayerGui")
 else
-    warn("LocalPlayer Not Found")
     return
 end
 
--- Theme Colors
 local Colors = {
     Bg = Color3.fromRGB(18, 18, 22),         
     Header = Color3.fromRGB(25, 25, 30),     
@@ -45,7 +42,6 @@ local Colors = {
     SubText = Color3.fromRGB(160, 160, 160), 
 }
 
--- === MAIN FRAME ===
 local MainFrame = Instance.new("Frame")
 MainFrame.Name = "MainUI"
 MainFrame.Parent = ScreenGui
@@ -61,7 +57,6 @@ local MainCorner = Instance.new("UICorner")
 MainCorner.CornerRadius = UDim.new(0, 8)
 MainCorner.Parent = MainFrame
 
--- === 1. HEADBAR ===
 local HeaderBar = Instance.new("Frame")
 HeaderBar.Name = "Header"
 HeaderBar.Parent = MainFrame
@@ -82,7 +77,6 @@ HeaderFill.Size = UDim2.new(1, 0, 0, 5)
 HeaderFill.Position = UDim2.new(0, 0, 1, -5)
 HeaderFill.ZIndex = 2
 
--- Title Text
 local TitleLabel = Instance.new("TextLabel")
 TitleLabel.Parent = HeaderBar
 TitleLabel.BackgroundTransparency = 1
@@ -95,11 +89,12 @@ TitleLabel.TextSize = 12
 TitleLabel.TextXAlignment = Enum.TextXAlignment.Left
 TitleLabel.ZIndex = 3
 
--- Close Button (Image)
+-- === Close Button with Press Effect ===
 local CloseUIBtn = Instance.new("ImageButton")
 CloseUIBtn.Parent = HeaderBar
 CloseUIBtn.BackgroundTransparency = 1
-CloseUIBtn.Position = UDim2.new(1, -25, 0, 5)
+CloseUIBtn.AnchorPoint = Vector2.new(0.5, 0.5)
+CloseUIBtn.Position = UDim2.new(1, -15, 0.5, 0)
 CloseUIBtn.Size = UDim2.new(0, 20, 0, 20)
 CloseUIBtn.Image = "rbxassetid://121392148105762"
 CloseUIBtn.ImageColor3 = Colors.SubText
@@ -110,10 +105,16 @@ CloseUIBtn.MouseEnter:Connect(function()
     TweenService:Create(CloseUIBtn, TweenInfo.new(0.2), {ImageColor3 = Color3.fromRGB(255, 255, 255)}):Play()
 end)
 CloseUIBtn.MouseLeave:Connect(function()
-    TweenService:Create(CloseUIBtn, TweenInfo.new(0.2), {ImageColor3 = Colors.SubText}):Play()
+    TweenService:Create(CloseUIBtn, TweenInfo.new(0.2), {ImageColor3 = Colors.SubText, Size = UDim2.new(0, 20, 0, 20)}):Play()
+end)
+CloseUIBtn.MouseButton1Down:Connect(function()
+    TweenService:Create(CloseUIBtn, TweenInfo.new(0.1), {Size = UDim2.new(0, 16, 0, 16)}):Play()
+end)
+CloseUIBtn.MouseButton1Up:Connect(function()
+    TweenService:Create(CloseUIBtn, TweenInfo.new(0.1), {Size = UDim2.new(0, 20, 0, 20)}):Play()
+    ScreenGui.Enabled = false
 end)
 
--- === 2. SEARCH BAR AREA ===
 local SearchContainer = Instance.new("Frame")
 SearchContainer.Parent = MainFrame
 SearchContainer.BackgroundColor3 = Colors.Card
@@ -146,7 +147,6 @@ InputBox.PlaceholderColor3 = Colors.SubText
 InputBox.TextSize = 12
 InputBox.TextXAlignment = Enum.TextXAlignment.Left
 
--- === 3. RESULTS SCROLL ===
 local ResultsScroll = Instance.new("ScrollingFrame")
 ResultsScroll.Parent = MainFrame
 ResultsScroll.BackgroundTransparency = 1
@@ -164,7 +164,6 @@ Grid.CellPadding = UDim2.new(0, 6, 0, 6)
 Grid.CellSize = UDim2.new(0, 120, 0, 75)
 Grid.FillDirectionMaxCells = 3
 
--- Placeholder Text
 local Placeholder = Instance.new("TextLabel")
 Placeholder.Parent = MainFrame
 Placeholder.BackgroundTransparency = 1
@@ -176,7 +175,6 @@ Placeholder.TextColor3 = Colors.SubText
 Placeholder.TextSize = 14
 Placeholder.TextWrapped = true
 
--- === MODAL NOTIFICATION ===
 local ModalOverlay = Instance.new("Frame")
 ModalOverlay.Name = "ModalOverlay"
 ModalOverlay.Parent = ScreenGui
@@ -208,15 +206,25 @@ MTitle.TextXAlignment = Enum.TextXAlignment.Left
 MTitle.TextTruncate = Enum.TextTruncate.AtEnd
 MTitle.ZIndex = 52
 
+-- === Modal Close with Press Effect ===
 local MClose = Instance.new("ImageButton")
 MClose.Parent = ModalBox
 MClose.BackgroundTransparency = 1
-MClose.Position = UDim2.new(1, -25, 0, 5)
+MClose.AnchorPoint = Vector2.new(0.5, 0.5)
+MClose.Position = UDim2.new(1, -15, 0, 15)
 MClose.Size = UDim2.new(0, 20, 0, 20)
 MClose.Image = "rbxassetid://121392148105762"
 MClose.ImageColor3 = Colors.SubText
 MClose.ScaleType = Enum.ScaleType.Fit
 MClose.ZIndex = 52
+
+MClose.MouseButton1Down:Connect(function()
+    TweenService:Create(MClose, TweenInfo.new(0.1), {Size = UDim2.new(0, 16, 0, 16)}):Play()
+end)
+MClose.MouseButton1Up:Connect(function()
+    TweenService:Create(MClose, TweenInfo.new(0.1), {Size = UDim2.new(0, 20, 0, 20)}):Play()
+    ModalOverlay.Visible = false
+end)
 
 local MDesc = Instance.new("TextLabel")
 MDesc.Parent = ModalBox
@@ -255,7 +263,6 @@ BtnCopy.TextSize = 10
 BtnCopy.ZIndex = 52
 Instance.new("UICorner", BtnCopy).CornerRadius = UDim.new(0,4)
 
--- === LOGIC ===
 local currentScript = ""
 local isGuiVisible = true
 
@@ -290,17 +297,6 @@ local function CreateCard(data)
     typeTag.TextSize = 8
     typeTag.TextXAlignment = Enum.TextXAlignment.Left
     
-    local views = Instance.new("TextLabel")
-    views.Parent = btn
-    views.BackgroundTransparency = 1
-    views.Position = UDim2.new(0, 6, 1, -16)
-    views.Size = UDim2.new(1, -12, 0, 12)
-    views.Font = Enum.Font.Gotham
-    views.Text = "👁 "..(data.views or 0)
-    views.TextColor3 = Colors.SubText
-    views.TextSize = 9
-    views.TextXAlignment = Enum.TextXAlignment.Left
-
     btn.MouseButton1Click:Connect(function()
         MTitle.Text = data.title
         MDesc.Text = "Game: " .. ((data.game and data.game.name) or "Universal") .. "\nViews: " .. (data.views or 0)
@@ -313,13 +309,7 @@ local function Search(txt)
     for _,v in pairs(ResultsScroll:GetChildren()) do
         if v:IsA("TextButton") then v:Destroy() end
     end
-    
-    if txt == "" then
-        Placeholder.Visible = true
-        ResultsScroll.Visible = false
-        return
-    end
-    
+    if txt == "" then Placeholder.Visible = true ResultsScroll.Visible = false return end
     Placeholder.Visible = false
     ResultsScroll.Visible = true
     
@@ -330,27 +320,14 @@ local function Search(txt)
         if s and r.StatusCode == 200 then
             local d = HttpService:JSONDecode(r.Body)
             if d.result and d.result.scripts then
-                for _, sc in pairs(d.result.scripts) do
-                    CreateCard(sc)
-                end
+                for _, sc in pairs(d.result.scripts) do CreateCard(sc) end
                 ResultsScroll.CanvasPosition = Vector2.new(0,0)
             end
         end
     end)
 end
 
-InputBox.FocusLost:Connect(function(enter)
-    if enter then Search(InputBox.Text) end
-end)
-
-CloseUIBtn.MouseButton1Click:Connect(function()
-    isGuiVisible = false
-    ScreenGui.Enabled = false
-end)
-
-MClose.MouseButton1Click:Connect(function()
-    ModalOverlay.Visible = false
-end)
+InputBox.FocusLost:Connect(function(enter) if enter then Search(InputBox.Text) end end)
 
 BtnCopy.MouseButton1Click:Connect(function()
     if currentScript ~= "" then
@@ -364,13 +341,7 @@ end)
 BtnRun.MouseButton1Click:Connect(function()
     if currentScript ~= "" then
         local func, err = loadstring(currentScript)
-        if func then
-            task.spawn(func)
-            BtnRun.Text = "EXECUTED!"
-        else
-            BtnRun.Text = "ERROR!"
-            warn(err)
-        end
+        if func then task.spawn(func) BtnRun.Text = "EXECUTED!" else warn(err) end
         task.wait(0.5)
         ModalOverlay.Visible = false
         BtnRun.Text = "RUN"
