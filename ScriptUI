@@ -14,7 +14,7 @@ ScriptUI.DisplayOrder = 9999
 ScriptUI.ResetOnSpawn = false
 ScriptUI.ZIndexBehavior = Enum.ZIndexBehavior.Global
 ScriptUI.IgnoreGuiInset = true
-ScriptUI.Enabled = true
+ScriptUI.Enabled = false
 ScriptUI.Parent = Player:WaitForChild("PlayerGui")
 
 --// Fungsi Global buat Efek Klik (Anti Bug/Stuck)
