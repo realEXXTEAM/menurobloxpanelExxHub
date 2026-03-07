@@ -45,7 +45,7 @@ local Colors = {
     SubText = Color3.fromRGB(160, 160, 160), 
 }
 
--- === MAIN FRAME (COMPACT SIZE 400x260) ===
+-- === MAIN FRAME ===
 local MainFrame = Instance.new("Frame")
 MainFrame.Name = "MainUI"
 MainFrame.Parent = ScreenGui
@@ -56,7 +56,6 @@ MainFrame.Position = UDim2.new(0.5, 0, 0.5, 0)
 MainFrame.Size = UDim2.new(0, 400, 0, 260) 
 MainFrame.ClipsDescendants = true
 MainFrame.Active = true
-MainFrame.Draggable = false -- NO DRAG
 
 local MainCorner = Instance.new("UICorner")
 MainCorner.CornerRadius = UDim.new(0, 8)
@@ -96,23 +95,22 @@ TitleLabel.TextSize = 12
 TitleLabel.TextXAlignment = Enum.TextXAlignment.Left
 TitleLabel.ZIndex = 3
 
--- Close Button "X"
-local CloseUIBtn = Instance.new("TextButton")
+-- Close Button (Image)
+local CloseUIBtn = Instance.new("ImageButton")
 CloseUIBtn.Parent = HeaderBar
 CloseUIBtn.BackgroundTransparency = 1
-CloseUIBtn.Position = UDim2.new(1, -30, 0, 0)
-CloseUIBtn.Size = UDim2.new(0, 30, 1, 0)
-CloseUIBtn.Font = Enum.Font.GothamBold
-CloseUIBtn.Text = "X"
-CloseUIBtn.TextColor3 = Colors.SubText
-CloseUIBtn.TextSize = 14
+CloseUIBtn.Position = UDim2.new(1, -25, 0, 5)
+CloseUIBtn.Size = UDim2.new(0, 20, 0, 20)
+CloseUIBtn.Image = "rbxassetid://121392148105762"
+CloseUIBtn.ImageColor3 = Colors.SubText
+CloseUIBtn.ScaleType = Enum.ScaleType.Fit
 CloseUIBtn.ZIndex = 3
 
 CloseUIBtn.MouseEnter:Connect(function()
-    TweenService:Create(CloseUIBtn, TweenInfo.new(0.2), {TextColor3 = Color3.fromRGB(255, 255, 255)}):Play()
+    TweenService:Create(CloseUIBtn, TweenInfo.new(0.2), {ImageColor3 = Color3.fromRGB(255, 255, 255)}):Play()
 end)
 CloseUIBtn.MouseLeave:Connect(function()
-    TweenService:Create(CloseUIBtn, TweenInfo.new(0.2), {TextColor3 = Colors.SubText}):Play()
+    TweenService:Create(CloseUIBtn, TweenInfo.new(0.2), {ImageColor3 = Colors.SubText}):Play()
 end)
 
 -- === 2. SEARCH BAR AREA ===
@@ -201,7 +199,7 @@ local MTitle = Instance.new("TextLabel")
 MTitle.Parent = ModalBox
 MTitle.BackgroundTransparency = 1
 MTitle.Position = UDim2.new(0, 10, 0, 8)
-MTitle.Size = UDim2.new(1, -30, 0, 20)
+MTitle.Size = UDim2.new(1, -40, 0, 20)
 MTitle.Font = Enum.Font.GothamBold
 MTitle.Text = "Script Title"
 MTitle.TextColor3 = Colors.Text
@@ -210,15 +208,14 @@ MTitle.TextXAlignment = Enum.TextXAlignment.Left
 MTitle.TextTruncate = Enum.TextTruncate.AtEnd
 MTitle.ZIndex = 52
 
-local MClose = Instance.new("TextButton")
+local MClose = Instance.new("ImageButton")
 MClose.Parent = ModalBox
 MClose.BackgroundTransparency = 1
 MClose.Position = UDim2.new(1, -25, 0, 5)
 MClose.Size = UDim2.new(0, 20, 0, 20)
-MClose.Text = "X"
-MClose.Font = Enum.Font.GothamBold
-MClose.TextColor3 = Colors.SubText
-MClose.TextSize = 14
+MClose.Image = "rbxassetid://121392148105762"
+MClose.ImageColor3 = Colors.SubText
+MClose.ScaleType = Enum.ScaleType.Fit
 MClose.ZIndex = 52
 
 local MDesc = Instance.new("TextLabel")
@@ -326,7 +323,7 @@ local function Search(txt)
     Placeholder.Visible = false
     ResultsScroll.Visible = true
     
-    spawn(function()
+    task.spawn(function()
         local encoded = HttpService:UrlEncode(txt)
         local url = "https://scriptblox.com/api/script/search?q="..encoded.."&mode=free&page=1"
         local s, r = pcall(function() return requestFunc({Url=url, Method="GET"}) end)
@@ -359,24 +356,24 @@ BtnCopy.MouseButton1Click:Connect(function()
     if currentScript ~= "" then
         setclipboardFunc(currentScript)
         BtnCopy.Text = "COPIED!"
-        wait(1)
+        task.wait(1)
         BtnCopy.Text = "COPY"
     end
 end)
 
--- LOGIC BARU: Run & Auto Close
 BtnRun.MouseButton1Click:Connect(function()
     if currentScript ~= "" then
-        -- Execute
-        loadstring(currentScript)()
-        
-        -- Visual Feedback
-        BtnRun.Text = "EXECUTED!"
-        wait(0.5) -- Jeda sebentar biar user liat statusnya
-        
-        -- Auto Close Modal
+        local func, err = loadstring(currentScript)
+        if func then
+            task.spawn(func)
+            BtnRun.Text = "EXECUTED!"
+        else
+            BtnRun.Text = "ERROR!"
+            warn(err)
+        end
+        task.wait(0.5)
         ModalOverlay.Visible = false
-        BtnRun.Text = "RUN" -- Reset
+        BtnRun.Text = "RUN"
     end
 end)
 
