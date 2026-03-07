@@ -53,16 +53,36 @@ title.TextSize = 14
 title.TextXAlignment = Enum.TextXAlignment.Left
 title.Parent = bg
 
---// Tombol Close (Image)
+--// Tombol Close (Image with Press Effect)
 local closeBtn = Instance.new("ImageButton")
+closeBtn.Name = "CloseButton"
 closeBtn.Size = UDim2.new(0, 20, 0, 20)
 closeBtn.Position = UDim2.new(1, -28, 0, 8)
+closeBtn.AnchorPoint = Vector2.new(0.5, 0.5) -- Anchor di tengah buat efek shrink
+closeBtn.Position = UDim2.new(1, -18, 0, 18) -- Penyesuaian posisi karena AnchorPoint tengah
 closeBtn.BackgroundTransparency = 1
 closeBtn.Image = "rbxassetid://121392148105762"
+closeBtn.ImageColor3 = Color3.fromRGB(200, 200, 200)
 closeBtn.ScaleType = Enum.ScaleType.Fit
 closeBtn.Parent = bg
 
-closeBtn.MouseButton1Click:Connect(function()
+-- Logic Hover & Press Effect
+closeBtn.MouseEnter:Connect(function()
+	TweenService:Create(closeBtn, TweenInfo.new(0.2), {ImageColor3 = Color3.new(1, 1, 1)}):Play()
+end)
+
+closeBtn.MouseLeave:Connect(function()
+	TweenService:Create(closeBtn, TweenInfo.new(0.2), {ImageColor3 = Color3.fromRGB(200, 200, 200), Size = UDim2.new(0, 20, 0, 20)}):Play()
+end)
+
+closeBtn.MouseButton1Down:Connect(function()
+	-- Efek mengecil pas ditahan
+	TweenService:Create(closeBtn, TweenInfo.new(0.1), {Size = UDim2.new(0, 16, 0, 16)}):Play()
+end)
+
+closeBtn.MouseButton1Up:Connect(function()
+	-- Balik normal pas dilepas
+	TweenService:Create(closeBtn, TweenInfo.new(0.1), {Size = UDim2.new(0, 20, 0, 20)}):Play()
 	ExecutorUI.Enabled = false
 end)
 
