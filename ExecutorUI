@@ -24,7 +24,7 @@ ExecutorUI.DisplayOrder = 9999
 ExecutorUI.ResetOnSpawn = false
 ExecutorUI.ZIndexBehavior = Enum.ZIndexBehavior.Global
 ExecutorUI.IgnoreGuiInset = true
-ExecutorUI.Enabled = false 
+ExecutorUI.Enabled = true
 ExecutorUI.Parent = Player:WaitForChild("PlayerGui")
 
 --// Frame Utama
@@ -53,15 +53,13 @@ title.TextSize = 14
 title.TextXAlignment = Enum.TextXAlignment.Left
 title.Parent = bg
 
---// Tombol X (Close)
-local closeBtn = Instance.new("TextButton")
+--// Tombol Close (Image)
+local closeBtn = Instance.new("ImageButton")
 closeBtn.Size = UDim2.new(0, 20, 0, 20)
 closeBtn.Position = UDim2.new(1, -28, 0, 8)
 closeBtn.BackgroundTransparency = 1
 closeBtn.Image = "rbxassetid://121392148105762"
-closeBtn.Font = Enum.Font.GothamBold
-closeBtn.TextSize = 16
-closeBtn.TextColor3 = Color3.new(1, 1, 1)
+closeBtn.ScaleType = Enum.ScaleType.Fit
 closeBtn.Parent = bg
 
 closeBtn.MouseButton1Click:Connect(function()
@@ -75,6 +73,7 @@ scroll.Position = UDim2.new(0, 15, 0, 40)
 scroll.BackgroundColor3 = Color3.fromRGB(15, 15, 20)
 scroll.BackgroundTransparency = 0.3
 scroll.ScrollBarThickness = 4
+scroll.ScrollBarImageColor3 = Color3.fromRGB(100, 100, 255)
 scroll.ScrollingDirection = Enum.ScrollingDirection.XY
 scroll.AutomaticCanvasSize = Enum.AutomaticSize.XY
 scroll.BorderSizePixel = 0
@@ -84,9 +83,9 @@ local scrollCorner = Instance.new("UICorner")
 scrollCorner.CornerRadius = UDim.new(0, 8)
 scrollCorner.Parent = scroll
 
---// TextBox (Area Ketik)
+--// TextBox
 local input = Instance.new("TextBox")
-input.Size = UDim2.new(1, 0, 1, 0)
+input.Size = UDim2.new(1, 0, 1, 0) 
 input.BackgroundTransparency = 1
 input.ClearTextOnFocus = false
 input.MultiLine = true
@@ -121,7 +120,6 @@ local btnCorner = Instance.new("UICorner")
 btnCorner.CornerRadius = UDim.new(1, 0)
 btnCorner.Parent = runBtn
 
--- Animasi Hover
 runBtn.MouseEnter:Connect(function()
 	TweenService:Create(runBtn, TweenInfo.new(0.15), {BackgroundTransparency = 0.1, ImageColor3 = Color3.new(1, 1, 1)}):Play()
 end)
@@ -129,7 +127,6 @@ runBtn.MouseLeave:Connect(function()
 	TweenService:Create(runBtn, TweenInfo.new(0.15), {BackgroundTransparency = 0.2, ImageColor3 = Color3.fromRGB(180, 180, 255)}):Play()
 end)
 
--- Notifikasi System
 local function notify(msg)
 	pcall(function()
 		game.StarterGui:SetCore("SendNotification", {
@@ -140,7 +137,6 @@ local function notify(msg)
 	end)
 end
 
--- Run Action
 runBtn.MouseButton1Click:Connect(function()
 	local tweenIn = TweenService:Create(runBtn, TweenInfo.new(0.1), {Size = UDim2.new(0, 50, 0, 50)})
 	local tweenOut = TweenService:Create(runBtn, TweenInfo.new(0.1), {Size = UDim2.new(0, 45, 0, 45)})
