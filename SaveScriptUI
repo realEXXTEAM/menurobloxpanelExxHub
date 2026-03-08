@@ -1,6 +1,7 @@
 -- Services
 local Players = game:GetService("Players")
 local UserInputService = game:GetService("UserInputService")
+local TweenService = game:GetService("TweenService") -- Tambahan buat animasi tombol close
 local Player = Players.LocalPlayer
 
 -- // CONFIG FOLDER
@@ -53,6 +54,23 @@ local function AddStroke(parent, color, thickness)
     return s
 end
 
+-- // UTILITY: CLICK EFFECT
+local function applyClickEffect(button, normalSize, shrinkSize)
+    button.AnchorPoint = Vector2.new(0.5, 0.5)
+    
+    local function shrink()
+        TweenService:Create(button, TweenInfo.new(0.1, Enum.EasingStyle.Quad, Enum.EasingDirection.Out), {Size = shrinkSize}):Play()
+    end
+    
+    local function restore()
+        TweenService:Create(button, TweenInfo.new(0.1, Enum.EasingStyle.Quad, Enum.EasingDirection.Out), {Size = normalSize}):Play()
+    end
+
+    button.MouseButton1Down:Connect(shrink)
+    button.MouseButton1Up:Connect(restore)
+    button.MouseLeave:Connect(restore) 
+end
+
 -- // MAIN FRAME
 local MainFrame = Instance.new("Frame")
 MainFrame.Parent = SaveScriptUI
@@ -91,16 +109,16 @@ TitleLabel.TextColor3 = Theme.Text
 TitleLabel.TextSize = 16
 TitleLabel.TextXAlignment = Enum.TextXAlignment.Left
 
--- Close Btn
-local CloseBtn = Instance.new("TextButton")
+-- Close Btn (UDAH DIGANTI GAMBAR)
+local CloseBtn = Instance.new("ImageButton")
+CloseBtn.Name = "CloseButton"
 CloseBtn.Parent = Header
 CloseBtn.BackgroundTransparency = 1
-CloseBtn.Position = UDim2.new(0.90, 0, 0.1, 0)
-CloseBtn.Size = UDim2.new(0.1, 0, 0.3, 0)
-CloseBtn.Font = Enum.Font.GothamBold
-CloseBtn.Text = "X"
-CloseBtn.TextColor3 = Color3.fromRGB(180, 180, 180)
-CloseBtn.TextSize = 14
+CloseBtn.Image = "rbxassetid://121392148105762"
+CloseBtn.Position = UDim2.new(1, -20, 0, 15) -- Disesuaikan
+CloseBtn.Size = UDim2.new(0, 22, 0, 22)
+CloseBtn.ZIndex = 5
+applyClickEffect(CloseBtn, UDim2.new(0, 22, 0, 22), UDim2.new(0, 18, 0, 18))
 CloseBtn.MouseButton1Click:Connect(function() SaveScriptUI.Enabled = false end)
 
 -- Search Bar
@@ -224,11 +242,10 @@ SaveButton.TextColor3 = Theme.Text
 SaveButton.TextSize = 12
 AddCorner(SaveButton, 6)
 
--- // POPUP KONFIRMASI DELETE
+-- // POPUP KONFIRMASI DELETE (UDAH DIKECILIN)
 local ConfirmOverlay = Instance.new("Frame")
 ConfirmOverlay.Parent = SaveScriptUI
 ConfirmOverlay.BackgroundColor3 = Color3.new(0,0,0)
--- DISINI BRO: Transparency jadi 1 biar gak ada layar hitam
 ConfirmOverlay.BackgroundTransparency = 1 
 ConfirmOverlay.Size = UDim2.new(1, 0, 1, 0)
 ConfirmOverlay.Visible = false
@@ -239,19 +256,20 @@ ConfirmBox.Parent = ConfirmOverlay
 ConfirmBox.BackgroundColor3 = Theme.BG
 ConfirmBox.AnchorPoint = Vector2.new(0.5, 0.5)
 ConfirmBox.Position = UDim2.new(0.5, 0, 0.5, 0)
-ConfirmBox.Size = UDim2.new(0.6, 0, 0, 120) 
+-- Size dikecilin biar lebih padat
+ConfirmBox.Size = UDim2.new(0.55, 0, 0, 95) 
 AddCorner(ConfirmBox, 10)
 AddStroke(ConfirmBox, Theme.Red, 2)
 
 local ConfirmTitle = Instance.new("TextLabel")
 ConfirmTitle.Parent = ConfirmBox
 ConfirmTitle.BackgroundTransparency = 1
-ConfirmTitle.Position = UDim2.new(0, 0, 0.1, 0)
+ConfirmTitle.Position = UDim2.new(0, 0, 0.08, 0)
 ConfirmTitle.Size = UDim2.new(1, 0, 0.3, 0)
 ConfirmTitle.Font = Enum.Font.GothamBold
 ConfirmTitle.Text = "HAPUS SCRIPT?"
 ConfirmTitle.TextColor3 = Theme.Text
-ConfirmTitle.TextSize = 14
+ConfirmTitle.TextSize = 13
 
 local ConfirmDesc = Instance.new("TextLabel")
 ConfirmDesc.Parent = ConfirmBox
