@@ -1,5 +1,5 @@
 --- BETA TESTING ---
--- By RealExxTeam --
+-- By RealExxTeam (Modified) --
 
 local HttpService = game:GetService("HttpService")
 local UserInputService = game:GetService("UserInputService")
@@ -161,7 +161,8 @@ ResultsScroll.Visible = false
 local Grid = Instance.new("UIGridLayout")
 Grid.Parent = ResultsScroll
 Grid.CellPadding = UDim2.new(0, 6, 0, 6)
-Grid.CellSize = UDim2.new(0, 120, 0, 75)
+-- Diubah sedikit tingginya jadi 95 biar text views & dev muat
+Grid.CellSize = UDim2.new(0, 120, 0, 95) 
 Grid.FillDirectionMaxCells = 3
 
 local Placeholder = Instance.new("TextLabel")
@@ -189,7 +190,7 @@ ModalBox.Parent = ModalOverlay
 ModalBox.BackgroundColor3 = Colors.Card
 ModalBox.AnchorPoint = Vector2.new(0.5, 0.5)
 ModalBox.Position = UDim2.new(0.5, 0, 0.5, 0)
-ModalBox.Size = UDim2.new(0, 240, 0, 150)
+ModalBox.Size = UDim2.new(0, 240, 0, 160) -- Tinggi modal ditambah sedikit
 ModalBox.ZIndex = 51
 Instance.new("UICorner", ModalBox).CornerRadius = UDim.new(0, 8)
 
@@ -230,7 +231,7 @@ local MDesc = Instance.new("TextLabel")
 MDesc.Parent = ModalBox
 MDesc.BackgroundTransparency = 1
 MDesc.Position = UDim2.new(0, 10, 0, 30)
-MDesc.Size = UDim2.new(1, -20, 0, 70)
+MDesc.Size = UDim2.new(1, -20, 0, 80)
 MDesc.Font = Enum.Font.Gotham
 MDesc.Text = "Loading..."
 MDesc.TextColor3 = Colors.SubText
@@ -273,6 +274,15 @@ local function CreateCard(data)
     btn.Text = ""
     Instance.new("UICorner", btn).CornerRadius = UDim.new(0, 6)
     
+    -- Penentuan Info Script (Universal atau Game Tertentu)
+    local gameName = (data.game and data.game.name) or "Universal"
+    local isUniversal = (data.isUniversal == true) or (gameName == "Universal")
+    local typeText = isUniversal and "[Universal]" or "[Game: " .. gameName .. "]"
+    
+    -- Ambil Data Views dan Dev dari API
+    local viewsCount = data.views or 0
+    local devName = (data.owner and data.owner.username) or "Unknown"
+
     local title = Instance.new("TextLabel")
     title.Parent = btn
     title.BackgroundTransparency = 1
@@ -292,14 +302,27 @@ local function CreateCard(data)
     typeTag.Position = UDim2.new(0, 6, 0, 4)
     typeTag.Size = UDim2.new(1, -12, 0, 12)
     typeTag.Font = Enum.Font.GothamBold
-    typeTag.Text = (data.game and data.game.name) or "Universal"
+    typeTag.Text = typeText
     typeTag.TextColor3 = Colors.Accent
     typeTag.TextSize = 8
     typeTag.TextXAlignment = Enum.TextXAlignment.Left
     
+    -- Label Baru Untuk Views dan Dev di Card
+    local statsLabel = Instance.new("TextLabel")
+    statsLabel.Parent = btn
+    statsLabel.BackgroundTransparency = 1
+    statsLabel.Position = UDim2.new(0, 6, 1, -25) 
+    statsLabel.Size = UDim2.new(1, -12, 0, 20)
+    statsLabel.Font = Enum.Font.GothamMedium
+    statsLabel.Text = "👁️ " .. viewsCount .. " | 👤 " .. devName
+    statsLabel.TextColor3 = Colors.SubText
+    statsLabel.TextSize = 8
+    statsLabel.TextXAlignment = Enum.TextXAlignment.Left
+    statsLabel.TextWrapped = true
+    
     btn.MouseButton1Click:Connect(function()
         MTitle.Text = data.title
-        MDesc.Text = "Game: " .. ((data.game and data.game.name) or "Universal") .. "\nViews: " .. (data.views or 0)
+        MDesc.Text = "Target: " .. typeText .. "\nViews: " .. viewsCount .. "\nDev: " .. devName
         currentScript = data.script or ""
         ModalOverlay.Visible = true
     end)
