@@ -9,7 +9,7 @@ MusicUI.DisplayOrder = 9999
 MusicUI.ResetOnSpawn = false
 MusicUI.ZIndexBehavior = Enum.ZIndexBehavior.Global
 MusicUI.IgnoreGuiInset = true
-MusicUI.Enabled = true 
+MusicUI.Enabled = false 
 MusicUI.Parent = Player:WaitForChild("PlayerGui")
 
 --// Main Frame
@@ -120,25 +120,32 @@ Search.TextSize = 12
 Search.ZIndex = 11 -- Di atas Header
 Instance.new("UICorner", Search).CornerRadius = UDim.new(0, 6)
 
-local Close = Instance.new("ImageButton") -- Berubah jadi ImageButton
+local TweenService = game:GetService("TweenService")
+local info = TweenInfo.new(0.15, Enum.EasingStyle.Quint, Enum.EasingDirection.Out)
+
+local Close = Instance.new("ImageButton")
 Close.Name = "CloseButton"
 Close.Parent = Header
 Close.BackgroundTransparency = 1
-Close.Image = "rbxassetid://121392148105762" -- Pake aset image lo
+Close.Image = "rbxassetid://121392148105762"
 Close.Size = UDim2.new(0, 22, 0, 22)
 Close.AnchorPoint = Vector2.new(0.5, 0.5)
-Close.Position = UDim2.new(1, -20, 0.5, 0) -- Pas di pojok kanan
+Close.Position = UDim2.new(1, -20, 0.5, 0)
 Close.ZIndex = 11
 
--- Efek klik biar kerasa 'pencet-able'
-Close.MouseButton1Down:Connect(function()
-    TweenService:Create(Close, TweenInfo.new(0.1), {Size = UDim2.new(0, 18, 0, 18)}):Play()
-end)
-Close.MouseButton1Up:Connect(function()
-    TweenService:Create(Close, TweenInfo.new(0.1), {Size = UDim2.new(0, 22, 0, 22)}):Play()
-    MusicUI.Enabled = false
+-- Animasi Hover (Masuk/Keluar)
+Close.MouseEnter:Connect(function()
+    TweenService:Create(Close, info, {Size = UDim2.new(0, 18, 0, 18)}):Play()
 end)
 
+Close.MouseLeave:Connect(function()
+    TweenService:Create(Close, info, {Size = UDim2.new(0, 22, 0, 22)}):Play()
+end)
+
+-- Fungsi Klik
+Close.MouseButton1Click:Connect(function()
+    MusicUI.Enabled = false
+end)
 
 --// Scrolling List
 local Scrolling = Instance.new("ScrollingFrame")
