@@ -43,15 +43,32 @@ Title.Font = Enum.Font.GothamBold
 Title.TextSize = 16
 Title.TextXAlignment = Enum.TextXAlignment.Left
 
-local CloseBtn = Instance.new("TextButton", MainFrame)
+local TweenService = game:GetService("TweenService")
+local info = TweenInfo.new(0.2, Enum.EasingStyle.Quint, Enum.EasingDirection.Out)
+
+local CloseBtn = Instance.new("ImageButton", MainFrame)
+CloseBtn.Name = "CloseButton"
+CloseBtn.Image = "rbxassetid://121392148105762"
 CloseBtn.Size = UDim2.new(0, 30, 0, 30)
-CloseBtn.Position = UDim2.new(1, -35, 0, 5)
+CloseBtn.AnchorPoint = Vector2.new(0.5, 0.5)
+CloseBtn.Position = UDim2.new(1, -20, 0, 20)
 CloseBtn.BackgroundTransparency = 1
-CloseBtn.Text = "X"
-CloseBtn.TextColor3 = Color3.fromRGB(255, 255, 255)
-CloseBtn.TextSize = 18
-CloseBtn.Font = Enum.Font.GothamBold
-CloseBtn.MouseButton1Click:Connect(function() ESPSettingsUI.Enabled = false end)
+CloseBtn.Modal = true
+
+local normalSize = UDim2.new(0, 30, 0, 30)
+local smallSize = UDim2.new(0, 24, 0, 24)
+
+CloseBtn.MouseEnter:Connect(function()
+    TweenService:Create(CloseBtn, info, {Size = smallSize}):Play()
+end)
+
+CloseBtn.MouseLeave:Connect(function()
+    TweenService:Create(CloseBtn, info, {Size = normalSize}):Play()
+end)
+
+CloseBtn.MouseButton1Click:Connect(function() 
+    ESPSettingsUI.Enabled = false 
+end)
 
 local ScrollFrame = Instance.new("ScrollingFrame", MainFrame)
 ScrollFrame.Size = UDim2.new(1, -20, 1, -55)
