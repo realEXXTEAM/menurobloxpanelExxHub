@@ -9,7 +9,7 @@ MusicUI.DisplayOrder = 9999
 MusicUI.ResetOnSpawn = false
 MusicUI.ZIndexBehavior = Enum.ZIndexBehavior.Global
 MusicUI.IgnoreGuiInset = true
-MusicUI.Enabled = false
+MusicUI.Enabled = false 
 MusicUI.Parent = Player:WaitForChild("PlayerGui")
 
 --// Main Frame
@@ -120,17 +120,25 @@ Search.TextSize = 12
 Search.ZIndex = 11 -- Di atas Header
 Instance.new("UICorner", Search).CornerRadius = UDim.new(0, 6)
 
-local Close = Instance.new("TextButton")
+local Close = Instance.new("ImageButton") -- Berubah jadi ImageButton
+Close.Name = "CloseButton"
 Close.Parent = Header
-Close.Size = UDim2.new(0, 25, 0, 25)
-Close.Position = UDim2.new(1, -30, 0.5, -12)
-Close.BackgroundTransparency = 1 -- Sesuai request lu tadi
-Close.Text = "X"
-Close.Font = Enum.Font.GothamBold
-Close.TextColor3 = Color3.fromRGB(255, 255, 255)
-Close.TextSize = 14
-Close.ZIndex = 11 -- Di atas Header
-Close.MouseButton1Click:Connect(function() MusicUI.Enabled = false end)
+Close.BackgroundTransparency = 1
+Close.Image = "rbxassetid://121392148105762" -- Pake aset image lo
+Close.Size = UDim2.new(0, 22, 0, 22)
+Close.AnchorPoint = Vector2.new(0.5, 0.5)
+Close.Position = UDim2.new(1, -20, 0.5, 0) -- Pas di pojok kanan
+Close.ZIndex = 11
+
+-- Efek klik biar kerasa 'pencet-able'
+Close.MouseButton1Down:Connect(function()
+    TweenService:Create(Close, TweenInfo.new(0.1), {Size = UDim2.new(0, 18, 0, 18)}):Play()
+end)
+Close.MouseButton1Up:Connect(function()
+    TweenService:Create(Close, TweenInfo.new(0.1), {Size = UDim2.new(0, 22, 0, 22)}):Play()
+    MusicUI.Enabled = false
+end)
+
 
 --// Scrolling List
 local Scrolling = Instance.new("ScrollingFrame")
