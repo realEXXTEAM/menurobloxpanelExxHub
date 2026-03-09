@@ -10,6 +10,7 @@ getgenv().ESP_Config = {
     Box = false,
     Antena = false,
     Names = false,
+    TeamCheck = false,
     Color = Color3.fromRGB(255, 255, 255)
 }
 
@@ -43,7 +44,6 @@ Title.Font = Enum.Font.GothamBold
 Title.TextSize = 16
 Title.TextXAlignment = Enum.TextXAlignment.Left
 
-local TweenService = game:GetService("TweenService")
 local info = TweenInfo.new(0.2, Enum.EasingStyle.Quint, Enum.EasingDirection.Out)
 
 local CloseBtn = Instance.new("ImageButton", MainFrame)
@@ -74,7 +74,7 @@ local ScrollFrame = Instance.new("ScrollingFrame", MainFrame)
 ScrollFrame.Size = UDim2.new(1, -20, 1, -55)
 ScrollFrame.Position = UDim2.new(0, 10, 0, 45)
 ScrollFrame.BackgroundTransparency = 1
-ScrollFrame.ScrollBarThickness = 2
+ScrollFrame.ScrollBarThickness = 1
 local UIList = Instance.new("UIListLayout", ScrollFrame)
 UIList.Padding = UDim.new(0, 6)
 
@@ -134,6 +134,27 @@ local function AddESP(plr)
                 local SizeX = 2200 / Pos.Z
                 local SizeY = 2800 / Pos.Z
                 local BoxPos = Vector2.new(Pos.X - SizeX / 2, Pos.Y - SizeY / 2)
+                
+                --// [BARU] Logic Warna & Text untuk Team Check
+                local drawColor = getgenv().ESP_Config.Color
+                local dist = math.floor((Root.Position - LocalPlayer.Character.HumanoidRootPart.Position).Magnitude)
+                local drawText = plr.Name .. " [" .. tostring(dist) .. "m]"
+
+                if getgenv().ESP_Config.TeamCheck then
+                    local targetTeam = plr.Team
+                    local localTeam = LocalPlayer.Team
+                    local teamName = targetTeam and targetTeam.Name or "No Team"
+                    
+                    -- Kasih nama tim di atas
+                    drawText = "[" .. teamName .. "] " .. plr.Name .. " [" .. tostring(dist) .. "m]"
+                    
+                    -- Cek warna sesama tim
+                    if targetTeam and localTeam and targetTeam == localTeam then
+                        drawColor = Color3.fromRGB(0, 255, 0) -- Hijau untuk teman
+                    else
+                        drawColor = Color3.fromRGB(255, 0, 0) -- Merah untuk lawan / beda tim
+                    end
+                end
 
                 -- Paksa Update Visibility berdasarkan config
                 BoxOutline.Visible = getgenv().ESP_Config.Box
@@ -143,18 +164,17 @@ local function AddESP(plr)
                 Box.Visible = getgenv().ESP_Config.Box
                 Box.Size = BoxOutline.Size
                 Box.Position = BoxPos
-                Box.Color = getgenv().ESP_Config.Color
+                Box.Color = drawColor
 
                 Line.Visible = getgenv().ESP_Config.Antena
                 Line.From = Vector2.new(Camera.ViewportSize.X / 2, Camera.ViewportSize.Y)
                 Line.To = Vector2.new(Pos.X, Pos.Y)
-                Line.Color = getgenv().ESP_Config.Color
+                Line.Color = drawColor
 
                 Text.Visible = getgenv().ESP_Config.Names
-                local dist = math.floor((Root.Position - LocalPlayer.Character.HumanoidRootPart.Position).Magnitude)
-                Text.Text = plr.Name .. " [" .. tostring(dist) .. "m]"
+                Text.Text = drawText -- Pakai drawText yg sudah ada team tag-nya
                 Text.Position = Vector2.new(Pos.X, Pos.Y - (SizeY / 2) - 15)
-                Text.Color = getgenv().ESP_Config.Color
+                Text.Color = drawColor
                 Text.Center = true
                 Text.Outline = true
                 
@@ -165,7 +185,7 @@ local function AddESP(plr)
                         hl = Instance.new("Highlight", plr.Character)
                         hl.Name = "ESP_Highlight"
                     end
-                    hl.OutlineColor = getgenv().ESP_Config.Color
+                    hl.OutlineColor = drawColor -- Pakai drawColor
                 elseif hl then hl:Destroy() end
             else
                 BoxOutline.Visible = false; Box.Visible = false; Line.Visible = false; Text.Visible = false
@@ -184,11 +204,12 @@ CreateToggle("Outline Player", "Outline")
 CreateToggle("Box ESP", "Box")
 CreateToggle("Antena (Tracers)", "Antena")
 CreateToggle("Name | Studs", "Names")
+CreateToggle("Team Check", "TeamCheck")
 
 --// Panel Warna (Logic Selected Tetap Ada)
 local ColorBtn = Instance.new("TextButton", ScrollFrame)
 ColorBtn.Size = UDim2.new(1, 0, 0, 35)
-ColorBtn.Text = "[🎨] Switch Collor"
+ColorBtn.Text = "[🎨] Switch Color"
 ColorBtn.BackgroundColor3 = Color3.fromRGB(45, 45, 45)
 ColorBtn.TextColor3 = Color3.fromRGB(255, 255, 255)
 Instance.new("UICorner", ColorBtn)
@@ -204,7 +225,7 @@ local ColorList = Instance.new("ScrollingFrame", ColorPalette)
 ColorList.Size = UDim2.new(1, -10, 1, -10)
 ColorList.Position = UDim2.new(0, 5, 0, 5)
 ColorList.BackgroundTransparency = 1
-ColorList.ScrollBarThickness = 2
+ColorList.ScrollBarThickness = 1
 Instance.new("UIListLayout", ColorList).Padding = UDim.new(0, 5)
 
 local colors = {
@@ -212,7 +233,7 @@ local colors = {
     {c = Color3.fromRGB(255, 0, 0), n = "Selected"},
     {c = Color3.fromRGB(0, 255, 0), n = "Selected"},
     {c = Color3.fromRGB(0, 170, 255), n = "Selected"},
-    {c = Color3.fromRGB(255, 255,  yellow), n = "Selected"},
+    {c = Color3.fromRGB(255, 255, 0), n = "Selected"},
     {c = Color3.fromRGB(255, 0, 255), n = "Selected"}
 }
 
