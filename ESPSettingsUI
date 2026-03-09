@@ -225,7 +225,7 @@ local ColorList = Instance.new("ScrollingFrame", ColorPalette)
 ColorList.Size = UDim2.new(1, -10, 1, -10)
 ColorList.Position = UDim2.new(0, 5, 0, 5)
 ColorList.BackgroundTransparency = 1
-ColorList.ScrollBarThickness = 1
+ColorList.ScrollBarThickness = 0.5
 Instance.new("UIListLayout", ColorList).Padding = UDim.new(0, 5)
 
 local colors = {
