@@ -438,6 +438,17 @@ local AnimPackList = {
         Swim = "rbxassetid://117311126192398",
         SwimIdle = "rbxassetid://117311126192398"
     },
+    ["(NEW) Glow Motion"] = {
+        Idle = "rbxassetid://137764781910579",
+        Idle2 = "rbxassetid://96439737641086",
+        Walk = "rbxassetid://85809016093530",
+        Run = "rbxassetid://101925097435036",
+        Jump = "rbxassetid://74159004634379",
+        Fall = "rbxassetid://98070939608691",
+        Climb = "rbxassetid://108236155509584",
+        Swim = "rbxassetid://83003487432457",
+        SwimIdle = "rbxassetid://112946194103503"
+    }, 
 }
 
 -- =================================================================
